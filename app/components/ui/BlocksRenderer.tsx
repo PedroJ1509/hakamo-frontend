@@ -1,3 +1,5 @@
+import React, { JSX } from 'react'
+
 interface TextNode {
   type: 'text'
   text: string
