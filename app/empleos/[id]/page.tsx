@@ -19,13 +19,27 @@ const tipoLabel: Record<string, string> = {
   contrato: 'Contrato',
 }
 
+type BlockNode = {
+  type: string
+  children?: BlockNode[]
+  text?: string
+  level?: number
+  format?: string
+  url?: string
+  bold?: boolean
+  italic?: boolean
+  underline?: boolean
+  strikethrough?: boolean
+  code?: boolean
+}
+
 interface VacanteData {
   id: number
   documentId: string
   titulo: string
   slug: string
-  descripcion: unknown
-  requisitos: unknown
+  descripcion: BlockNode[] | null
+  requisitos: BlockNode[] | null
   ubicacion: string
   modalidad: string
   tipo: string
@@ -212,7 +226,7 @@ export default function VacanteDetallePage() {
                   Descripción del puesto
                 </h2>
                 <div className="prose prose-gray max-w-none text-sm leading-relaxed">
-                  <BlocksRenderer content={vacante.descripcion as never} />
+                  <BlocksRenderer content={vacante.descripcion} />
                 </div>
               </div>
             )}
@@ -226,7 +240,7 @@ export default function VacanteDetallePage() {
                   Requisitos del puesto
                 </h2>
                 <div className="prose prose-gray max-w-none text-sm leading-relaxed">
-                  <BlocksRenderer content={vacante.requisitos as never} />
+                  <BlocksRenderer content={vacante.requisitos} />
                 </div>
               </div>
             )}
