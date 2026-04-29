@@ -148,7 +148,6 @@ export default function ContactoPage() {
               </div>
             ))}
 
-            {/* Tagline */}
             <div
               className="rounded-2xl p-6 mt-4"
               style={{ backgroundColor: '#07090F' }}

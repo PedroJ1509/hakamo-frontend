@@ -4,7 +4,7 @@ import { getDivisiones } from '@/lib/api'
 import { Division } from '@/types'
 
 export default async function Footer() {
-  const response = await getDivisiones()
+  const response = await getDivisiones().catch(() => ({ data: [] }))
   const divisiones: Division[] = response.data
 
   return (

@@ -104,7 +104,6 @@ export default async function ProyectosPage({ params }: Props) {
                           alt={proyecto.titulo}
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         />
-                        {/* Badge de cantidad de imágenes */}
                         {proyecto.imagenes.length > 1 && (
                           <div className="absolute bottom-3 right-3 bg-black/60 text-white text-xs font-medium px-2.5 py-1 rounded-full backdrop-blur-sm">
                             +{proyecto.imagenes.length - 1} fotos
@@ -123,11 +122,9 @@ export default async function ProyectosPage({ params }: Props) {
                     )}
                   </div>
 
-                  {/* Barra de color */}
                   <div className="h-1" style={{ backgroundColor: color }} />
 
                   <div className="p-6">
-                    {/* Estado */}
                     <span
                       className="inline-block text-xs font-semibold uppercase tracking-wide px-2.5 py-1 rounded-full mb-3"
                       style={{ backgroundColor: `${color}18`, color }}

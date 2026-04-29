@@ -1,7 +1,7 @@
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL
 
 export async function getDivisiones() {
-  const res = await fetch(`${STRAPI_URL}/api/divisions?populate=*`)
+  const res = await fetch(`${STRAPI_URL}/api/divisions?populate=*&sort=orden:asc`)
   if (!res.ok) throw new Error('Error al obtener divisiones')
   return res.json()
 }

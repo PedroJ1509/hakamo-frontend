@@ -78,7 +78,7 @@ export default function VacanteDetallePage() {
     fetch(`${STRAPI_URL}/api/vacantes/${id}?populate=*`)
       .then((r) => r.json())
       .then((data) => {
-          setVacante(data.data ?? null)
+        setVacante(data.data ?? null)
         setCargando(false)
       })
   }, [id])

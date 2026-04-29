@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { useState, useEffect } from 'react'
 
 export default function Header() {
@@ -25,35 +24,25 @@ export default function Header() {
       <div className="max-w-6xl mx-auto px-6 h-18 flex items-center justify-between" style={{ height: '72px' }}>
 
         {/* Logo + wordmark */}
-        <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 shadow-sm">
-            <Image
-              src="/logo.jpeg"
-              alt="Hakamo"
-              width={40}
-              height={40}
-              className="w-full h-full object-cover"
-              priority
-            />
-          </div>
+        <Link href="/" className="group">
           <span
-            className="text-xl font-bold tracking-tight transition-opacity group-hover:opacity-80"
+            className="text-2xl font-bold tracking-tight transition-opacity group-hover:opacity-80"
             style={{ color: '#07090F', fontFamily: 'var(--font-space-grotesk, sans-serif)' }}
           >
-            Hakamo
+            HAKAMO
           </span>
         </Link>
 
         {/* Navegación desktop */}
         <nav className="hidden md:flex items-center gap-8">
           {[
-            { href: '/', label: 'Inicio' },
-            { href: '/#divisiones', label: 'Divisiones' },
+            { href: '#', label: 'Inicio' },
+            { href: '/', label: 'Divisiones' },
             { href: '/empleos', label: 'Empleos' },
             { href: '/blog', label: 'Blog' },
           ].map(({ href, label }) => (
             <Link
-              key={href}
+              key={label}
               href={href}
               className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors relative group"
             >
@@ -95,13 +84,13 @@ export default function Header() {
       {menuAbierto && (
         <div className="md:hidden border-t border-gray-100 bg-white px-6 py-5 flex flex-col gap-4">
           {[
-            { href: '/', label: 'Inicio' },
-            { href: '/#divisiones', label: 'Divisiones' },
+            { href: '#', label: 'Inicio' },
+            { href: '/', label: 'Divisiones' },
             { href: '/empleos', label: 'Empleos' },
             { href: '/blog', label: 'Blog' },
           ].map(({ href, label }) => (
             <Link
-              key={href}
+              key={label}
               href={href}
               className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
               onClick={() => setMenuAbierto(false)}

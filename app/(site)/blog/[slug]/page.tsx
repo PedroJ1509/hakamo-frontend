@@ -11,7 +11,7 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  const res = await getPosts()
+  const res = await getPosts().catch(() => ({ data: [] }))
   const posts: Post[] = res.data
   return posts.map((post) => ({ slug: post.slug }))
 }

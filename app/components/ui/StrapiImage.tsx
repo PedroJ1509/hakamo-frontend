@@ -6,6 +6,7 @@ interface Props {
   alt: string
   width?: number
   height?: number
+  fill?: boolean
   className?: string
   priority?: boolean
 }
@@ -15,6 +16,7 @@ export default function StrapiImage({
   alt,
   width = 800,
   height = 600,
+  fill = false,
   className,
   priority = false
 }: Props) {
@@ -23,6 +25,18 @@ export default function StrapiImage({
   const url = media.url.startsWith('/')
     ? `${process.env.NEXT_PUBLIC_STRAPI_URL}${media.url}`
     : media.url
+
+  if (fill) {
+    return (
+      <Image
+        src={url}
+        alt={alt}
+        fill
+        className={className}
+        priority={priority}
+      />
+    )
+  }
 
   return (
     <Image

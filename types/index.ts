@@ -1,9 +1,18 @@
+export interface Valor {
+  titulo: string
+  descripcion: string
+}
+
 export interface Division {
   id: number
   documentId: string
   nombre: string
   slug: string
   descripcion: string
+  tagline?: string
+  mision?: string
+  vision?: string
+  valores?: Valor[]
   colorPrimario: string
   colorSecundario: string
   activo: boolean

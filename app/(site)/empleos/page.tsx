@@ -35,7 +35,6 @@ export default async function EmpleosPage({ searchParams }: Props) {
   let vacantes: Vacante[] = vacantesRes.data
   const divisiones: Division[] = divisionesRes.data
 
-  // Filtros cliente-side sobre los datos ya obtenidos
   if (divisionSlug) {
     vacantes = vacantes.filter((v) => v.division?.slug === divisionSlug)
   }
@@ -74,7 +73,7 @@ export default async function EmpleosPage({ searchParams }: Props) {
             Somos una empresa que impulsa talentos. Si buscas crecer
             profesionalmente en el sector construcción, este es tu lugar.
           </p>
-          {vacantes.length > 0 && (
+          {vacantesRes.data.length > 0 && (
             <div className="mt-8">
               <span
                 className="inline-block px-4 py-2 rounded-full text-sm font-semibold"
@@ -91,7 +90,6 @@ export default async function EmpleosPage({ searchParams }: Props) {
       <section className="py-8 px-6 border-b border-gray-100 sticky top-[72px] z-40 bg-white">
         <div className="max-w-6xl mx-auto flex flex-wrap gap-3">
 
-          {/* Por división */}
           <div className="flex flex-wrap gap-2 items-center">
             <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest mr-1">División:</span>
             <Link
@@ -117,10 +115,8 @@ export default async function EmpleosPage({ searchParams }: Props) {
             ))}
           </div>
 
-          {/* Separador */}
           <div className="hidden md:block w-px bg-gray-200 mx-1" />
 
-          {/* Por tipo */}
           <div className="flex flex-wrap gap-2 items-center">
             <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest mr-1">Tipo:</span>
             {Object.entries(tipoLabel).map(([key, label]) => (
@@ -158,7 +154,6 @@ export default async function EmpleosPage({ searchParams }: Props) {
                   className="group block bg-white rounded-2xl border border-gray-100 p-7 hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5"
                   style={{ borderLeft: `4px solid ${vacante.division?.colorPrimario || '#0B21CC'}` }}
                 >
-                  {/* Header de la card */}
                   <div className="flex items-start justify-between gap-4 mb-4">
                     <div className="flex-1">
                       <h2
@@ -176,7 +171,6 @@ export default async function EmpleosPage({ searchParams }: Props) {
                         </span>
                       )}
                     </div>
-                    {/* Badge tipo */}
                     <span
                       className="flex-shrink-0 text-xs font-semibold px-3 py-1 rounded-full text-white"
                       style={{ backgroundColor: tipoColor[vacante.tipo] || '#0B21CC' }}
@@ -185,22 +179,15 @@ export default async function EmpleosPage({ searchParams }: Props) {
                     </span>
                   </div>
 
-                  {/* Meta */}
                   <div className="flex flex-wrap gap-4 text-xs text-gray-400 mb-5">
                     {vacante.ubicacion && (
-                      <span className="flex items-center gap-1">
-                        📍 {vacante.ubicacion}
-                      </span>
+                      <span className="flex items-center gap-1">📍 {vacante.ubicacion}</span>
                     )}
                     {vacante.modalidad && (
-                      <span className="flex items-center gap-1">
-                        💼 {modalidadLabel[vacante.modalidad]}
-                      </span>
+                      <span className="flex items-center gap-1">💼 {modalidadLabel[vacante.modalidad]}</span>
                     )}
                     {vacante.salario && (
-                      <span className="flex items-center gap-1">
-                        💰 {vacante.salario}
-                      </span>
+                      <span className="flex items-center gap-1">💰 {vacante.salario}</span>
                     )}
                     {vacante.fechaCierre && (
                       <span className="flex items-center gap-1">
