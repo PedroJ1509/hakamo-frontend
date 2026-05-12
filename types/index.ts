@@ -41,7 +41,7 @@ export interface Cliente {
   documentId: string
   nombre: string
   testimonio: string
-  sitioWeb: string
+  sitioweb: string
   logo: StrapiMedia | null
   division: Division
 }

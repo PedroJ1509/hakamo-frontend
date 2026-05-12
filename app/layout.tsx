@@ -15,8 +15,8 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'Hakamo — Grupo Empresarial',
-  description: 'Empresa multiservicio con divisiones especializadas en ingeniería, construcción y gestión de talento humano.',
+  title: 'Hakamo Outsourcing — Soluciones de Talento Humano',
+  description: 'Empresa dominicana especializada en outsourcing de personal, reclutamiento y selección, gestión de nómina y talento humano.',
 }
 
 export default function RootLayout({

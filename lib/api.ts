@@ -1,5 +1,8 @@
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL
 
+/** Slug de la división principal. Configurable via NEXT_PUBLIC_DIVISION_SLUG en .env.local */
+export const DIVISION_SLUG = process.env.NEXT_PUBLIC_DIVISION_SLUG || 'hakamo-outsourcing'
+
 export async function getDivisiones() {
   const res = await fetch(`${STRAPI_URL}/api/divisions?populate=*&sort=orden:asc`)
   if (!res.ok) throw new Error('Error al obtener divisiones')
@@ -47,6 +50,12 @@ export async function getPost(slug: string) {
 export async function getPostsPorDivision(slug: string) {
   const res = await fetch(`${STRAPI_URL}/api/posts?filters[division][slug][$eq]=${slug}&populate=*&sort=fechaPublicacion:desc`)
   if (!res.ok) throw new Error('Error al obtener posts por división')
+  return res.json()
+}
+
+export async function getPreviewPostsPorDivision(slug: string) {
+  const res = await fetch(`${STRAPI_URL}/api/posts?filters[division][slug][$eq]=${slug}&populate=*&sort=fechaPublicacion:desc&pagination[limit]=3`)
+  if (!res.ok) throw new Error('Error al obtener preview posts por división')
   return res.json()
 }
 

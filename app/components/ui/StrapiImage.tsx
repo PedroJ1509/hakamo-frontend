@@ -22,9 +22,10 @@ export default function StrapiImage({
 }: Props) {
   if (!media) return null
 
-  const url = media.url.startsWith('/')
-    ? `${process.env.NEXT_PUBLIC_STRAPI_URL}${media.url}`
-    : media.url
+  const isExternal = !media.url.startsWith('/')
+  const url = isExternal
+    ? media.url
+    : `${process.env.NEXT_PUBLIC_STRAPI_URL}${media.url}`
 
   if (fill) {
     return (
@@ -34,6 +35,7 @@ export default function StrapiImage({
         fill
         className={className}
         priority={priority}
+        unoptimized={isExternal}
       />
     )
   }
@@ -46,6 +48,7 @@ export default function StrapiImage({
       height={height}
       className={className}
       priority={priority}
+      unoptimized={isExternal}
     />
   )
 }

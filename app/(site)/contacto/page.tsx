@@ -86,30 +86,26 @@ export default function ContactoPage() {
 
       {/* ── Hero ── */}
       <section
-        className="relative overflow-hidden py-24 px-6 text-white"
-        style={{ background: 'linear-gradient(135deg, #0B21CC 0%, #070D5A 60%, #07090F 100%)' }}
+        className="relative overflow-hidden py-28 px-6 text-white"
+        style={{ backgroundColor: '#1E3A5F' }}
       >
-        <div className="absolute top-0 left-0 right-0 h-1" style={{ backgroundColor: '#00C2E0' }} />
         <div
-          className="absolute right-0 top-1/2 -translate-y-1/2 select-none pointer-events-none opacity-5 font-bold leading-none"
-          style={{ fontSize: 'clamp(180px, 25vw, 360px)', fontFamily: 'var(--font-space-grotesk, monospace)', color: '#fff' }}
-          aria-hidden="true"
-        >
-          &lt;&gt;
-        </div>
+          className="absolute inset-0 opacity-10"
+          style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '36px 36px' }}
+        />
+        <div className="absolute -right-24 -top-24 w-96 h-96 rounded-full opacity-10 bg-white" />
         <div className="relative z-10 max-w-4xl mx-auto">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] mb-4" style={{ color: '#00C2E0' }}>
+          <p className="text-white/60 text-sm font-semibold uppercase tracking-[0.3em] mb-4">
             Estamos para ayudarte
           </p>
           <h1
             className="text-5xl md:text-6xl font-bold mb-5 leading-tight"
-            style={{ fontFamily: 'var(--font-space-grotesk, sans-serif)' }}
+            style={{ fontFamily: 'var(--font-space-grotesk, sans-serif)', letterSpacing: '-0.03em' }}
           >
             Contáctanos
           </h1>
-          <p className="text-lg text-white/70 max-w-lg leading-relaxed">
-            Cuéntanos sobre tu proyecto o necesidad. Nos adaptamos a los desafíos de
-            cada obra y entorno constructivo.
+          <p className="text-xl text-white/75 max-w-lg leading-relaxed">
+            Cuéntanos tu necesidad de personal. Nuestro equipo te responderá en menos de 24 horas.
           </p>
         </div>
       </section>
@@ -245,7 +241,7 @@ export default function ContactoPage() {
                   </div>
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-widest text-gray-500 mb-2">
-                      Asunto *
+                      Servicio de interés *
                     </label>
                     <select
                       name="asunto"
@@ -254,13 +250,13 @@ export default function ContactoPage() {
                       required
                       className={inputClass}
                     >
-                      <option value="">Selecciona un asunto</option>
+                      <option value="">Selecciona un servicio</option>
                       <option value="Outsourcing de personal">Outsourcing de personal</option>
                       <option value="Reclutamiento y selección">Reclutamiento y selección</option>
                       <option value="Gestión de nómina">Gestión de nómina (Payroll)</option>
                       <option value="Gestión documental">Gestión documental y cumplimiento legal</option>
                       <option value="Supervisión de proyectos">Supervisión de proyectos</option>
-                      <option value="Ingeniería y Construcción">Ingeniería y Construcción</option>
+                      <option value="Varios servicios">Varios servicios / Plan completo</option>
                       <option value="Información general">Información general</option>
                     </select>
                   </div>
@@ -291,7 +287,7 @@ export default function ContactoPage() {
                   type="submit"
                   disabled={enviando}
                   className="w-full py-4 rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
-                  style={{ backgroundColor: '#0B21CC' }}
+                  style={{ backgroundColor: '#1E3A5F' }}
                 >
                   {enviando ? 'Enviando...' : 'Enviar mensaje →'}
                 </button>
