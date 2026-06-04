@@ -89,3 +89,13 @@ export async function getVacantesPorDivision(slug: string) {
   if (!res.ok) throw new Error('Error al obtener vacantes por división')
   return res.json()
 }
+
+export async function createCandidato(data: Record<string, string>) {
+  const res = await fetch(`${STRAPI_URL}/api/candidatos`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ data }),
+  })
+  if (!res.ok) throw new Error('Error al registrar candidato')
+  return res.json()
+}

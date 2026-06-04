@@ -1,33 +1,27 @@
 import Link from 'next/link'
-import { getServiciosPorDivision, DIVISION_SLUG } from '@/lib/api'
-import { Servicio } from '@/types'
 
 const PRIMARY = '#1E3A5F'
 
-const LINKS_RAPIDOS = [
+const NAVEGAR = [
   { href: '/', label: 'Inicio' },
   { href: '/servicios', label: 'Servicios' },
-  { href: '/proyectos', label: 'Proyectos' },
-  { href: '/blog', label: 'Blog' },
-  { href: '/faq', label: 'Preguntas Frecuentes' },
-  { href: '/empleos', label: 'Empleos' },
+  { href: '/empleo', label: 'Buscar Empleo' },
+  { href: '/nosotros', label: 'Nosotros' },
   { href: '/contacto', label: 'Contacto' },
 ]
 
-const SERVICIOS_FALLBACK = [
-  'Outsourcing de Personal',
+const SERVICIOS_FOOTER = [
+  'Outsourcing Personal',
   'Reclutamiento y Selección',
-  'Gestión de Nómina (Payroll)',
-  'Gestión Documental',
-  'Supervisión de Proyectos',
+  'Gestión de Nómina',
+  'Estudios Socioeconómicos',
+  'Consultoría Laboral',
+  'Bolsa de Empleo',
 ]
 
-export default async function Footer() {
-  const serviciosRes = await getServiciosPorDivision(DIVISION_SLUG).catch(() => ({ data: [] }))
-  const servicios: Servicio[] = (serviciosRes.data as Servicio[]).slice(0, 6)
-
+export default function Footer() {
   return (
-    <footer style={{ backgroundColor: '#1E3A5F', color: 'white' }}>
+    <footer style={{ backgroundColor: PRIMARY, color: 'white' }}>
       <div className="max-w-6xl mx-auto px-6 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
 
@@ -42,7 +36,8 @@ export default async function Footer() {
               />
             </Link>
             <p className="text-white/55 text-sm leading-relaxed mb-7">
-              Empresa dominicana especializada en outsourcing de personal, reclutamiento y gestión de talento humano.
+              Empresa dominicana especializada en outsourcing de personal, reclutamiento y gestión
+              de talento humano. Cumplimiento legal garantizado.
             </p>
             <div className="flex gap-3">
               <a
@@ -52,7 +47,16 @@ export default async function Footer() {
                 className="w-9 h-9 rounded-lg flex items-center justify-center bg-white/10 hover:bg-white/20 transition-colors"
                 aria-label="Instagram"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
                   <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
                   <circle cx="12" cy="12" r="4" />
                   <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
@@ -74,7 +78,16 @@ export default async function Footer() {
                 className="w-9 h-9 rounded-lg flex items-center justify-center bg-white/10 hover:bg-white/20 transition-colors"
                 aria-label="Email"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
                   <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
                   <polyline points="22,6 12,13 2,6" />
                 </svg>
@@ -82,13 +95,13 @@ export default async function Footer() {
             </div>
           </div>
 
-          {/* Col 2 — Links rápidos */}
+          {/* Col 2 — Navegar */}
           <div>
             <h4 className="text-xs font-semibold uppercase tracking-[0.15em] text-white/40 mb-5">
-              Links rápidos
+              Navegar
             </h4>
             <ul className="space-y-2.5">
-              {LINKS_RAPIDOS.map((link) => (
+              {NAVEGAR.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
@@ -108,10 +121,7 @@ export default async function Footer() {
               Servicios
             </h4>
             <ul className="space-y-2.5">
-              {(servicios.length > 0
-                ? servicios.map(s => s.titulo)
-                : SERVICIOS_FALLBACK
-              ).map((titulo) => (
+              {SERVICIOS_FOOTER.map((titulo) => (
                 <li key={titulo}>
                   <Link
                     href="/servicios"
@@ -132,33 +142,74 @@ export default async function Footer() {
             </h4>
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
-                <svg className="mt-0.5 flex-shrink-0 text-white/40" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" />
+                <svg
+                  className="mt-0.5 flex-shrink-0 text-white/40"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                  <polyline points="22,6 12,13 2,6" />
                 </svg>
-                <a href="mailto:gestionhumanahakamo@gmail.com" className="text-sm text-white/65 hover:text-white transition-colors break-all">
+                <a
+                  href="mailto:gestionhumanahakamo@gmail.com"
+                  className="text-sm text-white/65 hover:text-white transition-colors break-all"
+                >
                   gestionhumanahakamo@gmail.com
                 </a>
               </li>
               <li className="flex items-start gap-3">
-                <svg className="mt-0.5 flex-shrink-0 text-white/40" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg
+                  className="mt-0.5 flex-shrink-0 text-white/40"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
                   <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.22h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
                 </svg>
                 <div>
-                  <a href="https://wa.me/18296790671" target="_blank" rel="noopener noreferrer" className="text-sm text-white/65 hover:text-white transition-colors block">
+                  <a
+                    href="https://wa.me/18296790671"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-white/65 hover:text-white transition-colors block"
+                  >
                     829-679-0671 (WhatsApp)
                   </a>
-                  <a href="tel:+18296796842" className="text-sm text-white/65 hover:text-white transition-colors block">
+                  <a
+                    href="tel:+18296796842"
+                    className="text-sm text-white/65 hover:text-white transition-colors block"
+                  >
                     829-679-6842
                   </a>
                 </div>
               </li>
               <li className="flex items-start gap-3">
-                <svg className="mt-0.5 flex-shrink-0 text-white/40" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" />
+                <svg
+                  className="mt-0.5 flex-shrink-0 text-white/40"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
                 </svg>
-                <span className="text-sm text-white/65">
-                  Montecristi, República Dominicana
-                </span>
+                <span className="text-sm text-white/65">Montecristi, República Dominicana</span>
               </li>
             </ul>
             <Link
@@ -176,9 +227,17 @@ export default async function Footer() {
       <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
         <div className="max-w-6xl mx-auto px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-white/35">
-            © {new Date().getFullYear()} Hakamo Outsourcing. Todos los derechos reservados.
+            © 2026 Hakamo Outsourcing. Todos los derechos reservados.
           </p>
-          <p className="text-xs text-white/25">hakamo.do</p>
+          <div className="flex items-center gap-4">
+            <Link href="/contacto" className="text-xs text-white/25 hover:text-white/50 transition-colors">
+              Política de Privacidad
+            </Link>
+            <span className="text-white/15">·</span>
+            <Link href="/contacto" className="text-xs text-white/25 hover:text-white/50 transition-colors">
+              Términos de Servicio
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
