@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
   --font-sans: var(--font-inter);
@@ -14,13 +15,90 @@
 :root {
   --background: #ffffff;
   --foreground: #07090F;
+
+  /* Brand tokens — misma paleta que ya usan Header/Hero (navy + azul) */
+  --brand-primary: #1E3A5F;
+  --brand-primary-dark: #0D1B5E;
+  --brand-accent: #2563EB;
+  --brand-accent-light: #EEF2FF;
+
+  --border: rgba(15, 23, 42, 0.08);
+  --shadow-soft: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.05);
+  --shadow-elevated: 0 2px 4px rgba(15, 23, 42, 0.04), 0 12px 28px -8px rgba(15, 23, 42, 0.1);
+
+  /* Superficies para el ritmo de secciones (light) */
+  --surface: #ffffff;
+  --surface-wash: rgba(37, 99, 235, 0.05);
+  --text-muted: #6b7280;
+}
+
+.dark {
+  --background: #0B1220;
+  --foreground: #EDEFF3;
+
+  --brand-primary: #7FA5D6;
+  --brand-primary-dark: #F2F5FC;
+  --brand-accent: #5B9BFF;
+  --brand-accent-light: rgba(91, 155, 255, 0.14);
+
+  --border: rgba(255, 255, 255, 0.1);
+  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.35);
+  --shadow-elevated: 0 2px 4px rgba(0, 0, 0, 0.4), 0 12px 28px -8px rgba(0, 0, 0, 0.6);
+
+  --surface: #111827;
+  --surface-wash: rgba(91, 155, 255, 0.07);
+  --text-muted: #9CA3AF;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-space-grotesk, var(--font-sans));
+}
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+
+@keyframes blob-move {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(24px, -18px) scale(1.08); }
+  66% { transform: translate(-18px, 14px) scale(0.95); }
+}
+
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.35); }
+  70% { box-shadow: 0 0 0 14px rgba(37, 99, 235, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+}
+
+@keyframes footer-caret {
+  50% { opacity: 0; }
+}
+
+.footer-wordmark-caret {
+  width: 0.08em;
+  height: 0.85em;
+  margin-left: 0.04em;
+  background-color: currentColor;
+  opacity: 0.4;
+  vertical-align: -0.05em;
+}
+
+.footer-wordmark-caret.is-on {
+  animation: footer-caret 1s steps(1) infinite;
+}
+
+/* En /empleo: casillas/footer encima del lanyard; el nav queda siempre más arriba */
+html.lanyard-active [data-lanyard-front]:not([data-lanyard-nav]) {
+  z-index: 50;
+}
+
+html.lanyard-active [data-lanyard-nav] {
+  z-index: 100;
 }

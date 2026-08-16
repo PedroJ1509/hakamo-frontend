@@ -9,6 +9,8 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  transpilePackages: ['three', 'meshline'],
+  serverExternalPackages: ['@react-three/rapier'],
 }
 
 export default nextConfig

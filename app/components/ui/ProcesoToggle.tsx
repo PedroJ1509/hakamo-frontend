@@ -14,7 +14,7 @@ export default function ProcesoToggle() {
   return (
     <div>
       <div className="flex justify-center mb-12">
-        <div className="inline-flex bg-gray-100 rounded-xl p-1">
+        <div className="inline-flex bg-gray-100 dark:bg-white/5 rounded-xl p-1">
           <button
             onClick={() => setTab('empresas')}
             className="px-6 py-2.5 rounded-lg text-sm font-semibold transition-all"
@@ -41,7 +41,7 @@ export default function ProcesoToggle() {
       </div>
 
       <div className="relative grid grid-cols-1 md:grid-cols-4 gap-8">
-        <div className="hidden md:block absolute top-[2rem] left-[12.5%] right-[12.5%] h-px z-0 bg-gray-200" />
+        <div className="hidden md:block absolute top-[2rem] left-[12.5%] right-[12.5%] h-px z-0 bg-gray-200 dark:bg-white/10" />
 
         {pasos.map((paso, i) => (
           <div key={i} className="relative z-10 flex flex-col items-center text-center">
@@ -51,16 +51,16 @@ export default function ProcesoToggle() {
             >
               {paso.paso}
             </div>
-            <p className="text-xs font-semibold uppercase tracking-widest mb-2 text-gray-400">
+            <p className="text-xs font-semibold uppercase tracking-widest mb-2 text-gray-400 dark:text-gray-500">
               {paso.subtitulo}
             </p>
             <h3
               className="font-bold text-base mb-2"
-              style={{ color: '#0D1B5E', fontFamily: 'var(--font-space-grotesk, sans-serif)' }}
+              style={{ color: 'var(--brand-primary-dark)', fontFamily: 'var(--font-space-grotesk, sans-serif)' }}
             >
               {paso.titulo}
             </h3>
-            <p className="text-gray-500 text-sm leading-relaxed">{paso.descripcion}</p>
+            <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">{paso.descripcion}</p>
           </div>
         ))}
       </div>

@@ -1,5 +1,8 @@
-import { COMPANY_INFO, STATS, CLIENTES } from '@/lib/data'
+import { COMPANY_INFO, STATS, CLIENTES, PROCESO_EMPRESAS } from '@/lib/data'
 import ProcesoToggle from '@/app/components/ui/ProcesoToggle'
+import SectionHeading, { Eyebrow } from '@/app/components/ui/SectionHeading'
+import SoftCard from '@/app/components/ui/SoftCard'
+import FadeIn from '@/app/components/ui/FadeIn'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 
@@ -14,70 +17,83 @@ const ACCENT = '#2563EB'
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen overflow-x-hidden bg-white">
+    <main className="min-h-screen overflow-x-hidden bg-[var(--background)]">
 
       {/* ── HERO ── */}
-      <section
-        className="relative min-h-screen flex items-center overflow-hidden"
-        style={{ backgroundColor: PRIMARY }}
-      >
+      <section className="relative overflow-hidden pt-20 pb-16 lg:pt-28 lg:pb-24">
         <div
-          className="absolute inset-0 opacity-10"
-          style={{
-            backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)',
-            backgroundSize: '36px 36px',
-          }}
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-60
+            [background-image:linear-gradient(to_right,rgba(15,23,42,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.04)_1px,transparent_1px)]
+            [background-size:44px_44px]
+            [mask-image:radial-gradient(ellipse_80%_60%_at_50%_0%,black,transparent)]"
         />
-        <div className="absolute -right-32 -top-32 w-[600px] h-[600px] rounded-full opacity-5 bg-white" />
 
-        <div className="relative z-10 max-w-6xl mx-auto px-6 py-32 w-full">
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-[0.25em] text-white/70 border border-white/20 bg-white/10 mb-8">
-              PROYECTOS A GRAN ESCALA
-            </div>
-            <h1
-              className="text-white font-bold leading-[1.05] mb-6"
-              style={{
-                fontSize: 'clamp(2.8rem, 7vw, 5.5rem)',
-                fontFamily: 'var(--font-space-grotesk, sans-serif)',
-                letterSpacing: '-0.03em',
-              }}
-            >
-              Capital humano para<br />
-              <span style={{ color: ACCENT }}>grandes proyectos.</span>
-            </h1>
-            <p className="text-white/75 text-lg leading-relaxed mb-10 max-w-xl">
-              Gestionamos equipos de trabajo para proyectos de construcción, energía e
-              infraestructura. Experiencia comprobada en sectores industriales de alta exigencia.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <Link
-                href="/empleo"
-                className="inline-flex items-center gap-2 px-7 py-4 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 hover:shadow-xl hover:-translate-y-0.5"
-                style={{ backgroundColor: ACCENT }}
-              >
-                Trabaja con nosotros →
-              </Link>
-              <Link
-                href="/contacto"
-                className="inline-flex items-center gap-2 px-7 py-4 rounded-xl text-sm font-semibold border-2 border-white/40 text-white hover:bg-white/10 transition-all"
-              >
-                Contáctanos
-              </Link>
-            </div>
-          </div>
-        </div>
+        <div className="relative mx-auto max-w-6xl px-6">
+          <div className="grid items-center gap-14 lg:grid-cols-[1.05fr_0.95fr]">
+            {/* Copy */}
+            <div>
+              <Eyebrow>Proyectos a gran escala</Eyebrow>
 
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40 z-10">
-          <span className="text-white text-xs uppercase tracking-[0.3em]">Scroll</span>
-          <div className="w-px h-10 overflow-hidden relative">
-            <div className="absolute inset-0 bg-white animate-pulse" />
+              <h1
+                className="mt-5 font-bold leading-[1.08] tracking-tight"
+                style={{
+                  fontSize: 'clamp(2.6rem, 6vw, 4.5rem)',
+                  color: 'var(--brand-primary)',
+                  fontFamily: 'var(--font-space-grotesk, sans-serif)',
+                  letterSpacing: '-0.03em',
+                }}
+              >
+                Capital humano para{' '}
+                <span style={{ color: 'var(--brand-accent)' }}>grandes proyectos.</span>
+              </h1>
+
+              <p className="mt-6 max-w-xl text-lg leading-relaxed text-gray-500 dark:text-gray-400">
+                Gestionamos equipos de trabajo para proyectos de construcción, energía e
+                infraestructura. Experiencia comprobada en sectores industriales de alta exigencia.
+              </p>
+
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <Link
+                  href="/empleo"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl px-7 py-4 text-sm font-semibold text-white transition-all hover:opacity-90 hover:shadow-xl hover:-translate-y-0.5"
+                  style={{ backgroundColor: ACCENT }}
+                >
+                  Trabaja con nosotros →
+                </Link>
+                <Link
+                  href="/contacto"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border-2 px-7 py-4 text-sm font-semibold transition-all hover:bg-gray-50 dark:hover:bg-white/5"
+                  style={{ borderColor: 'var(--brand-primary)', color: 'var(--brand-primary)' }}
+                >
+                  Contáctanos
+                </Link>
+              </div>
+            </div>
+
+            {/* Vista previa del proceso */}
+            <div className="overflow-hidden rounded-xl border border-[var(--border)] bg-white shadow-[var(--shadow-elevated)] dark:bg-slate-900">
+              <div
+                className="flex items-center gap-1.5 border-b border-[var(--border)] px-4 py-3"
+                style={{ backgroundColor: 'var(--brand-accent-light)' }}
+              >
+                <span className="h-2.5 w-2.5 rounded-full bg-blue-200" />
+                <span className="h-2.5 w-2.5 rounded-full bg-blue-200" />
+                <span className="h-2.5 w-2.5 rounded-full bg-blue-200" />
+                <span className="ml-3 text-xs font-medium text-gray-400">Así trabajamos contigo</span>
+              </div>
+              <div className="space-y-3 p-5">
+                {PROCESO_EMPRESAS.slice(0, 3).map((paso) => (
+                  <SoftCard key={paso.paso} title={paso.titulo} description={paso.descripcion} />
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ── STATS ── */}
-      <section className="py-20 px-6" style={{ backgroundColor: '#EEF2FF' }}>
+      {/* ── STATS (puente) ── */}
+      <section className="py-14 px-6 bg-[var(--surface-wash)]">
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {STATS.map((stat) => (
@@ -86,13 +102,13 @@ export default function HomePage() {
                   className="font-bold mb-1"
                   style={{
                     fontSize: 'clamp(2rem, 4vw, 3rem)',
-                    color: PRIMARY,
+                    color: 'var(--brand-primary)',
                     fontFamily: 'var(--font-space-grotesk, sans-serif)',
                   }}
                 >
                   {stat.valor}
                 </p>
-                <p className="text-sm text-gray-500">{stat.etiqueta}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{stat.etiqueta}</p>
               </div>
             ))}
           </div>
@@ -100,72 +116,40 @@ export default function HomePage() {
       </section>
 
       {/* ── CLIENTES ── */}
-      <section className="py-24 px-6 bg-white">
+      <section className="py-20 lg:py-28 px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-14">
-            <p
-              className="text-sm font-semibold uppercase tracking-[0.3em] mb-3"
-              style={{ color: ACCENT }}
-            >
-              EMPRESAS ALIADAS
-            </p>
-            <h2
-              className="font-bold"
-              style={{
-                fontSize: 'clamp(1.8rem, 3vw, 2.8rem)',
-                color: '#0D1B5E',
-                fontFamily: 'var(--font-space-grotesk, sans-serif)',
-                letterSpacing: '-0.02em',
-              }}
-            >
-              Empresas que confían en Hakamo
-            </h2>
-          </div>
+          <FadeIn>
+            <div className="mb-14">
+              <SectionHeading eyebrow="Empresas aliadas" title="Empresas que confían en Hakamo" />
+            </div>
+          </FadeIn>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {CLIENTES.map((cliente) => (
-              <div
-                key={cliente.nombre}
-                className="bg-gray-50 rounded-2xl p-6 text-center hover:shadow-md transition-shadow"
-              >
-                <div className="text-4xl mb-3">{cliente.icono}</div>
-                <h3 className="font-bold text-sm mb-1" style={{ color: '#0D1B5E' }}>
-                  {cliente.nombre}
-                </h3>
-                <p className="text-xs text-gray-400">{cliente.sector}</p>
-              </div>
+            {CLIENTES.map((cliente, i) => (
+              <FadeIn key={cliente.nombre} delay={i * 0.08}>
+                <SoftCard title={cliente.nombre} description={cliente.sector} icon={cliente.icono} center />
+              </FadeIn>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── PROCESO ── */}
-      <section className="py-24 px-6" style={{ backgroundColor: '#F8F9FA' }}>
+      {/* ── PROCESO (fundido) ── */}
+      <section className="py-20 lg:py-28 px-6 bg-gradient-to-b from-[var(--surface-wash)] to-[var(--background)]">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <p
-              className="text-sm font-semibold uppercase tracking-[0.3em] mb-3"
-              style={{ color: ACCENT }}
-            >
-              CÓMO TRABAJAMOS
-            </p>
-            <h2
-              className="font-bold"
-              style={{
-                fontSize: 'clamp(1.8rem, 3vw, 2.8rem)',
-                color: '#0D1B5E',
-                fontFamily: 'var(--font-space-grotesk, sans-serif)',
-                letterSpacing: '-0.02em',
-              }}
-            >
-              Así conectamos el talento con las oportunidades
-            </h2>
-          </div>
+          <FadeIn>
+            <div className="mb-12">
+              <SectionHeading
+                eyebrow="Cómo trabajamos"
+                title="Así conectamos el talento con las oportunidades"
+              />
+            </div>
+          </FadeIn>
           <ProcesoToggle />
         </div>
       </section>
 
-      {/* ── CTA ── */}
-      <section className="py-24 px-6" style={{ backgroundColor: '#0F172A' }}>
+      {/* ── CTA (respiro oscuro) ── */}
+      <section className="py-20 lg:py-28 px-6 bg-gradient-to-b from-[#0F172A] to-[#0B1220]">
         <div className="max-w-4xl mx-auto text-center">
           <h2
             className="text-white font-bold mb-5"

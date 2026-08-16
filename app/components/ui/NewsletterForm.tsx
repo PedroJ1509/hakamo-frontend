@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import CurvedInput from '@/app/components/ui/CurvedInput'
 
 interface Props {
   color: string
@@ -10,8 +11,9 @@ export default function NewsletterForm({ color }: Props) {
   const [email, setEmail] = useState('')
   const [enviado, setEnviado] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = (value: string) => {
+    const trimmed = value.trim()
+    if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) return
     // TODO: conectar con backend (Strapi, Mailchimp, etc.)
     setEnviado(true)
     setEmail('')
@@ -19,33 +21,49 @@ export default function NewsletterForm({ color }: Props) {
 
   if (enviado) {
     return (
-      <div className="flex items-center justify-center gap-3 bg-white/10 rounded-xl px-6 py-4 max-w-md mx-auto">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-white flex-shrink-0">
+      <div
+        data-lanyard-front
+        className="relative z-[50] mx-auto flex max-w-md items-center justify-center gap-3 rounded-xl bg-white/10 px-6 py-4"
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="flex-shrink-0 text-white"
+        >
           <polyline points="20 6 9 17 4 12" />
         </svg>
-        <p className="text-white/90 text-sm font-medium">¡Gracias! Te hemos añadido a nuestra lista.</p>
+        <p className="text-sm font-medium text-white/90">¡Gracias! Te hemos añadido a nuestra lista.</p>
       </div>
     )
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-      <input
-        type="email"
+    <div data-lanyard-front className="relative z-[50] mx-auto w-full max-w-lg lg:mx-0">
+      <CurvedInput
         value={email}
-        onChange={e => setEmail(e.target.value)}
-        required
+        onChange={setEmail}
+        onSubmit={handleSubmit}
         placeholder="tu@correo.com"
-        className="flex-1 px-5 py-3.5 rounded-xl text-sm border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-white/40 transition-colors"
-        style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
+        buttonText="Suscribirme"
+        theme="dark"
+        bend={22}
+        height={58}
+        width="100%"
+        fontSize={15}
+        buttonColor={color}
+        backgroundColor="rgba(255,255,255,0.08)"
+        borderColor="rgba(255,255,255,0.18)"
+        textColor="#ffffff"
+        placeholderColor="rgba(255,255,255,0.45)"
+        shadowSize="md"
+        shadowColor="#000000"
       />
-      <button
-        type="submit"
-        className="px-6 py-3.5 rounded-xl text-sm font-semibold whitespace-nowrap transition-all hover:opacity-90 hover:shadow-lg"
-        style={{ backgroundColor: '#fff', color }}
-      >
-        Suscribirme
-      </button>
-    </form>
+    </div>
   )
 }

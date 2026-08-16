@@ -3,8 +3,10 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
-
-const PRIMARY = '#1E3A5F'
+import { usePathname } from 'next/navigation'
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion'
+import ThemeToggle from '@/app/components/ui/ThemeToggle'
+import HeaderLanyard from '@/app/components/layout/HeaderLanyard'
 
 const NAV_LINKS = [
   { href: '/', label: 'Inicio' },
@@ -14,131 +16,179 @@ const NAV_LINKS = [
   { href: '/contacto', label: 'Contacto' },
 ]
 
+function cn(...parts: Array<string | false | undefined>) {
+  return parts.filter(Boolean).join(' ')
+}
+
+function isActivePath(pathname: string, href: string) {
+  if (href === '/') return pathname === '/'
+  return pathname === href || pathname.startsWith(`${href}/`)
+}
+
+function IconMenu() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="4" y1="7" x2="20" y2="7" />
+      <line x1="4" y1="12" x2="20" y2="12" />
+      <line x1="4" y1="17" x2="20" y2="17" />
+    </svg>
+  )
+}
+
+function IconX() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
+    </svg>
+  )
+}
+
+function IconArrow() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5 12h14M12 5l7 7-7 7" />
+    </svg>
+  )
+}
+
 export default function Header() {
-  const [menuAbierto, setMenuAbierto] = useState(false)
+  const pathname = usePathname()
+  const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const { scrollY } = useScroll()
+  useMotionValueEvent(scrollY, 'change', (v) => setScrolled(v > 12))
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 16)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
-  useEffect(() => {
-    if (menuAbierto) {
-      document.body.style.overflow = 'hidden'
-    } else {
+    document.body.style.overflow = open ? 'hidden' : ''
+    return () => {
       document.body.style.overflow = ''
     }
-    return () => { document.body.style.overflow = '' }
-  }, [menuAbierto])
+  }, [open])
 
   return (
-    <header
-      className={`sticky top-0 z-50 bg-white transition-shadow duration-300 ${
-        scrolled ? 'shadow-md' : 'border-b border-gray-100'
-      }`}
+    <>
+    {pathname === '/empleo' && <HeaderLanyard />}
+    <div
+      className="pointer-events-none fixed inset-x-0 top-0 z-[100] bg-transparent px-3 pt-3 sm:px-4 sm:pt-4"
+      data-lanyard-front
+      data-lanyard-nav
     >
-      <div className="max-w-6xl mx-auto px-6 flex items-center justify-between" style={{ height: '72px' }}>
-
-        {/* Logo */}
-        <Link
-          href="/"
-          className="hover:opacity-80 transition-opacity flex-shrink-0"
-          onClick={() => setMenuAbierto(false)}
-        >
-          <Image
-            src="/logo-azul.png"
-            alt="Hakamo"
-            width={160}
-            height={40}
-            className="h-8 md:h-10 w-auto"
-            priority
-          />
+      <div className="pointer-events-auto relative mx-auto max-w-5xl">
+        <motion.nav
+        initial={{ y: -60, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        className={cn(
+          'relative z-10 flex items-center justify-between rounded-2xl border px-3 transition-all duration-300 sm:px-4',
+          scrolled
+            ? 'border-[var(--border)] bg-white/85 py-2 shadow-[var(--shadow-elevated)] backdrop-blur-xl dark:bg-slate-900/85'
+            : 'border-transparent bg-transparent py-2.5 backdrop-blur-0'
+        )}
+      >
+        <Link href="/" className="flex items-center hover:opacity-80 transition-opacity" onClick={() => setOpen(false)}>
+          <Image src="/logo-azul.png" alt="Hakamo" width={140} height={36} className="h-8 w-auto dark:hidden" priority />
+          <Image src="/hakamo-logo-blanco.png" alt="Hakamo" width={140} height={36} className="hidden h-8 w-auto dark:block" priority />
         </Link>
 
-        {/* Nav desktop */}
-        <nav className="hidden md:flex items-center gap-1">
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
+        <div className="hidden items-center gap-1 md:flex">
+          {NAV_LINKS.map((link) => {
+            const active = isActivePath(pathname, link.href)
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                aria-current={active ? 'page' : undefined}
+                className={cn(
+                  'group relative rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                  active
+                    ? 'bg-[var(--brand-accent-light)] text-[var(--brand-accent)]'
+                    : 'text-gray-600 hover:text-[var(--brand-accent)] dark:text-gray-300'
+                )}
+              >
+                {link.label}
+                <span
+                  className={cn(
+                    'absolute inset-x-3 -bottom-0.5 h-0.5 origin-left rounded-full transition-transform duration-300',
+                    active ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
+                  )}
+                  style={{ backgroundColor: 'var(--brand-accent)' }}
+                />
+              </Link>
+            )
+          })}
+        </div>
 
-        {/* CTA desktop */}
-        <div className="hidden md:block">
+        <div className="hidden items-center gap-2 md:flex">
+          <ThemeToggle />
           <Link
             href="/contacto"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white transition-all hover:opacity-90 hover:shadow-lg"
-            style={{ backgroundColor: PRIMARY }}
+            className="group inline-flex items-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-semibold text-white transition-all hover:opacity-90 hover:shadow-lg"
+            style={{ backgroundColor: 'var(--brand-primary)' }}
           >
             Obtener Cotización
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
+            <IconArrow />
           </Link>
         </div>
 
-        {/* Botón hamburguesa mobile */}
-        <button
-          className="md:hidden w-10 h-10 flex flex-col justify-center items-center gap-1.5 rounded-lg hover:bg-gray-50 transition-colors"
-          onClick={() => setMenuAbierto(!menuAbierto)}
-          aria-label={menuAbierto ? 'Cerrar menú' : 'Abrir menú'}
-        >
-          <span
-            className={`block w-5 h-0.5 transition-all duration-200 ${menuAbierto ? 'rotate-45 translate-y-2' : ''}`}
-            style={{ backgroundColor: PRIMARY }}
-          />
-          <span
-            className={`block w-5 h-0.5 transition-all duration-200 ${menuAbierto ? 'opacity-0' : ''}`}
-            style={{ backgroundColor: PRIMARY }}
-          />
-          <span
-            className={`block w-5 h-0.5 transition-all duration-200 ${menuAbierto ? '-rotate-45 -translate-y-2' : ''}`}
-            style={{ backgroundColor: PRIMARY }}
-          />
-        </button>
-      </div>
-
-      {/* Menú mobile */}
-      {menuAbierto && (
-        <div className="md:hidden bg-white border-t border-gray-100 px-6 py-5 flex flex-col gap-1">
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setMenuAbierto(false)}
-              className="px-3 py-3 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              {link.label}
-            </Link>
-          ))}
-          <div className="pt-3 mt-2 border-t border-gray-100">
-            <Link
-              href="/contacto"
-              onClick={() => setMenuAbierto(false)}
-              className="flex items-center justify-center gap-2 w-full py-3.5 rounded-lg text-sm font-semibold text-white transition-all hover:opacity-90"
-              style={{ backgroundColor: PRIMARY }}
-            >
-              Obtener Cotización
-            </Link>
-          </div>
+        <div className="flex items-center gap-1 md:hidden">
+          <ThemeToggle />
+          <button
+            onClick={() => setOpen(!open)}
+            className="rounded-xl p-2 text-gray-900 transition-colors hover:bg-black/5 dark:text-white dark:hover:bg-white/10"
+            aria-label={open ? 'Cerrar menú' : 'Abrir menú'}
+          >
+            {open ? <IconX /> : <IconMenu />}
+          </button>
         </div>
-      )}
-    </header>
+      </motion.nav>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.22 }}
+            className="mt-2 overflow-hidden rounded-2xl border border-[var(--border)] bg-white/95 p-3 shadow-[var(--shadow-elevated)] backdrop-blur-xl dark:bg-slate-900/95 md:hidden"
+          >
+            <div className="space-y-1">
+              {NAV_LINKS.map((link) => {
+                const active = isActivePath(pathname, link.href)
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setOpen(false)}
+                    aria-current={active ? 'page' : undefined}
+                    className={cn(
+                      'block rounded-xl px-4 py-2.5 font-medium transition-colors',
+                      active
+                        ? 'bg-[var(--brand-accent-light)] text-[var(--brand-accent)]'
+                        : 'text-gray-900 hover:bg-black/5 dark:text-white dark:hover:bg-white/10'
+                    )}
+                  >
+                    {link.label}
+                  </Link>
+                )
+              })}
+            </div>
+            <div className="mt-2 border-t border-[var(--border)] pt-2">
+              <Link
+                href="/contacto"
+                onClick={() => setOpen(false)}
+                className="flex items-center justify-center gap-1.5 rounded-xl px-4 py-3 font-semibold text-white"
+                style={{ backgroundColor: 'var(--brand-primary)' }}
+              >
+                Obtener Cotización
+                <IconArrow />
+              </Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      </div>
+    </div>
+    </>
   )
 }

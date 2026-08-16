@@ -1,5 +1,6 @@
 import { getVacantes, getDivisiones } from '@/lib/api'
 import { Vacante, Division } from '@/types'
+import ParallaxHero from '@/app/components/ui/ParallaxHero'
 import Link from 'next/link'
 
 interface Props {
@@ -46,20 +47,22 @@ export default async function EmpleosPage({ searchParams }: Props) {
     <main className="min-h-screen">
 
       {/* ── Hero ── */}
-      <section
-        className="relative overflow-hidden py-28 px-6 text-white"
+      <ParallaxHero
+        className="py-28 px-6 text-white"
         style={{ background: 'linear-gradient(135deg, #0B21CC 0%, #070D5A 60%, #07090F 100%)' }}
+        background={
+          <>
+            <div className="absolute top-0 left-0 right-0 h-1" style={{ backgroundColor: '#00C2E0' }} />
+            <div
+              className="absolute right-0 top-1/2 -translate-y-1/2 select-none opacity-5 font-bold leading-none"
+              style={{ fontSize: 'clamp(200px, 30vw, 420px)', fontFamily: 'var(--font-space-grotesk, monospace)', color: '#fff' }}
+            >
+              &lt;&gt;
+            </div>
+          </>
+        }
       >
-        <div className="absolute top-0 left-0 right-0 h-1" style={{ backgroundColor: '#00C2E0' }} />
-        <div
-          className="absolute right-0 top-1/2 -translate-y-1/2 select-none pointer-events-none opacity-5 font-bold leading-none"
-          style={{ fontSize: 'clamp(200px, 30vw, 420px)', fontFamily: 'var(--font-space-grotesk, monospace)', color: '#fff' }}
-          aria-hidden="true"
-        >
-          &lt;&gt;
-        </div>
-
-        <div className="relative z-10 max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] mb-5" style={{ color: '#00C2E0' }}>
             Únete al equipo
           </p>
@@ -84,7 +87,7 @@ export default async function EmpleosPage({ searchParams }: Props) {
             </div>
           )}
         </div>
-      </section>
+      </ParallaxHero>
 
       {/* ── Filtros ── */}
       <section className="py-8 px-6 border-b border-gray-100 sticky top-[72px] z-40 bg-white">

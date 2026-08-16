@@ -1,4 +1,10 @@
 import EmpleoForm from '@/app/components/ui/EmpleoForm'
+import LineSidebar from '@/app/components/ui/LineSidebar'
+import ParallaxHero from '@/app/components/ui/ParallaxHero'
+import ParallaxLayer from '@/app/components/ui/ParallaxLayer'
+import SectionReveal from '@/app/components/ui/SectionReveal'
+import StrokeText from '@/app/components/ui/StrokeText'
+import TextType from '@/app/components/ui/TextType'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -20,91 +26,134 @@ const BENEFICIOS = [
 
 export default function EmpleoPage() {
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen overflow-x-hidden bg-[var(--background)]">
 
       {/* ── Hero ── */}
-      <section
-        className="relative overflow-hidden py-28 px-6 text-white"
+      <ParallaxHero
+        className="flex min-h-[100svh] items-center px-6 py-28 text-white"
         style={{ backgroundColor: PRIMARY }}
+        background={
+          <>
+            <div
+              className="absolute inset-0 opacity-[0.18]"
+              style={{
+                backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)',
+                backgroundSize: '36px 36px',
+              }}
+            />
+            {/* Formas con contorno definido: son las que hacen legible el desplazamiento */}
+            <div
+              className="absolute -right-20 -top-24 h-96 w-96 rounded-full"
+              style={{ background: `radial-gradient(circle at 40% 40%, ${ACCENT}, transparent 68%)`, opacity: 0.55 }}
+            />
+            <div className="absolute -left-16 top-1/3 h-72 w-72 rounded-full border-2 border-white/25" />
+            <div className="absolute bottom-[-3rem] right-1/4 h-56 w-56 rounded-full border-2 border-white/15" />
+            <div
+              className="absolute left-1/2 top-10 h-40 w-40 rotate-12 rounded-3xl border-2"
+              style={{ borderColor: `${ACCENT}66` }}
+            />
+          </>
+        }
       >
-        <div
-          className="absolute inset-0 opacity-10"
-          style={{
-            backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)',
-            backgroundSize: '36px 36px',
-          }}
-        />
-        <div className="absolute -right-24 -top-24 w-96 h-96 rounded-full opacity-10 bg-white" />
-        <div className="relative z-10 max-w-4xl mx-auto">
-          <h1
-            className="font-bold mb-5 leading-tight"
-            style={{
-              fontSize: 'clamp(2.5rem, 5vw, 4rem)',
-              fontFamily: 'var(--font-space-grotesk, sans-serif)',
-              letterSpacing: '-0.03em',
-            }}
-          >
-            Encuentra tu próxima{' '}
-            <span style={{ color: ACCENT }}>oportunidad laboral</span>
-          </h1>
-          <p className="text-xl text-white/75 max-w-2xl leading-relaxed">
-            Conectamos talento dominicano con las empresas más importantes del país. Envía tu
-            currículum y te contactamos cuando haya una oportunidad para tu perfil.
-          </p>
+        <div className="mx-auto max-w-4xl">
+          <SectionReveal offset={56}>
+            <h1 className="mb-5" style={{ fontFamily: 'var(--font-space-grotesk, sans-serif)' }}>
+              {/* Texto accesible: el SVG y el typing son decorativos para el lector */}
+              <span className="sr-only">Encuentra tu próxima oportunidad laboral</span>
+
+              <StrokeText
+                text="Encuentra tu próxima"
+                strokeColor="#ffffff"
+                fillColor="#ffffff"
+                strokeWidth={1.2}
+                drawDuration={1.5}
+                fillDelay={0.15}
+                stagger={0.045}
+                fillMode="wipe"
+                trigger="mount"
+                fontSize={96}
+                fontWeight={700}
+                letterSpacing={-3}
+                className="max-w-3xl"
+              />
+
+              <TextType
+                as="span"
+                text="oportunidad laboral"
+                typingSpeed={62}
+                initialDelay={1700}
+                loop={false}
+                showCursor
+                cursorCharacter="_"
+                cursorClassName="opacity-70"
+                className="block font-bold leading-tight"
+                style={{
+                  fontSize: 'clamp(2.2rem, 4.4vw, 3.5rem)',
+                  color: ACCENT,
+                  letterSpacing: '-0.03em',
+                }}
+              />
+            </h1>
+          </SectionReveal>
+          <SectionReveal offset={44} delay={0.12}>
+            <p className="max-w-2xl text-xl leading-relaxed text-white/75">
+              Conectamos talento dominicano con las empresas más importantes del país. Envía tu
+              currículum y te contactamos cuando haya una oportunidad para tu perfil.
+            </p>
+          </SectionReveal>
         </div>
-      </section>
+      </ParallaxHero>
 
       {/* ── Formulario ── */}
-      <section className="py-24 px-6 bg-white">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-12">
+      <section className="flex min-h-[100svh] items-center bg-[var(--background)] px-6 py-24">
+        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-12 lg:grid-cols-5">
 
-          {/* Izquierda */}
-          <div className="lg:col-span-2">
-            <h2
-              className="text-2xl font-bold mb-5"
-              style={{ color: '#0D1B5E', fontFamily: 'var(--font-space-grotesk, sans-serif)' }}
-            >
-              Trabaja en proyectos de alto impacto
-            </h2>
-            <p className="text-gray-500 text-sm leading-relaxed mb-8">
-              Hakamo conecta profesionales dominicanos con proyectos en los sectores de
-              construcción, energía, manufactura y servicios. Regístrate y sé el primero en
-              enterarte de nuevas oportunidades.
-            </p>
-            <ul className="space-y-4">
-              {BENEFICIOS.map((beneficio) => (
-                <li key={beneficio} className="flex items-start gap-3">
-                  <svg
-                    className="mt-0.5 flex-shrink-0"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke={ACCENT}
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  <span className="text-sm text-gray-600 leading-relaxed">{beneficio}</span>
-                </li>
-              ))}
-            </ul>
+          <div className="relative z-[50] lg:col-span-2">
+            <SectionReveal offset={60}>
+              <h2
+                className="mb-5 text-2xl font-bold"
+                style={{ color: 'var(--brand-primary-dark)', fontFamily: 'var(--font-space-grotesk, sans-serif)' }}
+              >
+                Trabaja en proyectos de alto impacto
+              </h2>
+              <p className="mb-6 text-sm leading-relaxed text-[var(--text-muted)]">
+                Hakamo conecta profesionales dominicanos con proyectos en los sectores de
+                construcción, energía, manufactura y servicios. Regístrate y sé el primero en
+                enterarte de nuevas oportunidades.
+              </p>
+            </SectionReveal>
+            <SectionReveal offset={48} delay={0.14}>
+              <LineSidebar
+                items={BENEFICIOS}
+                accentColor={ACCENT}
+                textColor="#6b7280"
+                markerColor="#94a3b8"
+                showIndex
+                showMarker
+                proximityRadius={110}
+                maxShift={24}
+                falloff="smooth"
+                markerLength={48}
+                itemGap={22}
+                fontSize={0.95}
+                defaultActive={0}
+              />
+            </SectionReveal>
           </div>
 
-          {/* Derecha — formulario client component */}
-          <div className="lg:col-span-3">
-            <div className="bg-gray-50 rounded-2xl p-8">
+          <ParallaxLayer distance={-45} className="relative z-[50] lg:col-span-3">
+            <SectionReveal offset={60} delay={0.08}>
               <h3
-                className="text-xl font-bold mb-6"
-                style={{ color: '#0D1B5E', fontFamily: 'var(--font-space-grotesk, sans-serif)' }}
+                className="mb-6 text-xl font-bold"
+                style={{ color: 'var(--brand-primary-dark)', fontFamily: 'var(--font-space-grotesk, sans-serif)' }}
               >
                 Registra tu perfil
               </h3>
+            </SectionReveal>
+            <SectionReveal offset={52} delay={0.18}>
               <EmpleoForm />
-            </div>
-          </div>
+            </SectionReveal>
+          </ParallaxLayer>
 
         </div>
       </section>
