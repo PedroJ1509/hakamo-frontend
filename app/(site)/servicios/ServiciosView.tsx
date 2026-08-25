@@ -5,7 +5,6 @@ import ParallaxHero from '@/app/components/ui/ParallaxHero'
 import SectionReveal from '@/app/components/ui/SectionReveal'
 import SmoothScroll from '@/app/components/ui/SmoothScroll'
 import { SpotlightCard } from '@/app/components/ui/SpotlightCard'
-import Aurora from '@/app/components/ui/Aurora/Aurora'
 import {
   ICONOS_SERVICIO,
   ICONOS_MARCO_LEGAL,
@@ -13,10 +12,20 @@ import {
   IconEquipo,
   IconPergamino,
 } from '@/app/components/ui/iconos'
-import SplashCursor from '@/app/components/ui/SplashCursor/SplashCursor'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
+import dynamic from 'next/dynamic'
 import ParallaxSection from '@/app/components/ui/ParallaxSection'
+
+const Aurora = dynamic(() => import('@/app/components/ui/Aurora/Aurora'), {
+  ssr: false,
+  loading: () => null,
+})
+
+const SplashCursor = dynamic(() => import('@/app/components/ui/SplashCursor/SplashCursor'), {
+  ssr: false,
+  loading: () => null,
+})
 
 const PRIMARY = '#1E3A5F'
 const ACCENT = '#2563EB'
@@ -72,6 +81,7 @@ export default function ServiciosView() {
         SPLAT_RADIUS={0.2}
         SPLAT_FORCE={6000}
         COLOR_UPDATE_SPEED={10}
+        DYE_RESOLUTION={720}
         SHADING
         RAINBOW_MODE={false}
         COLOR="#2563EB"

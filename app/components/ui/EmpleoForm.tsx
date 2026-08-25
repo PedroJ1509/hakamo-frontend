@@ -58,7 +58,7 @@ function FieldCard({
         enableTilt={false}
         enableMagnetism
         clickEffect
-        particleCount={8}
+        particleCount={4}
       >
         <div className={bentoStyles.header}>
           <div className={bentoStyles.label}>{label}</div>

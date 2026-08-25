@@ -164,6 +164,51 @@ export const IconAcuerdo = (p: Props) => (
   </Svg>
 )
 
+/* ── Sectores de clientes ── */
+
+/** Rayo: generación eléctrica. */
+export const IconRayo = (p: Props) => (
+  <Svg {...p}>
+    <path d="M13.5 2.5L5 13.5h6l-.5 8L19 10.5h-6l.5-8z" />
+  </Svg>
+)
+
+/** Grúa: energía e infraestructura. */
+export const IconGrua = (p: Props) => (
+  <Svg {...p}>
+    <path d="M4 21V4l12 3.5" />
+    <path d="M4 21h9" />
+    <path d="M11 6.5V12" />
+    <path d="M8.5 12h5l-2.5 4-2.5-4z" />
+    <path d="M16 7.5l4 2" />
+  </Svg>
+)
+
+/** Llave inglesa: ingeniería y construcción. */
+export const IconLlave = (p: Props) => (
+  <Svg {...p}>
+    <path d="M15.5 3.5a5 5 0 0 0-5.9 6.4L3 16.5 7.5 21l6.6-6.6a5 5 0 0 0 6.4-5.9l-3.2 3.2-3-.5-.5-3 3.2-3.2z" />
+  </Svg>
+)
+
+/** Tienda: retail y supermercados. */
+export const IconTienda = (p: Props) => (
+  <Svg {...p}>
+    <path d="M3.5 9.5L5 4h14l1.5 5.5" />
+    <path d="M3.5 9.5a3 3 0 0 0 5.6 1.5 3 3 0 0 0 5.8 0 3 3 0 0 0 5.6-1.5" />
+    <path d="M5 12v8h14v-8" />
+    <path d="M10 20v-5h4v5" />
+  </Svg>
+)
+
+/** Íconos por sector de cliente, según su nombre. */
+export const ICONOS_CLIENTE: Record<string, (p: Props) => React.ReactElement> = {
+  'Energía 2000': IconRayo,
+  'Lindsayca Group': IconGrua,
+  'TSK Dominicana': IconLlave,
+  'Grupo Ramos': IconTienda,
+}
+
 /** Íconos de servicios, por `slug`. */
 export const ICONOS_SERVICIO: Record<string, (p: Props) => React.ReactElement> = {
   'outsourcing-personal': IconEquipo,

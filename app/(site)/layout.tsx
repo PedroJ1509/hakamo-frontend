@@ -1,6 +1,6 @@
 import Header from '@/app/components/layout/Header'
 import Footer from '@/app/components/layout/Footer'
-import FloatingActions from '@/app/components/ui/FloatingActions'
+import FloatingActionsLazy from '@/app/components/ui/FloatingActionsLazy'
 
 export default function SiteLayout({
   children,
@@ -12,7 +12,7 @@ export default function SiteLayout({
       <Header />
       {children}
       <Footer />
-      <FloatingActions />
+      <FloatingActionsLazy />
     </>
   )
 }

@@ -81,8 +81,8 @@ export default function Lanyard({
     <div className={styles.lanyardWrapper}>
       <Canvas
         camera={{ position, fov }}
-        dpr={[1, isMobile ? 1.5 : 2]}
-        gl={{ alpha: transparent, antialias: true }}
+        dpr={[1, 1.5]}
+        gl={{ alpha: transparent, antialias: false, powerPreference: 'high-performance' }}
         style={{ width: '100%', height: '100%', pointerEvents: 'none' }}
         eventSource={eventSource}
         eventPrefix="client"
@@ -414,4 +414,4 @@ function Band({
   )
 }
 
-useGLTF.preload(CARD_GLB)
+// No preload: el GLB (~2.4MB) solo se pide cuando el Lanyard monta (tras idle en /empleo).

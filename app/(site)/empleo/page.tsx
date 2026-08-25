@@ -1,11 +1,23 @@
-import EmpleoForm from '@/app/components/ui/EmpleoForm'
-import LineSidebar from '@/app/components/ui/LineSidebar'
+import dynamic from 'next/dynamic'
 import ParallaxHero from '@/app/components/ui/ParallaxHero'
 import ParallaxLayer from '@/app/components/ui/ParallaxLayer'
 import SectionReveal from '@/app/components/ui/SectionReveal'
 import StrokeText from '@/app/components/ui/StrokeText'
 import TextType from '@/app/components/ui/TextType'
 import type { Metadata } from 'next'
+
+const EmpleoForm = dynamic(() => import('@/app/components/ui/EmpleoForm'), {
+  loading: () => (
+    <div
+      className="min-h-[420px] animate-pulse rounded-2xl border border-gray-100 bg-gray-50"
+      aria-hidden
+    />
+  ),
+})
+
+const LineSidebar = dynamic(() => import('@/app/components/ui/LineSidebar'), {
+  loading: () => <div className="min-h-[220px]" aria-hidden />,
+})
 
 export const metadata: Metadata = {
   title: 'Empleo — Hakamo Outsourcing',

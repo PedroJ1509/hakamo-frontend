@@ -9,6 +9,7 @@ import {
   useReducedMotion,
   type MotionValue,
 } from 'framer-motion'
+import { ICONOS_SERVICIO, IconEquipo } from './iconos'
 
 /** En SSR no hay ventana: asumimos escritorio y corregimos antes de pintar. */
 const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect
@@ -96,6 +97,7 @@ function Tarjeta({
   mx,
   my,
   animar,
+  Icono,
 }: {
   item: ParallaxItem
   pos: Posicion
@@ -103,9 +105,9 @@ function Tarjeta({
   mx: MotionValue<number>
   my: MotionValue<number>
   animar: boolean
+  Icono: ComponenteIcono
 }) {
   const tono = TONOS[indice % TONOS.length]
-  const Icono = ICONOS[item.titulo] ?? IconIntegridad
 
   // Cada capa se mueve en proporción a su profundidad.
   const x = useTransform(mx, (v) => v * 34 * pos.depth)
@@ -179,18 +181,36 @@ function Tarjeta({
   )
 }
 
+type ComponenteIcono = (p: { size?: number }) => React.ReactElement
+
 interface ParallaxCardsProps {
   items: ParallaxItem[]
   children?: ReactNode
+  /**
+   * Juego de íconos. Se identifica con una cadena y no con un mapa de
+   * funciones: React no puede serializar funciones desde un componente de
+   * servidor hacia uno de cliente.
+   */
+  setIconos?: 'valores' | 'servicios'
+}
+
+/** Íconos por tarjeta, según el juego elegido. */
+function resolverIcono(item: ParallaxItem, set: 'valores' | 'servicios'): ComponenteIcono {
+  if (set === 'servicios') {
+    // En este juego, `icono` trae el slug del servicio.
+    return ICONOS_SERVICIO[item.icono] ?? IconEquipo
+  }
+  return ICONOS[item.titulo] ?? IconIntegridad
 }
 
 /**
  * Campo de tarjetas en capas con parallax por movimiento del ratón.
  */
-export default function ParallaxCards({ items, children }: ParallaxCardsProps) {
+export default function ParallaxCards({ items, children, setIconos = 'valores' }: ParallaxCardsProps) {
   const ref = useRef<HTMLDivElement>(null)
   const prefersReducedMotion = useReducedMotion()
-  const [esEscritorio, setEsEscritorio] = useState(true)
+  // Empieza en móvil para no montar el campo absoluto (altura fija) en el primer paint táctil.
+  const [esEscritorio, setEsEscritorio] = useState(false)
   const animar = !prefersReducedMotion && esEscritorio
 
   useIsomorphicLayoutEffect(() => {
@@ -220,43 +240,43 @@ export default function ParallaxCards({ items, children }: ParallaxCardsProps) {
     rawY.set(0)
   }
 
-  // Sin ratón (móvil/tableta) el parallax no aporta y el reparto disperso deja
-  // tarjetas de ~95px, ilegibles: ahí caemos a una grilla normal.
+  // Sin ratón (móvil/tableta) el parallax no aporta: grilla compacta
+  // para caber dentro del panel sticky de 100dvh.
   if (!esEscritorio) {
     return (
       <>
-        {children ? <div className="mb-6">{children}</div> : null}
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        {children ? <div className="mb-4">{children}</div> : null}
+        <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
         {items.map((item, i) => {
           const tono = TONOS[i % TONOS.length]
-          const Icono = ICONOS[item.titulo] ?? IconIntegridad
+          const Icono = resolverIcono(item, setIconos)
           return (
           <article
             key={item.titulo}
-            className="rounded-2xl border bg-white p-5 shadow-sm dark:bg-slate-900"
+            className="rounded-xl border bg-white p-3 shadow-sm dark:bg-slate-900 sm:p-4"
             style={{
               borderColor: `color-mix(in srgb, ${tono} 22%, transparent)`,
               backgroundImage: `linear-gradient(155deg, color-mix(in srgb, ${tono} 7%, transparent), transparent 62%)`,
             }}
           >
-            <div className="mb-2 flex items-center gap-2.5">
+            <div className="mb-1.5 flex items-center gap-2">
               <span
-                className="flex h-8 w-8 items-center justify-center rounded-lg text-white shadow-sm"
+                className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg text-white shadow-sm"
                 style={{ background: `linear-gradient(145deg, ${tono}, color-mix(in srgb, ${tono} 62%, #0B1220))` }}
               >
                 <Icono />
               </span>
-              <span className="text-[10px] font-semibold tracking-[0.2em] text-gray-400">
+              <span className="text-[9px] font-semibold tracking-[0.16em] text-gray-400">
                 {String(i + 1).padStart(2, '0')}
               </span>
             </div>
             <h3
-              className="mb-1 text-base font-bold"
+              className="mb-0.5 text-[13px] font-bold leading-snug sm:text-sm"
               style={{ color: tono, fontFamily: 'var(--font-space-grotesk, sans-serif)' }}
             >
               {item.titulo}
             </h3>
-            <p className="text-xs leading-relaxed text-gray-500 dark:text-gray-400">
+            <p className="line-clamp-3 text-[11px] leading-snug text-gray-500 dark:text-gray-400">
               {item.descripcion}
             </p>
           </article>
@@ -286,6 +306,7 @@ export default function ParallaxCards({ items, children }: ParallaxCardsProps) {
           mx={mx}
           my={my}
           animar={animar}
+          Icono={resolverIcono(item, setIconos)}
         />
       ))}
 

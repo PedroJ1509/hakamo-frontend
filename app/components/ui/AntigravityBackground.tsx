@@ -28,6 +28,11 @@ interface AntigravityBackgroundProps {
   pulseSpeed?: number
   particleShape?: 'capsule' | 'sphere' | 'box' | 'tetrahedron'
   fieldStrength?: number
+  /**
+   * Si false, el canvas no captura el ratón (el scroll de la página pasa).
+   * Útil dentro de HorizontalPanels.
+   */
+  interactive?: boolean
 }
 
 /**
@@ -51,6 +56,7 @@ export default function AntigravityBackground({
   pulseSpeed = 3,
   particleShape = 'capsule',
   fieldStrength = 10,
+  interactive = true,
 }: AntigravityBackgroundProps) {
   const ref = useRef<HTMLDivElement>(null)
   // `montado` gobierna el lienzo WebGL; `visible`, la opacidad. Se separan para
@@ -93,7 +99,9 @@ export default function AntigravityBackground({
       aria-hidden
       // pointer-events-auto: el lienzo necesita recibir el ratón aunque su
       // contenedor lo tenga desactivado (caso del fondo de ParallaxHero).
-      className="pointer-events-auto absolute inset-0 overflow-hidden"
+      // pointer-events-auto solo si interactive: en paneles sticky el canvas
+      // no debe robar el wheel del scroll de la página.
+      className={`absolute inset-0 overflow-hidden ${interactive ? 'pointer-events-auto' : 'pointer-events-none'}`}
       style={{
         opacity: visible ? opacity : 0,
         transition: 'opacity 700ms cubic-bezier(0.22, 1, 0.36, 1)',

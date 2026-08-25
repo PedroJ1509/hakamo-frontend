@@ -5,8 +5,13 @@ import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion'
+import dynamic from 'next/dynamic'
 import ThemeToggle from '@/app/components/ui/ThemeToggle'
-import HeaderLanyard from '@/app/components/layout/HeaderLanyard'
+
+const HeaderLanyard = dynamic(() => import('@/app/components/layout/HeaderLanyard'), {
+  ssr: false,
+  loading: () => null,
+})
 
 const NAV_LINKS = [
   { href: '/', label: 'Inicio' },

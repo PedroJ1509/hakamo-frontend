@@ -10,6 +10,7 @@ import StrokeText from '@/app/components/ui/StrokeText'
 import TextType from '@/app/components/ui/TextType'
 import MaskedHeading from '@/app/components/ui/MaskedHeading'
 import Masonry from '@/app/components/ui/Masonry'
+import SmoothScroll from '@/app/components/ui/SmoothScroll'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 
@@ -80,7 +81,7 @@ const ENLACES_MVV = [
   { label: 'Hablemos', href: '/contacto', Icono: IconEscudo },
 ]
 
-/** Envoltura común: cada panel ocupa la pantalla y centra su contenido. */
+/** Envoltura: llena el viewport del panel sticky (móvil y desktop). */
 function Panel({
   children,
   background,
@@ -95,14 +96,14 @@ function Panel({
 }) {
   return (
     <div
-      // min-h-full y sin overflow-hidden: en modo apilado (móvil) el panel debe
-      // poder crecer con su contenido. El recorte lo hace la sección del track.
-      className={`relative flex min-h-full items-center px-6 ${className}`.trim()}
-      // El padding escala con la altura de la ventana: en pantallas bajas
-      // se comprime y el panel sigue cabiendo sin scroll ni recortes.
-      style={{ paddingBlock: 'clamp(1.25rem, 5svh, 4rem)', ...style }}
+      className={`relative isolate flex min-h-full flex-col justify-start px-5 pb-10 sm:px-6 lg:justify-center lg:pb-10 ${className}`.trim()}
+      style={{ paddingBlockStart: 'clamp(1.25rem, 4svh, 3rem)', ...style }}
     >
-      {background}
+      {background ? (
+        <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden>
+          {background}
+        </div>
+      ) : null}
       <div className="relative z-10 mx-auto w-full max-w-6xl">{children}</div>
     </div>
   )
@@ -110,14 +111,14 @@ function Panel({
 
 function Encabezado({ eyebrow, title, lede }: { eyebrow: string; title: string; lede?: string }) {
   return (
-    <div className="text-center" style={{ marginBottom: 'clamp(1rem, 4svh, 2.5rem)' }}>
-      <p className="mb-3 text-xs font-bold uppercase tracking-[0.28em]" style={{ color: ACCENT }}>
+    <div className="text-center" style={{ marginBottom: 'clamp(0.75rem, 3svh, 2.5rem)' }}>
+      <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.28em] sm:mb-3 sm:text-xs" style={{ color: ACCENT }}>
         {eyebrow}
       </p>
       <h2
         className="font-bold"
         style={{
-          fontSize: 'clamp(1.6rem, 2.8vw, 2.6rem)',
+          fontSize: 'clamp(1.35rem, 2.8vw, 2.6rem)',
           color: 'var(--brand-primary-dark, #0D1B5E)',
           fontFamily: 'var(--font-space-grotesk, sans-serif)',
           letterSpacing: '-0.02em',
@@ -127,8 +128,8 @@ function Encabezado({ eyebrow, title, lede }: { eyebrow: string; title: string; 
       </h2>
       {lede ? (
         <p
-          className="mx-auto max-w-xl text-sm leading-relaxed text-gray-500 dark:text-gray-400"
-          style={{ marginTop: 'clamp(0.5rem, 1.5svh, 1rem)' }}
+          className="mx-auto max-w-xl text-xs leading-relaxed text-gray-500 dark:text-gray-400 sm:text-sm"
+          style={{ marginTop: 'clamp(0.4rem, 1.2svh, 1rem)' }}
         >
           {lede}
         </p>
@@ -141,11 +142,12 @@ export default function NosotrosPage() {
   const mvv = [MISION_VISION.mision, MISION_VISION.vision, MISION_VISION.valores]
 
   return (
+    <SmoothScroll>
     <main className="min-h-screen bg-[var(--background)]">
 
       {/* ── Hero: parallax y desvanecido al hacer scroll, igual que empleo ── */}
       <ParallaxHero
-        className="flex min-h-[100svh] items-center px-6 py-24 text-white"
+        className="flex min-h-[100svh] items-center px-5 py-24 text-white sm:px-6"
         style={{ backgroundColor: PRIMARY }}
         background={
           <>
@@ -241,16 +243,16 @@ export default function NosotrosPage() {
                 showCursor
                 cursorCharacter="_"
                 cursorClassName="opacity-70"
-                className="mt-1 block font-bold leading-[1.05]"
+                className="mt-1 block max-w-full break-words font-bold leading-[1.1]"
                 style={{
-                  fontSize: 'clamp(1.9rem, 2.6vw + 1.4svh, 3.6rem)',
+                  fontSize: 'clamp(1.55rem, 6.5vw + 0.4rem, 3.6rem)',
                   color: '#93C5FD',
                   letterSpacing: '-0.03em',
                 }}
               />
             </h1>
 
-            <p className="max-w-2xl text-lg leading-relaxed text-white/75">
+            <p className="max-w-2xl text-base leading-relaxed text-white/75 sm:text-lg">
               Somos una firma dominicana especializada en capital humano. Llevamos más de 5 años
               conectando empresas con el talento que necesitan para crecer, siempre con cumplimiento
               legal y ética profesional.
@@ -266,7 +268,7 @@ export default function NosotrosPage() {
       <HorizontalPanels>
 
         {/* ── 1. Misión, Visión, Valores ── */}
-        <Panel background={<AntigravityBackground color={ACCENT} />}>
+        <Panel background={<AntigravityBackground color={ACCENT} interactive={false} />}>
           {/* Encabezado asimétrico: titular a la izquierda, apoyo a la derecha */}
           <div
             className="grid gap-5 lg:grid-cols-[1.35fr_0.65fr] lg:items-end"
@@ -303,34 +305,42 @@ export default function NosotrosPage() {
             </PanelReveal>
           </div>
 
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-2.5 md:grid-cols-3 md:gap-5">
             {mvv.map((item, i) => {
               const enlace = ENLACES_MVV[i]
               const Icono = enlace.Icono
               return (
-                <PanelReveal key={item.titulo} y={40} delay={0.18 + i * 0.12}>
-                  <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-[var(--border)] bg-white p-5 transition-all duration-300 hover:-translate-y-1.5 hover:border-[var(--brand-accent)] hover:shadow-xl dark:bg-slate-900 lg:p-7">
-                    {/* Resplandor que aparece al pasar el mouse */}
+                <PanelReveal key={item.titulo} y={28} delay={0.1 + i * 0.08}>
+                  <article className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-[var(--border)] bg-white p-3 transition-all duration-300 hover:-translate-y-1.5 hover:border-[var(--brand-accent)] hover:shadow-xl dark:bg-slate-900 sm:rounded-2xl sm:p-5 lg:p-7">
                     <div
                       aria-hidden
                       className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-25"
                       style={{ backgroundColor: ACCENT }}
                     />
 
-                    <div className="relative mb-5 flex items-start justify-between lg:mb-7">
+                    <div className="relative mb-2 flex items-center gap-2.5 lg:mb-7 lg:items-start lg:justify-between">
                       <span
-                        className="flex h-11 w-11 items-center justify-center rounded-xl transition-all duration-300 group-hover:scale-110 group-hover:text-white"
+                        className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg transition-all duration-300 group-hover:scale-110 group-hover:text-white lg:h-11 lg:w-11 lg:rounded-xl"
                         style={{ backgroundColor: 'var(--surface-wash, #F1F5F9)', color: ACCENT }}
                       >
                         <Icono />
                       </span>
-                      <span className="text-xs font-semibold tracking-[0.15em] text-gray-400 transition-colors group-hover:text-[var(--brand-accent)]">
+                      <h3
+                        className="min-w-0 flex-1 text-sm font-bold lg:hidden"
+                        style={{
+                          color: 'var(--brand-primary-dark, #0D1B5E)',
+                          fontFamily: 'var(--font-space-grotesk, sans-serif)',
+                        }}
+                      >
+                        {item.titulo}
+                      </h3>
+                      <span className="ml-auto text-[10px] font-semibold tracking-[0.15em] text-gray-400 lg:text-xs">
                         {String(i + 1).padStart(2, '0')}
                       </span>
                     </div>
 
                     <h3
-                      className="relative mb-3 text-lg font-bold"
+                      className="relative mb-3 hidden text-lg font-bold lg:block"
                       style={{
                         color: 'var(--brand-primary-dark, #0D1B5E)',
                         fontFamily: 'var(--font-space-grotesk, sans-serif)',
@@ -338,14 +348,14 @@ export default function NosotrosPage() {
                     >
                       {item.titulo}
                     </h3>
-                    <p className="relative flex-1 text-sm leading-relaxed text-gray-500 dark:text-gray-400">
+                    <p className="relative line-clamp-2 flex-1 text-[11px] leading-snug text-gray-500 dark:text-gray-400 sm:text-xs lg:line-clamp-none lg:text-sm lg:leading-relaxed">
                       {item.texto}
                     </p>
 
-                    <div className="relative mt-4 border-t border-[var(--border)] pt-3 lg:mt-6 lg:pt-4">
+                    <div className="relative mt-2 border-t border-[var(--border)] pt-2 lg:mt-6 lg:pt-4">
                       <Link
                         href={enlace.href}
-                        className="inline-flex items-center gap-1.5 text-sm font-semibold transition-opacity hover:opacity-75"
+                        className="inline-flex items-center gap-1.5 text-xs font-semibold transition-opacity hover:opacity-75 sm:text-sm"
                         style={{ color: ACCENT }}
                       >
                         {enlace.label}
@@ -363,7 +373,7 @@ export default function NosotrosPage() {
 
         {/* ── 2. Valores ── */}
         <Panel
-          background={<AntigravityBackground color={ACCENT} opacity={0.4} />}
+          background={<AntigravityBackground color={ACCENT} opacity={0.4} interactive={false} />}
           style={{ backgroundColor: 'var(--surface-wash, #F8F9FA)' }}
         >
           {/* Tarjetas dispersas alrededor y el texto en el centro libre.
@@ -378,20 +388,19 @@ export default function NosotrosPage() {
         </Panel>
 
         {/* ── 3. Equipo ── */}
-        <Panel background={<AntigravityBackground color={ACCENT} opacity={0.4} />}>
-          <div className="grid items-center gap-10 lg:grid-cols-2">
-            {/* Izquierda: copy */}
-            <PanelReveal x={-32}>
+        <Panel background={<AntigravityBackground color={ACCENT} opacity={0.4} interactive={false} />}>
+          <div className="mx-auto grid max-w-5xl items-start gap-6 lg:grid-cols-[0.95fr_1.05fr] lg:items-center lg:gap-12">
+            <PanelReveal x={-28}>
               <p
-                className="mb-3 text-xs font-bold uppercase tracking-[0.28em]"
+                className="mb-2.5 text-xs font-bold uppercase tracking-[0.28em]"
                 style={{ color: ACCENT }}
               >
                 Las personas detrás
               </p>
               <h2
-                className="mb-4 font-bold leading-[1.1]"
+                className="mb-3 font-bold leading-[1.12]"
                 style={{
-                  fontSize: 'clamp(1.6rem, 2.2vw + 1.1svh, 2.8rem)',
+                  fontSize: 'clamp(1.45rem, 1.8vw + 1svh, 2.6rem)',
                   color: 'var(--brand-primary-dark, #0D1B5E)',
                   fontFamily: 'var(--font-space-grotesk, sans-serif)',
                   letterSpacing: '-0.02em',
@@ -402,19 +411,19 @@ export default function NosotrosPage() {
                   alrededor de ti
                 </em>
               </h2>
-              <p className="mb-6 max-w-md text-sm leading-relaxed text-gray-500 dark:text-gray-400">
+              <p className="mb-4 max-w-md text-sm leading-relaxed text-gray-500 dark:text-gray-400 lg:mb-5">
                 Cada área de Hakamo trabaja sobre el mismo expediente. No te pasan de mano en mano:
                 una sola coordinación acompaña tu proceso de principio a fin.
               </p>
-              <div className="flex flex-wrap items-center gap-3">
+              <div className="mb-1 flex flex-wrap items-center gap-2.5 lg:mb-0 lg:gap-3">
                 <Link
                   href="/contacto"
-                  className="inline-flex items-center rounded-full px-6 py-3 text-sm font-semibold text-white transition-all hover:opacity-90 hover:shadow-lg"
+                  className="inline-flex items-center rounded-full px-5 py-2.5 text-sm font-semibold text-white transition-all hover:opacity-90 hover:shadow-lg"
                   style={{ backgroundColor: ACCENT }}
                 >
                   Hablar con el equipo
                 </Link>
-                <span className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-5 py-3 text-sm text-gray-500 dark:text-gray-400">
+                <span className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-3.5 py-2 text-xs text-gray-500 dark:text-gray-400">
                   <span className="relative flex h-2 w-2">
                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                     <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
@@ -424,8 +433,7 @@ export default function NosotrosPage() {
               </div>
             </PanelReveal>
 
-            {/* Derecha: mapa orbital */}
-            <PanelReveal x={32} delay={0.15}>
+            <PanelReveal x={28} delay={0.12} className="pb-6 lg:pb-0">
               <OrbitalTeam items={EQUIPO} />
             </PanelReveal>
           </div>
@@ -433,10 +441,10 @@ export default function NosotrosPage() {
 
         {/* ── 4. Clientes ── */}
         <Panel
-          background={<AntigravityBackground color={ACCENT} opacity={0.4} />}
+          background={<AntigravityBackground color={ACCENT} opacity={0.4} interactive={false} />}
           style={{ backgroundColor: 'var(--surface-wash, #F8F9FA)' }}
         >
-          <div className="grid items-center gap-10 lg:grid-cols-2">
+          <div className="grid items-start gap-8 lg:grid-cols-2 lg:items-center lg:gap-10">
             {/* Izquierda: copy */}
             <PanelReveal x={-32}>
               <p
@@ -448,7 +456,7 @@ export default function NosotrosPage() {
               <h2
                 className="mb-4 font-bold leading-[1.1]"
                 style={{
-                  fontSize: 'clamp(1.6rem, 2.2vw + 1.1svh, 2.8rem)',
+                  fontSize: 'clamp(1.45rem, 2.2vw + 1.1svh, 2.8rem)',
                   color: 'var(--brand-primary-dark, #0D1B5E)',
                   fontFamily: 'var(--font-space-grotesk, sans-serif)',
                   letterSpacing: '-0.02em',
@@ -459,7 +467,7 @@ export default function NosotrosPage() {
                   confiado en Hakamo
                 </em>
               </h2>
-              <p className="mb-6 max-w-md text-sm leading-relaxed text-gray-500 dark:text-gray-400">
+              <p className="mb-5 max-w-md text-sm leading-relaxed text-gray-500 dark:text-gray-400 lg:mb-6">
                 Operaciones de energía, construcción, ingeniería y retail nos confían la gestión de
                 su personal. Cada proyecto sostiene su propio equipo, con la misma exigencia.
               </p>
@@ -475,7 +483,7 @@ export default function NosotrosPage() {
 
             {/* Derecha: mosaico de logos de clientes */}
             <PanelReveal x={32} delay={0.15}>
-              <div style={{ height: 'clamp(260px, 56svh, 520px)' }}>
+              <div className="pb-8 lg:pb-0" style={{ height: 'clamp(180px, 38svh, 520px)' }}>
                 <Masonry
                   items={CLIENTES_MOSAICO}
                   ease="power3.out"
@@ -497,5 +505,6 @@ export default function NosotrosPage() {
 
       </HorizontalPanels>
     </main>
+    </SmoothScroll>
   )
 }

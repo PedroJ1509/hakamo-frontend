@@ -52,16 +52,35 @@ function overlapsFrontUI(rect: CardScreen) {
   return false
 }
 
-/** Credencial 3D solo en /empleo. */
+/** Credencial 3D solo en /empleo — se monta tras el primer paint para no bloquear la carga. */
 export default function HeaderLanyard() {
   const [mounted, setMounted] = useState(false)
+  const [ready, setReady] = useState(false)
   const [overFront, setOverFront] = useState(false)
   const overRef = useRef(false)
 
   useEffect(() => {
     setMounted(true)
     document.documentElement.classList.add('lanyard-active')
-    return () => document.documentElement.classList.remove('lanyard-active')
+
+    let idleId: number | undefined
+    let timeoutId: ReturnType<typeof setTimeout> | undefined
+
+    const enable = () => setReady(true)
+
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      idleId = window.requestIdleCallback(enable, { timeout: 1800 })
+    } else {
+      timeoutId = setTimeout(enable, 900)
+    }
+
+    return () => {
+      document.documentElement.classList.remove('lanyard-active')
+      if (idleId !== undefined && 'cancelIdleCallback' in window) {
+        window.cancelIdleCallback(idleId)
+      }
+      if (timeoutId) clearTimeout(timeoutId)
+    }
   }, [])
 
   const onCardScreenPos = useCallback((rect: CardScreen) => {
@@ -72,7 +91,7 @@ export default function HeaderLanyard() {
     }
   }, [])
 
-  if (!mounted) return null
+  if (!mounted || !ready) return null
 
   return createPortal(
     <div
