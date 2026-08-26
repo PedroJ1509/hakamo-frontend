@@ -70,7 +70,7 @@ export default function HorizontalPanels({ children, className = '' }: Horizonta
     return (
       <div ref={containerRef} className={className}>
         {panels.map((panel, i) => (
-          <div key={i} className="relative border-b border-[var(--border)] last:border-b-0">
+          <div key={i} className="relative border-b border-ink/10 last:border-b-0">
             {panel}
           </div>
         ))}
@@ -82,9 +82,12 @@ export default function HorizontalPanels({ children, className = '' }: Horizonta
     <div
       ref={containerRef}
       className={`relative ${className}`.trim()}
-      style={{ height: `${count * 100}svh` }}
+      style={{ height: `calc(${count} * (100svh - var(--header-h)))` }}
     >
-      <div ref={stickyRef} className="sticky top-0 h-[100svh] overflow-hidden">
+      <div
+        ref={stickyRef}
+        className="sticky top-[var(--header-h)] h-[calc(100svh-var(--header-h))] overflow-hidden"
+      >
         <motion.div
           style={{ x, width: panelWidth > 0 ? panelWidth * count : undefined }}
           className="flex h-full will-change-transform"
@@ -100,11 +103,8 @@ export default function HorizontalPanels({ children, className = '' }: Horizonta
           ))}
         </motion.div>
 
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-1 bg-black/10 dark:bg-white/10">
-          <motion.div
-            className="h-full origin-left"
-            style={{ scaleX: progressScale, backgroundColor: 'var(--brand-accent, #2563EB)' }}
-          />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-1 bg-white/10">
+          <motion.div className="h-full origin-left bg-glow" style={{ scaleX: progressScale }} />
         </div>
       </div>
     </div>

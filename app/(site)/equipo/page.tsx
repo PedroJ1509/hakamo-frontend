@@ -21,7 +21,7 @@ export default function EquipoPage() {
     <main className="min-h-screen">
 
       {/* Hero */}
-      <section className="relative overflow-hidden py-28 px-6 text-white" style={{ backgroundColor: PRIMARY }}>
+      <section className="relative overflow-hidden py-20 px-4 text-white sm:py-28 sm:px-6" style={{ backgroundColor: PRIMARY }}>
         <div
           className="absolute inset-0 opacity-10"
           style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '36px 36px' }}
@@ -32,12 +32,12 @@ export default function EquipoPage() {
             Las personas detrás
           </p>
           <h1
-            className="text-5xl md:text-6xl font-bold mb-5 leading-tight"
+            className="text-3xl sm:text-5xl md:text-6xl font-bold mb-5 leading-tight"
             style={{ fontFamily: 'var(--font-space-grotesk, sans-serif)', letterSpacing: '-0.03em' }}
           >
             Nuestro Equipo
           </h1>
-          <p className="text-xl text-white/75 max-w-xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-xl text-white/75 max-w-xl mx-auto leading-relaxed">
             Profesionales comprometidos con el crecimiento de tu empresa.
           </p>
         </div>

@@ -47,7 +47,7 @@ export default async function ProyectosPage({ searchParams }: Props) {
     <main className="min-h-screen">
 
       {/* Hero */}
-      <section className="relative overflow-hidden py-28 px-6 text-white" style={{ backgroundColor: PRIMARY }}>
+      <section className="relative overflow-hidden py-20 px-4 text-white sm:py-28 sm:px-6" style={{ backgroundColor: PRIMARY }}>
         <div
           className="absolute inset-0 opacity-10"
           style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '36px 36px' }}
@@ -58,12 +58,12 @@ export default async function ProyectosPage({ searchParams }: Props) {
             Nuestro trabajo
           </p>
           <h1
-            className="text-5xl md:text-6xl font-bold mb-5 leading-tight"
+            className="text-3xl sm:text-5xl md:text-6xl font-bold mb-5 leading-tight"
             style={{ fontFamily: 'var(--font-space-grotesk, sans-serif)', letterSpacing: '-0.03em' }}
           >
             Proyectos
           </h1>
-          <p className="text-xl text-white/75 max-w-xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-xl text-white/75 max-w-xl mx-auto leading-relaxed">
             Casos de éxito y proyectos que reflejan nuestro compromiso con la calidad.
           </p>
         </div>
@@ -71,7 +71,7 @@ export default async function ProyectosPage({ searchParams }: Props) {
 
       {/* Filtros */}
       {(res.data as Proyecto[]).length > 0 && (
-        <section className="py-6 px-6 border-b border-gray-100 bg-white sticky top-[72px] z-40">
+        <section className="sticky top-[var(--header-h)] z-40 border-b border-gray-100 bg-white px-4 py-6 sm:px-6">
           <div className="max-w-6xl mx-auto flex flex-wrap gap-3">
             <Link
               href="/proyectos"

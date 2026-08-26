@@ -19,7 +19,7 @@ export default async function BlogPage() {
     <main className="min-h-screen">
 
       {/* Hero */}
-      <section className="relative overflow-hidden py-28 px-6 text-white" style={{ backgroundColor: PRIMARY }}>
+      <section className="relative overflow-hidden py-20 px-4 text-white sm:py-28 sm:px-6" style={{ backgroundColor: PRIMARY }}>
         <div
           className="absolute inset-0 opacity-10"
           style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '36px 36px' }}
@@ -30,12 +30,12 @@ export default async function BlogPage() {
             Noticias y artículos
           </p>
           <h1
-            className="text-5xl md:text-6xl font-bold mb-5 leading-tight"
+            className="text-3xl sm:text-5xl md:text-6xl font-bold mb-5 leading-tight"
             style={{ fontFamily: 'var(--font-space-grotesk, sans-serif)', letterSpacing: '-0.03em' }}
           >
             Blog
           </h1>
-          <p className="text-xl text-white/75 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-xl text-white/75 max-w-2xl mx-auto leading-relaxed">
             Insights, consejos y novedades sobre recursos humanos y outsourcing de personal.
           </p>
         </div>

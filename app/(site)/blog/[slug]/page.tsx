@@ -44,7 +44,7 @@ export default async function PostPage({ params }: Props) {
     <main className="min-h-screen">
 
       {/* Hero */}
-      <section className="py-24 px-6 text-white" style={{ backgroundColor: PRIMARY }}>
+      <section className="py-16 px-4 text-white sm:py-24 sm:px-6" style={{ backgroundColor: PRIMARY }}>
         <div className="max-w-4xl mx-auto">
           <Link
             href="/blog"
@@ -63,7 +63,7 @@ export default async function PostPage({ params }: Props) {
             {post.titulo}
           </h1>
           {post.resumen && (
-            <p className="text-xl text-white/75 leading-relaxed mb-6 max-w-2xl">{post.resumen}</p>
+            <p className="text-base sm:text-xl text-white/75 leading-relaxed mb-6 max-w-2xl">{post.resumen}</p>
           )}
           {post.fechaPublicacion && (
             <time className="text-sm text-white/50">

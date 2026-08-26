@@ -1,35 +1,55 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+@import "./visual-kit.css";
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
-  --font-sans: var(--font-inter);
-  --font-display: var(--font-space-grotesk);
+  --font-sans: var(--font-ui, var(--font-inter));
+  --font-display: var(--font-display, var(--font-space-grotesk));
 
   --color-brand-blue: #0B21CC;
   --color-brand-dark: #07090F;
   --color-brand-light: #F4F6FF;
   --color-accent-cyan: #00C2E0;
+
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-night: var(--night);
+  --color-accent: var(--accent);
+  --color-glow: var(--glow);
+  --color-field: var(--field);
+  --color-soft: var(--soft);
+  --color-danger: var(--danger);
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: #07090F;
+  --font-ui: var(--font-inter);
+  --background: #F8FAFC;
+  --foreground: #0F172A;
 
-  /* Brand tokens — misma paleta que ya usan Header/Hero (navy + azul) */
   --brand-primary: #1E3A5F;
   --brand-primary-dark: #0D1B5E;
   --brand-accent: #2563EB;
   --brand-accent-light: #EEF2FF;
 
+  --paper: #F8FAFC;
+  --ink: #0F172A;
+  --muted: #64748B;
+  --night: #1E3A5F;
+  --accent: #2563EB;
+  --glow: #93C5FD;
+  --field: rgba(15, 23, 42, 0.12);
+  --soft: #EEF2FF;
+  --danger: #DC2626;
+
   --border: rgba(15, 23, 42, 0.08);
   --shadow-soft: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.05);
   --shadow-elevated: 0 2px 4px rgba(15, 23, 42, 0.04), 0 12px 28px -8px rgba(15, 23, 42, 0.1);
 
-  /* Superficies para el ritmo de secciones (light) */
   --surface: #ffffff;
   --surface-wash: rgba(37, 99, 235, 0.05);
-  --text-muted: #6b7280;
+  --text-muted: #64748B;
 }
 
 .dark {
@@ -51,12 +71,18 @@
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-ui), var(--font-inter), sans-serif;
   transition: background-color 0.25s ease, color 0.25s ease;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1:not(.font-display):not(.cinematic-title),
+h2:not(.font-display),
+h3:not(.font-display),
+h4,
+h5,
+h6 {
   font-family: var(--font-space-grotesk, var(--font-sans));
 }
 
