@@ -9,6 +9,7 @@ import { ScrollProgress } from "../scroll-progress";
 import { LandingHeader } from "../chrome-header";
 import { LandingScrollExpand } from "../landing-scroll-expand";
 import { PublicFooter } from "../public-footer";
+import { StatsCounter } from "../stats-counter";
 import type { LandingCopy, NavLink, Offering, SitePublic, Stat } from "@/lib/visual-kit/types";
 
 function splitTitle(title: string) {
@@ -90,13 +91,8 @@ export function HomeLanding({
       </LandingScrollExpand>
 
       <section className="bg-paper px-4 py-20 sm:px-6 sm:py-28">
-        <div className="mx-auto grid max-w-6xl gap-10 sm:grid-cols-2 lg:grid-cols-4">
-          {stats.map((item, index) => (
-            <Reveal key={item.value} delay={index * 90} from="up">
-              <p className="font-display text-3xl tracking-tight text-ink sm:text-4xl">{item.value}</p>
-              <p className="mt-3 max-w-[16rem] text-sm leading-6 text-muted">{item.label}</p>
-            </Reveal>
-          ))}
+        <div className="mx-auto max-w-6xl">
+          <StatsCounter stats={stats} />
         </div>
       </section>
 
