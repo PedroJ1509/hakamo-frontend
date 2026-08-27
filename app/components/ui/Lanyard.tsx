@@ -28,6 +28,16 @@ const BLANK_PIXEL =
 const FRONT_UV_RECT = { x: 0, y: 0, w: 0.5, h: 0.755 }
 const BACK_UV_RECT = { x: 0.5, y: 0, w: 0.5, h: 0.757 }
 
+type SizedCanvasSource = CanvasImageSource & { width: number; height: number }
+
+function asSizedCanvasSource(image: unknown): SizedCanvasSource | null {
+  if (!image || typeof image !== 'object') return null
+  const sized = image as { width?: unknown; height?: unknown }
+  if (typeof sized.width !== 'number' || typeof sized.height !== 'number') return null
+  if (sized.width <= 0 || sized.height <= 0) return null
+  return image as SizedCanvasSource
+}
+
 export interface LanyardProps {
   position?: [number, number, number]
   lookAt?: [number, number, number]
@@ -215,7 +225,7 @@ function Band({
     }
 
     const drawFitted = (
-      img: CanvasImageSource & { width: number; height: number },
+      img: SizedCanvasSource,
       rect: typeof FRONT_UV_RECT,
       pad = 0.78,
     ) => {
@@ -239,14 +249,17 @@ function Band({
       ctx.restore()
     }
 
+    const frontSource = asSizedCanvasSource(frontTex.image)
+    const backSource = asSizedCanvasSource(backTex.image)
+
     if (frontImage) {
       fillFace(FRONT_UV_RECT, '#ffffff')
-      if (frontTex.image) drawFitted(frontTex.image, FRONT_UV_RECT)
+      if (frontSource) drawFitted(frontSource, FRONT_UV_RECT)
     }
 
     if (backImage) {
       fillFace(BACK_UV_RECT, '#1E3A5F')
-      if (backTex.image) drawFitted(backTex.image, BACK_UV_RECT)
+      if (backSource) drawFitted(backSource, BACK_UV_RECT)
     } else if (frontImage) {
       // Sin backImage: reverso limpio de marca (sin textura del GLB)
       fillFace(BACK_UV_RECT, '#1E3A5F')
