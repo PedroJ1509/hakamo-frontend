@@ -1,4 +1,4 @@
-import React, { JSX } from 'react'
+import React, { createElement } from 'react'
 
 interface TextNode {
   type: 'text'
@@ -38,8 +38,8 @@ function renderNode(node: BlockNode | TextNode, index: number): React.ReactNode 
       return <p key={index}>{children}</p>
 
     case 'heading': {
-      const Tag = `h${block.level || 2}` as keyof JSX.IntrinsicElements
-      return <Tag key={index}>{children}</Tag>
+      const level = Math.min(Math.max(block.level || 2, 1), 6)
+      return createElement(`h${level}`, { key: index }, children)
     }
 
     case 'list':

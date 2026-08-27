@@ -1,7 +1,15 @@
 'use client'
 
 /* eslint-disable react/no-unknown-property */
-import { Suspense, useEffect, useMemo, useRef, useState, type MutableRefObject } from 'react'
+import {
+  Suspense,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type MutableRefObject,
+  type RefObject,
+} from 'react'
 import { Canvas, extend, useFrame } from '@react-three/fiber'
 import { useGLTF, useTexture, Environment, Lightformer } from '@react-three/drei'
 import {
@@ -285,10 +293,22 @@ function Band({
   const [dragged, drag] = useState<false | THREE.Vector3>(false)
   const [hovered, hover] = useState(false)
 
-  useRopeJoint(fixed, j1, [[0, 0, 0], [0, 0, 0], 1])
-  useRopeJoint(j1, j2, [[0, 0, 0], [0, 0, 0], 1])
-  useRopeJoint(j2, j3, [[0, 0, 0], [0, 0, 0], 1])
-  useSphericalJoint(j3, card, [
+  useRopeJoint(fixed as RefObject<RapierRigidBody>, j1 as RefObject<RapierRigidBody>, [
+    [0, 0, 0],
+    [0, 0, 0],
+    1,
+  ])
+  useRopeJoint(j1 as RefObject<RapierRigidBody>, j2 as RefObject<RapierRigidBody>, [
+    [0, 0, 0],
+    [0, 0, 0],
+    1,
+  ])
+  useRopeJoint(j2 as RefObject<RapierRigidBody>, j3 as RefObject<RapierRigidBody>, [
+    [0, 0, 0],
+    [0, 0, 0],
+    1,
+  ])
+  useSphericalJoint(j3 as RefObject<RapierRigidBody>, card as RefObject<RapierRigidBody>, [
     [0, 0, 0],
     [0, 1.5, 0],
   ])
@@ -335,7 +355,7 @@ function Band({
       if (card.current) {
         ang.copy(card.current.angvel())
         rot.copy(card.current.rotation())
-        card.current.setAngvel({ x: ang.x, y: ang.y - rot.y * 0.25, z: ang.z })
+        card.current.setAngvel({ x: ang.x, y: ang.y - rot.y * 0.25, z: ang.z }, true)
 
         const now = state.clock.elapsedTime
         if (onCardScreenPosRef?.current && now - screenReportAt.current > 0.08) {
