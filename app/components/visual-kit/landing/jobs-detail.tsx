@@ -3,11 +3,12 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import BlocksRenderer from "@/app/components/ui/BlocksRenderer";
-import { SITE_NAV, SITE_PUBLIC } from "@/lib/visual-kit/hakamo";
+import { SITE_NAV, SITE_PUBLIC, LANDING_HERO_BACKGROUNDS } from "@/lib/visual-kit/hakamo";
 import { fieldClass, labelClass } from "@/lib/visual-kit/styles";
 import { LandingHeader } from "../chrome-header";
 import { EmptyState } from "../empty-state";
 import { Grain } from "../grain";
+import { LandingHeroSection } from "../landing-hero-section";
 import { MagneticButton } from "../magnetic-button";
 import { PublicFooter } from "../public-footer";
 import { ScrollProgress } from "../scroll-progress";
@@ -124,13 +125,8 @@ export function JobsDetail() {
         </section>
       ) : (
         <>
-          <section className="relative min-h-[70svh] overflow-hidden bg-night px-4 text-paper sm:px-6">
-            <div className="absolute inset-0" aria-hidden>
-              <div className="hero-field" />
-              <div className="hero-vignette" />
-              <div className="hero-veil" />
-            </div>
-            <div className="landing-hero-inner landing-hero-inner-compact mx-auto max-w-3xl text-center">
+          <LandingHeroSection background={LANDING_HERO_BACKGROUNDS.jobDetail} compact>
+            <div className="landing-hero-inner landing-hero-inner-compact mx-auto max-w-3xl px-4 text-center sm:px-6">
               <p className="text-[11px] font-medium uppercase tracking-[0.42em] text-glow">
                 {vacante.division?.nombre ?? "Vacante"}
               </p>
@@ -157,7 +153,7 @@ export function JobsDetail() {
                 <MagneticButton href="#postular">Postularme</MagneticButton>
               </div>
             </div>
-          </section>
+          </LandingHeroSection>
 
           <section className="bg-paper px-4 py-20 sm:px-6 sm:py-24">
             <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[1.15fr_0.85fr]">

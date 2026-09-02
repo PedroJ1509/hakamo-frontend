@@ -2,10 +2,11 @@
 
 import HorizontalPanels from "@/app/components/ui/HorizontalPanels";
 import { MARCO_LEGAL, PLANES, PROCESO_EMPRESAS, SECTORES, SERVICIOS, VALOR_HAKAMO } from "@/lib/data";
-import { SITE_NAV, SITE_PUBLIC } from "@/lib/visual-kit/hakamo";
+import { SITE_NAV, SITE_PUBLIC, LANDING_HERO_BACKGROUNDS } from "@/lib/visual-kit/hakamo";
 import { LandingHeader } from "../chrome-header";
 import { CinematicTitle } from "../cinematic-title";
 import { Grain } from "../grain";
+import { LandingHeroSection } from "../landing-hero-section";
 import { MagneticButton } from "../magnetic-button";
 import { Marquee } from "../marquee";
 import { PublicFooter } from "../public-footer";
@@ -37,12 +38,7 @@ export function ServicesLanding() {
         ctaExternal={site.ctaHref.startsWith("http")}
       />
 
-      <section id="contenido" className="relative min-h-[100svh] overflow-hidden bg-night text-paper">
-        <div className="absolute inset-0" aria-hidden>
-          <div className="hero-field" />
-          <div className="hero-vignette" />
-          <div className="hero-veil" />
-        </div>
+      <LandingHeroSection background={LANDING_HERO_BACKGROUNDS.services}>
         <div className="landing-hero-inner mx-auto max-w-3xl px-4 text-center sm:px-6">
           <p className="text-[11px] font-medium uppercase tracking-[0.42em] text-glow">Lo que ofrecemos</p>
           <div className="mt-5">
@@ -59,7 +55,7 @@ export function ServicesLanding() {
             </MagneticButton>
           </div>
         </div>
-      </section>
+      </LandingHeroSection>
 
       <ServiceTimeline items={SERVICIOS} />
 

@@ -56,3 +56,10 @@ export type LandingCopy = {
   contactKicker: string;
   contactTitle: string;
 };
+
+export type LandingHeroBackground = {
+  src: string;
+  alt: string;
+  objectPosition?: string;
+  priority?: boolean;
+};

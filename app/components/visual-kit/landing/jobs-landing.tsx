@@ -4,11 +4,12 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import HorizontalPanels from "@/app/components/ui/HorizontalPanels";
 import type { Division, Vacante } from "@/types";
-import { SITE_NAV, SITE_PUBLIC } from "@/lib/visual-kit/hakamo";
+import { SITE_NAV, SITE_PUBLIC, LANDING_HERO_BACKGROUNDS } from "@/lib/visual-kit/hakamo";
 import { LandingHeader } from "../chrome-header";
 import { CinematicTitle } from "../cinematic-title";
 import { EmptyState } from "../empty-state";
 import { Grain } from "../grain";
+import { LandingHeroSection } from "../landing-hero-section";
 import { MagneticButton } from "../magnetic-button";
 import { Marquee } from "../marquee";
 import { PublicFooter } from "../public-footer";
@@ -69,12 +70,7 @@ export function JobsLanding({
 
       <LandingHeader name={site.name} links={SITE_NAV} ctaHref="/empleo" ctaLabel="Registrar perfil" />
 
-      <section id="contenido" className="relative min-h-[100svh] overflow-hidden bg-night text-paper">
-        <div className="absolute inset-0" aria-hidden>
-          <div className="hero-field" />
-          <div className="hero-vignette" />
-          <div className="hero-veil" />
-        </div>
+      <LandingHeroSection background={LANDING_HERO_BACKGROUNDS.jobs}>
         <div className="landing-hero-inner mx-auto max-w-3xl px-4 text-center sm:px-6">
           <p className="text-[11px] font-medium uppercase tracking-[0.42em] text-glow">Vacantes</p>
           <div className="mt-5">
@@ -96,7 +92,7 @@ export function JobsLanding({
             </MagneticButton>
           </div>
         </div>
-      </section>
+      </LandingHeroSection>
 
       <section id="vacantes" className="relative bg-paper px-4 py-20 text-ink sm:px-6 sm:py-28">
         <div className="mx-auto max-w-6xl">

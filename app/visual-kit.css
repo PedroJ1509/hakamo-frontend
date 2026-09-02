@@ -154,7 +154,7 @@ body {
   pointer-events: none;
   position: absolute;
   inset: 0;
-  z-index: 1;
+  z-index: 3;
   background:
     linear-gradient(
       180deg,
@@ -169,7 +169,7 @@ body {
   pointer-events: none;
   position: absolute;
   inset: 0;
-  z-index: 1;
+  z-index: 2;
   background: radial-gradient(ellipse at 50% 48%, transparent 36%, color-mix(in srgb, var(--night) 48%, black) 100%);
 }
 
@@ -181,6 +181,24 @@ body {
     radial-gradient(ellipse at 78% 48%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 46%),
     radial-gradient(ellipse at 18% 78%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 36%),
     var(--night);
+}
+
+.hero-field--photo {
+  z-index: 1;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--night) 78%, transparent) 0%,
+      color-mix(in srgb, var(--night) 52%, transparent) 45%,
+      color-mix(in srgb, var(--night) 82%, transparent) 100%
+    ),
+    radial-gradient(ellipse at 74% 18%, color-mix(in srgb, var(--glow) 14%, transparent), transparent 42%),
+    radial-gradient(ellipse at 18% 78%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 36%),
+    color-mix(in srgb, var(--night) 28%, transparent);
+}
+
+.hero-photo {
+  object-fit: cover;
 }
 
 .magnetic-btn {

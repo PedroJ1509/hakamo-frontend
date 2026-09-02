@@ -1,5 +1,5 @@
 import { CLIENTES, COMPANY_INFO, PROCESO_EMPRESAS, SERVICIOS, STATS } from '@/lib/data'
-import type { HourRow, LandingCopy, NavLink, Offering, SitePublic, Stat, Step, StoryCard } from './types'
+import type { HourRow, LandingCopy, LandingHeroBackground, NavLink, Offering, SitePublic, Stat, Step, StoryCard } from './types'
 
 export const SITE_NAV: NavLink[] = [
   { href: '/', label: 'Inicio' },
@@ -60,6 +60,45 @@ export const LANDING_HOURS: HourRow[] = [
   { label: 'Correo general', value: COMPANY_INFO.email },
   { label: 'Reclutamiento', value: COMPANY_INFO.emailReclutamiento },
 ]
+
+export const LANDING_HERO_BACKGROUNDS = {
+  home: {
+    src: '/visual-kit/heroes/home.jpg',
+    alt: 'Trabajadores montando estructura de acero en obra industrial',
+    objectPosition: '50% 40%',
+    priority: true,
+  },
+  about: {
+    src: '/visual-kit/heroes/about.jpg',
+    alt: 'Equipo de profesionales colaborando',
+    objectPosition: '50% 35%',
+  },
+  services: {
+    src: '/visual-kit/heroes/services.jpg',
+    alt: 'Ingeniera en planta industrial',
+    objectPosition: '55% 42%',
+  },
+  contact: {
+    src: '/visual-kit/heroes/contact.jpg',
+    alt: 'Reunión de negocios para cotización de servicios',
+    objectPosition: '50% 40%',
+  },
+  employment: {
+    src: '/visual-kit/heroes/employment.jpg',
+    alt: 'Obreros en sitio de construcción',
+    objectPosition: '50% 45%',
+  },
+  jobs: {
+    src: '/visual-kit/heroes/jobs.jpg',
+    alt: 'Supervisores revisando planos en obra',
+    objectPosition: '45% 42%',
+  },
+  jobDetail: {
+    src: '/visual-kit/heroes/job-detail.jpg',
+    alt: 'Profesionales evaluando un proyecto',
+    objectPosition: '50% 38%',
+  },
+} satisfies Record<string, LandingHeroBackground>
 
 export const LANDING_STORY: StoryCard[] = [
   {

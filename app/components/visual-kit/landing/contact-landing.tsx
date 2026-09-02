@@ -2,10 +2,11 @@
 
 import ContactForm from "@/app/components/ui/ContactForm";
 import { COMPANY_INFO } from "@/lib/data";
-import { SITE_NAV, SITE_PUBLIC } from "@/lib/visual-kit/hakamo";
+import { SITE_NAV, SITE_PUBLIC, LANDING_HERO_BACKGROUNDS } from "@/lib/visual-kit/hakamo";
 import { LandingHeader } from "../chrome-header";
 import { CinematicTitle } from "../cinematic-title";
 import { Grain } from "../grain";
+import { LandingHeroSection } from "../landing-hero-section";
 import { MagneticButton } from "../magnetic-button";
 import { Marquee } from "../marquee";
 import { Reveal } from "../reveal";
@@ -56,12 +57,7 @@ export function ContactLanding() {
 
       <LandingHeader name={site.name} links={SITE_NAV} ctaHref="#formulario" ctaLabel="Escribirnos" />
 
-      <section id="contenido" className="relative min-h-[100svh] overflow-hidden bg-night text-paper">
-        <div className="absolute inset-0" aria-hidden>
-          <div className="hero-field" />
-          <div className="hero-vignette" />
-          <div className="hero-veil" />
-        </div>
+      <LandingHeroSection background={LANDING_HERO_BACKGROUNDS.contact}>
         <div className="landing-hero-inner mx-auto max-w-3xl px-4 text-center sm:px-6">
           <p className="text-[11px] font-medium uppercase tracking-[0.42em] text-glow">Hablemos</p>
           <div className="mt-5">
@@ -78,7 +74,7 @@ export function ContactLanding() {
             </MagneticButton>
           </div>
         </div>
-      </section>
+      </LandingHeroSection>
 
       <section className="bg-paper px-4 py-20 sm:px-6 sm:py-28">
         <div className="mx-auto grid max-w-6xl gap-10 sm:grid-cols-2 lg:grid-cols-4">

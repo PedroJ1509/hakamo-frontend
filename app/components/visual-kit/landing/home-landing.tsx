@@ -7,10 +7,12 @@ import { Marquee } from "../marquee";
 import { Reveal } from "../reveal";
 import { ScrollProgress } from "../scroll-progress";
 import { LandingHeader } from "../chrome-header";
+import { LandingHeroSection } from "../landing-hero-section";
 import { LandingScrollExpand } from "../landing-scroll-expand";
 import { PublicFooter } from "../public-footer";
 import { StatsCounter } from "../stats-counter";
 import type { LandingCopy, NavLink, Offering, SitePublic, Stat } from "@/lib/visual-kit/types";
+import { LANDING_HERO_BACKGROUNDS } from "@/lib/visual-kit/hakamo";
 
 function splitTitle(title: string) {
   const index = title.indexOf(",");
@@ -59,12 +61,7 @@ export function HomeLanding({
         ctaExternal={site.ctaHref.startsWith("http")}
       />
 
-      <section id="contenido" className="relative min-h-[100svh] overflow-hidden bg-night text-paper">
-        <div className="absolute inset-0" aria-hidden>
-          <div className="hero-field" />
-          <div className="hero-vignette" />
-          <div className="hero-veil" />
-        </div>
+      <LandingHeroSection background={LANDING_HERO_BACKGROUNDS.home}>
         <div className="landing-hero-inner mx-auto max-w-3xl px-4 text-center sm:px-6">
           <p className="text-[11px] font-medium uppercase tracking-[0.42em] text-glow">{site.name}</p>
           <div className="mt-5">
@@ -80,7 +77,7 @@ export function HomeLanding({
             </MagneticButton>
           </div>
         </div>
-      </section>
+      </LandingHeroSection>
 
       <LandingScrollExpand title="En obra">
         <h2>Cada proyecto sostiene su propio equipo</h2>
