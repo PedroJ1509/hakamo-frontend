@@ -13,7 +13,7 @@ const PRIMARY = '#1E3A5F'
 const FAQ_GENERAL = [
   {
     pregunta: '¿Qué servicios de outsourcing ofrece Hakamo?',
-    respuesta: 'Hakamo ofrece outsourcing de personal, reclutamiento y selección, gestión de nómina (payroll), gestión documental y cumplimiento legal, y supervisión de proyectos.',
+    respuesta: 'Hakamo ofrece outsourcing de personal, reclutamiento especializado, payroll y administración de nómina, cumplimiento laboral y gestión documental, supervisión de proyectos en campo y seguridad y salud ocupacional.',
   },
   {
     pregunta: '¿En qué zonas de la República Dominicana operan?',

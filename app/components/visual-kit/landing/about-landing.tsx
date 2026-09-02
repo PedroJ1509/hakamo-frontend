@@ -4,7 +4,6 @@ import HorizontalPanels from "@/app/components/ui/HorizontalPanels";
 import { CLIENTES, EQUIPO, MISION_VISION, VALORES } from "@/lib/data";
 import { SITE_NAV, SITE_PUBLIC } from "@/lib/visual-kit/hakamo";
 import { LandingHeader } from "../chrome-header";
-import { LandingScrollExpand } from "../landing-scroll-expand";
 import { CinematicTitle } from "../cinematic-title";
 import { Grain } from "../grain";
 import { MagneticButton } from "../magnetic-button";
@@ -47,12 +46,12 @@ export function AboutLanding() {
         <div className="landing-hero-inner mx-auto max-w-3xl px-4 text-center sm:px-6">
           <p className="text-[11px] font-medium uppercase tracking-[0.42em] text-glow">Quiénes somos</p>
           <div className="mt-5">
-            <CinematicTitle lines={["La empresa detrás del", "talento dominicano"]} />
+            <CinematicTitle lines={["Su aliado estratégico en", "gestión humana"]} />
           </div>
           <p className="mt-6 max-w-lg text-sm leading-6 text-paper/70 sm:text-base">
-            Somos una firma dominicana especializada en capital humano. Llevamos más de 5 años
-            conectando empresas con el talento que necesitan para crecer, siempre con cumplimiento
-            legal y ética profesional.
+            Empresa dominicana de outsourcing y gestión humana especializada en construcción,
+            plantas industriales y proyectos de gran escala. Acompañamiento B2B integral desde la
+            atracción del talento hasta la supervisión en campo.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             <MagneticButton href="/servicios">Ver servicios</MagneticButton>
@@ -62,14 +61,6 @@ export function AboutLanding() {
           </div>
         </div>
       </section>
-
-      <LandingScrollExpand title="Quiénes somos">
-        <h2>La empresa detrás del talento dominicano</h2>
-        <p>
-          Más de 5 años conectando empresas con el equipo que necesitan, siempre con ética y
-          cumplimiento legal.
-        </p>
-      </LandingScrollExpand>
 
       <HorizontalPanels>
         <StagePanel tone="paper">
@@ -81,13 +72,13 @@ export function AboutLanding() {
             Tres principios que sostienen cada decisión que tomamos, desde a quién contratamos hasta
             cómo acompañamos a cada cliente.
           </p>
-          <div className="mt-12 divide-y divide-ink/10 border-y border-ink/10">
+          <div className="mt-8 divide-y divide-ink/10 border-y border-ink/10">
             {MVV.map((item, index) => (
-              <article key={item.titulo} className="grid gap-4 py-8 md:grid-cols-[4rem_1fr] md:items-start">
+              <article key={item.titulo} className="grid gap-3 py-5 md:grid-cols-[4rem_1fr] md:items-start">
                 <span className="font-display text-sm text-accent">{String(index + 1).padStart(2, "0")}</span>
                 <div>
-                  <h3 className="font-display text-xl tracking-tight text-ink sm:text-2xl">{item.titulo}</h3>
-                  <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">{item.texto}</p>
+                  <h3 className="font-display text-lg tracking-tight text-ink sm:text-xl">{item.titulo}</h3>
+                  <p className="mt-1.5 max-w-3xl text-sm leading-5 text-muted">{item.texto}</p>
                 </div>
               </article>
             ))}
@@ -97,17 +88,17 @@ export function AboutLanding() {
         <StagePanel tone="night">
           <p className="text-[11px] uppercase tracking-[0.32em] text-glow">Nuestros principios</p>
           <h2 className="font-display mt-3 max-w-3xl text-3xl leading-snug sm:text-4xl">
-            Los valores que nos definen
+            Los pilares que nos definen
           </h2>
           <p className="mt-4 max-w-xl text-sm leading-6 text-paper/65">
-            Cada interacción con clientes, candidatos y colaboradores está guiada por estos
-            principios.
+            Cumplimiento, transparencia, eficiencia en terreno y seguridad primero guían cada
+            operación.
           </p>
-          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-8 grid gap-3 sm:grid-cols-2">
             {VALORES.map((valor) => (
-              <article key={valor.titulo} className="h-full rounded-[1.6rem] border border-white/10 bg-white/5 p-6">
-                <h3 className="font-display text-xl">{valor.titulo}</h3>
-                <p className="mt-3 text-sm leading-6 text-paper/65">{valor.descripcion}</p>
+              <article key={valor.titulo} className="h-full rounded-[1.6rem] border border-white/10 bg-white/5 p-5">
+                <h3 className="font-display text-lg">{valor.titulo}</h3>
+                <p className="mt-2 text-sm leading-5 text-paper/65">{valor.descripcion}</p>
               </article>
             ))}
           </div>
@@ -122,16 +113,16 @@ export function AboutLanding() {
             Cada área de Hakamo trabaja sobre el mismo expediente. No te pasan de mano en mano: una
             sola coordinación acompaña tu proceso de principio a fin.
           </p>
-          <div className="mt-12 grid gap-4 sm:grid-cols-2">
+          <div className="mt-8 grid gap-3 sm:grid-cols-2">
             {EQUIPO.map((persona) => (
-              <article key={persona.cargo} className="rounded-[1.6rem] border border-ink/10 bg-white p-6">
-                <p className="font-display text-2xl text-accent">{persona.iniciales}</p>
-                <h3 className="font-display mt-3 text-xl text-ink">{persona.cargo}</h3>
-                <p className="mt-2 text-sm text-muted">{persona.area}</p>
+              <article key={persona.cargo} className="rounded-[1.6rem] border border-ink/10 bg-white p-5">
+                <p className="font-display text-xl text-accent">{persona.iniciales}</p>
+                <h3 className="font-display mt-2 text-lg text-ink">{persona.cargo}</h3>
+                <p className="mt-1 text-sm text-muted">{persona.area}</p>
               </article>
             ))}
           </div>
-          <div className="mt-10">
+          <div className="mt-6">
             <MagneticButton href="/contacto" variant="ink">
               Hablar con el equipo
             </MagneticButton>
@@ -147,16 +138,16 @@ export function AboutLanding() {
             Operaciones de energía, construcción, ingeniería y retail nos confían la gestión de su
             personal. Cada proyecto sostiene su propio equipo, con la misma exigencia.
           </p>
-          <div className="mt-12 divide-y divide-white/10 border-y border-white/10">
+          <div className="mt-8 divide-y divide-white/10 border-y border-white/10">
             {CLIENTES.map((cliente, index) => (
-              <article key={cliente.nombre} className="grid gap-2 py-6 md:grid-cols-[4rem_1fr_auto] md:items-end">
+              <article key={cliente.nombre} className="grid gap-2 py-4 md:grid-cols-[4rem_1fr_auto] md:items-end">
                 <span className="font-display text-sm text-glow">{String(index + 1).padStart(2, "0")}</span>
-                <h3 className="font-display text-xl sm:text-2xl">{cliente.nombre}</h3>
+                <h3 className="font-display text-lg sm:text-xl">{cliente.nombre}</h3>
                 <p className="text-sm text-paper/55">{cliente.sector}</p>
               </article>
             ))}
           </div>
-          <div className="mt-10">
+          <div className="mt-6">
             <MagneticButton href="/servicios">Ver servicios</MagneticButton>
           </div>
         </StagePanel>

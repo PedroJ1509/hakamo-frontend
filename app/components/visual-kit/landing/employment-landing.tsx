@@ -5,7 +5,6 @@ import HorizontalPanels from "@/app/components/ui/HorizontalPanels";
 import { AREAS_EMPLEO, PROCESO_CANDIDATOS } from "@/lib/data";
 import { SITE_NAV, SITE_PUBLIC } from "@/lib/visual-kit/hakamo";
 import { LandingHeader } from "../chrome-header";
-import { LandingScrollExpand } from "../landing-scroll-expand";
 import { CinematicTitle } from "../cinematic-title";
 import { Grain } from "../grain";
 import { MagneticButton } from "../magnetic-button";
@@ -67,11 +66,6 @@ export function EmploymentLanding() {
         </div>
       </section>
 
-      <LandingScrollExpand title="Tu perfil">
-        <h2>Te contactamos cuando abra la vacante</h2>
-        <p>Deja tu expediente. Sin costo para el candidato, con empresas en todo el país.</p>
-      </LandingScrollExpand>
-
       <HorizontalPanels>
         <StagePanel tone="paper">
           <p className="text-[11px] uppercase tracking-[0.32em] text-accent">Candidatos</p>
@@ -82,11 +76,11 @@ export function EmploymentLanding() {
             Hakamo conecta profesionales dominicanos con proyectos en construcción, energía,
             manufactura y servicios.
           </p>
-          <div className="mt-12 divide-y divide-ink/10 border-y border-ink/10">
+          <div className="mt-8 divide-y divide-ink/10 border-y border-ink/10">
             {BENEFICIOS.map((item, index) => (
-              <article key={item} className="grid gap-4 py-6 md:grid-cols-[4rem_1fr] md:items-start">
+              <article key={item} className="grid gap-3 py-3.5 md:grid-cols-[4rem_1fr] md:items-center">
                 <span className="font-display text-sm text-accent">{String(index + 1).padStart(2, "0")}</span>
-                <p className="font-display text-xl tracking-tight text-ink sm:text-2xl">{item}</p>
+                <p className="font-display text-lg tracking-tight text-ink sm:text-xl">{item}</p>
               </article>
             ))}
           </div>
@@ -100,13 +94,13 @@ export function EmploymentLanding() {
           <p className="mt-4 max-w-xl text-sm leading-6 text-paper/65">
             Un proceso claro para que tu perfil llegue a la operación correcta.
           </p>
-          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {PROCESO_CANDIDATOS.map((paso) => (
-              <article key={paso.paso} className="h-full rounded-[1.6rem] border border-white/10 bg-white/5 p-6">
-                <p className="font-display text-3xl text-glow">{paso.paso}</p>
-                <h3 className="mt-4 font-display text-xl">{paso.titulo}</h3>
+              <article key={paso.paso} className="h-full rounded-[1.6rem] border border-white/10 bg-white/5 p-5">
+                <p className="font-display text-2xl text-glow">{paso.paso}</p>
+                <h3 className="mt-3 font-display text-lg">{paso.titulo}</h3>
                 <p className="mt-1 text-[11px] uppercase tracking-[0.22em] text-paper/45">{paso.subtitulo}</p>
-                <p className="mt-3 text-sm leading-6 text-paper/65">{paso.descripcion}</p>
+                <p className="mt-2 text-sm leading-5 text-paper/65">{paso.descripcion}</p>
               </article>
             ))}
           </div>
@@ -120,11 +114,11 @@ export function EmploymentLanding() {
           <p className="mt-4 max-w-xl text-sm leading-6 text-muted">
             Indica tu área al registrarte. Así priorizamos las vacantes que encajan contigo.
           </p>
-          <div className="mt-12 divide-y divide-ink/10 border-y border-ink/10">
+          <div className="mt-8 grid gap-2 sm:grid-cols-2">
             {AREAS_EMPLEO.map((area, index) => (
-              <article key={area} className="grid gap-4 py-5 md:grid-cols-[4rem_1fr] md:items-center">
+              <article key={area} className="flex items-center gap-3 rounded-[1.1rem] border border-ink/10 bg-white px-4 py-3">
                 <span className="font-display text-sm text-accent">{String(index + 1).padStart(2, "0")}</span>
-                <h3 className="font-display text-xl tracking-tight text-ink sm:text-2xl">{area}</h3>
+                <h3 className="font-display text-base tracking-tight text-ink sm:text-lg">{area}</h3>
               </article>
             ))}
           </div>

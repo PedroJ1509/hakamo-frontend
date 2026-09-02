@@ -12,28 +12,28 @@ export const SITE_NAV: NavLink[] = [
 export const SITE_PUBLIC: SitePublic = {
   name: COMPANY_INFO.name,
   tagline: COMPANY_INFO.tagline,
-  heroTitle: 'Capital humano, grandes proyectos',
+  heroTitle: 'Impulsamos talentos, fortalecemos empresas',
   heroSubtitle:
-    'Gestionamos equipos de trabajo para proyectos de construcción, energía e infraestructura. Experiencia comprobada en sectores industriales de alta exigencia.',
+    'Soluciones integrales para la gestión empresarial, de la planificación a la ejecución. Outsourcing, reclutamiento, payroll y supervisión de proyectos.',
   about: COMPANY_INFO.description,
   phone: COMPANY_INFO.telefono,
   email: COMPANY_INFO.email,
   address: COMPANY_INFO.ubicacion,
   ctaHref: '/contacto',
-  ctaLabel: 'Obtener cotización',
+  ctaLabel: 'Solicitar cotización',
 }
 
 export const LANDING_COPY: LandingCopy = {
   skip: 'Saltar al contenido',
   scrollHint: 'Baja para continuar',
   offeringsKicker: 'Servicios',
-  offeringsTitle: 'Ocho soluciones de capital humano',
+  offeringsTitle: 'Seis soluciones integrales para su operación',
   processKicker: 'Cómo trabajamos',
   processTitle: 'Un proceso claro, de principio a fin',
   aboutKicker: 'Hakamo',
   hoursTitle: 'Dónde encontrarnos',
   contactKicker: 'Hablemos',
-  contactTitle: '¿Listo para optimizar tu capital humano?',
+  contactTitle: 'Hablemos de su proyecto',
 }
 
 export const LANDING_STATS: Stat[] = STATS.map((item) => ({
@@ -56,8 +56,9 @@ export const LANDING_STEPS: Step[] = PROCESO_EMPRESAS.map((item) => ({
 
 export const LANDING_HOURS: HourRow[] = [
   { label: 'Oficina', value: COMPANY_INFO.ubicacion },
-  { label: 'WhatsApp', value: '829-679-0671' },
-  { label: 'Correo', value: COMPANY_INFO.email },
+  { label: 'WhatsApp / Cotizaciones', value: '829-679-0671' },
+  { label: 'Correo general', value: COMPANY_INFO.email },
+  { label: 'Reclutamiento', value: COMPANY_INFO.emailReclutamiento },
 ]
 
 export const LANDING_STORY: StoryCard[] = [

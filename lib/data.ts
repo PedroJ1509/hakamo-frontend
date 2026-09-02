@@ -1,17 +1,20 @@
 export const COMPANY_INFO = {
-  name: 'Hakamo Outsourcing',
-  tagline: 'Capital humano para grandes proyectos.',
+  name: 'Hakamo',
+  legalName: 'Hakamo Gestión Humana & Outsourcing',
+  tagline: 'Impulsamos talentos, fortalecemos empresas.',
   description:
-    'Empresa dominicana especializada en outsourcing de personal, reclutamiento y gestión de talento humano. Cumplimiento legal garantizado.',
+    'Empresa dominicana de outsourcing y gestión humana especializada en obras de construcción, plantas industriales y proyectos de gran escala. Acompañamiento B2B integral: desde la atracción del talento hasta la gestión legal, nómina y supervisión en campo.',
   email: 'gestionhumanahakamo@gmail.com',
+  emailReclutamiento: 'reclutamiento.hakamo@gmail.com',
   whatsapp: '8296790671',
-  telefono: '829-679-6842',
+  telefono: '829-679-0671',
   ubicacion: 'Montecristi, República Dominicana',
   social: {
-    facebook: 'https://facebook.com/hakamo',
     instagram: 'https://instagram.com/hakamord',
-    whatsapp: 'https://wa.me/8296790671',
+    linkedin: 'https://www.linkedin.com/company/hakamo',
+    whatsapp: 'https://wa.me/18296790671',
     email: 'mailto:gestionhumanahakamo@gmail.com',
+    mtrbio: 'https://t.mtrbio.com/hakamord',
   },
 }
 
@@ -32,67 +35,51 @@ export const CLIENTES = [
 export const SERVICIOS = [
   {
     slug: 'outsourcing-personal',
-    titulo: 'Outsourcing de Personal',
+    titulo: 'Outsourcing de personal',
     descripcion:
-      'Administramos tu fuerza laboral completa bajo la Ley 16-92. Asumimos la responsabilidad patronal, contratos, beneficios y cumplimiento con el Ministerio de Trabajo.',
+      'Personal técnico y operativo cualificado, listo para el terreno. Suministro y administración integral del talento para obras y plantas industriales, con alineación cultural y seguridad en campo desde el primer día.',
     icono: '👥',
-    tags: ['Ley 16-92', 'Staffing', 'Contratación legal'],
+    tags: ['Obras', 'Plantas industriales', 'Staffing integral'],
   },
   {
-    slug: 'reclutamiento-seleccion',
-    titulo: 'Reclutamiento y Selección',
+    slug: 'reclutamiento-especializado',
+    titulo: 'Reclutamiento especializado',
     descripcion:
-      'Desde posiciones operativas masivas hasta ejecutivos de alto nivel mediante headhunting. Evaluamos competencias, referencias y aptitudes para el candidato ideal.',
+      'Atracción y selección de perfiles clave — técnicos, operativos y administrativos — conectando a las empresas con el talento ideal para operar con eficiencia y confianza.',
     icono: '🎯',
-    tags: ['Headhunting', 'Reclutamiento masivo', 'Ejecutivos'],
+    tags: ['Perfiles técnicos', 'Operativos', 'Administrativos'],
   },
   {
-    slug: 'administracion-nomina',
-    titulo: 'Administración de Nómina',
+    slug: 'payroll-nomina',
+    titulo: 'Payroll y administración de nómina',
     descripcion:
-      'Cálculo automatizado de TSS, AFP, ARS, ISR y deducciones legales. Plataforma digital para seguimiento de pagos y reportes ante la DGII.',
+      'Cálculo preciso de nómina y pagos sin retrasos, con control de costos laborales y esquemas salariales competitivos.',
     icono: '💰',
-    tags: ['TSS', 'AFP / ARS', 'DGII / ISR'],
+    tags: ['Payroll', 'Control de costos', 'Pagos puntuales'],
   },
   {
-    slug: 'estudios-socioeconomicos',
-    titulo: 'Estudios Socioeconómicos',
+    slug: 'cumplimiento-laboral',
+    titulo: 'Cumplimiento laboral y gestión documental',
     descripcion:
-      'Verificación de antecedentes penales, referencias laborales, títulos universitarios y entorno familiar. Reducimos el riesgo en tus contrataciones desde el primer día.',
-    icono: '🔍',
-    tags: ['Background check', 'Referencias', 'Verificación académica'],
-  },
-  {
-    slug: 'evaluaciones-psicometricas',
-    titulo: 'Evaluaciones Psicométricas',
-    descripcion:
-      'Pruebas de personalidad, aptitud cognitiva, honestidad y compatibilidad con el puesto. Informes detallados para decisiones de contratación más objetivas y efectivas.',
-    icono: '🧠',
-    tags: ['Personalidad', 'Aptitud cognitiva', 'Test de honestidad'],
-  },
-  {
-    slug: 'consultoria-laboral',
-    titulo: 'Consultoría Laboral',
-    descripcion:
-      'Reglamentos internos, escalafón de salarios, liquidaciones, preaviso y cesantías. Acompañamiento en procesos ante el Ministerio de Trabajo.',
-    icono: '⚖️',
-    tags: ['Ministerio Trabajo', 'Reglamentos', 'Liquidaciones'],
-  },
-  {
-    slug: 'gestion-documental',
-    titulo: 'Gestión Documental',
-    descripcion:
-      'Contratos individuales y colectivos, actas de terminación, cartas de no objeción y expedientes del personal conforme a la Ley 16-92.',
+      'Formalización de contratos, reportería laboral y gestión de TSS, planillas DGT3 y ARS/AFP, para mantener su empresa alineada a la ley y con estabilidad jurídica en cada obra o proyecto.',
     icono: '📁',
-    tags: ['Contratos laborales', 'Expedientes HR', 'Actas legales'],
+    tags: ['TSS', 'DGT3', 'Contratos formalizados'],
   },
   {
     slug: 'supervision-proyectos',
-    titulo: 'Supervisión de Proyectos',
+    titulo: 'Supervisión de proyectos en campo',
     descripcion:
-      'Coordinación de equipos en construcción, energía, manufactura y servicios. Supervisores calificados con reportes de avance y gestión de seguridad laboral.',
+      'Acompañamiento en cada fase del proyecto: coordinación de equipos, supervisión de operaciones y control de cumplimiento, de la planificación a la ejecución.',
     icono: '🏗️',
-    tags: ['Supervisión técnica', 'Control de avance', 'Seguridad laboral'],
+    tags: ['Coordinación', 'Supervisión', 'Control de avance'],
+  },
+  {
+    slug: 'seguridad-ocupacional',
+    titulo: 'Seguridad y salud ocupacional',
+    descripcion:
+      'Supervisión del cumplimiento de los estándares de seguridad y la normativa vigente (ej. Resolución 09-2026: botiquines y planes de primeros auxilios), con herramientas de vanguardia en prevención y gestión de riesgos laborales.',
+    icono: '🦺',
+    tags: ['SST', 'Resolución 09-2026', 'Prevención de riesgos'],
   },
 ]
 
@@ -100,14 +87,20 @@ export const MARCO_LEGAL = [
   {
     titulo: 'Código Laboral — Ley 16-92',
     descripcion:
-      'Contratos, jornadas, vacaciones, liquidaciones, preaviso y cesantía conforme a ley.',
+      'Contratos formalizados, jornadas, vacaciones, liquidaciones, preaviso y cesantía conforme a ley.',
     icono: '📜',
   },
   {
     titulo: 'TSS — Tesorería Seguridad Social',
     descripcion:
-      'Cotizaciones AFP (8.1% patronal) y ARS (7.09% patronal) con reportes mensuales.',
+      'Cotizaciones AFP y ARS con reportes mensuales y planillas al día.',
     icono: '🏛️',
+  },
+  {
+    titulo: 'Planillas DGT3',
+    descripcion:
+      'Gestión y presentación oportuna de planillas ante la Dirección General de Trabajo.',
+    icono: '📋',
   },
   {
     titulo: 'AFP / ARS — Pensiones y Salud',
@@ -116,16 +109,10 @@ export const MARCO_LEGAL = [
     icono: '🏥',
   },
   {
-    titulo: 'DGII — ISR e ITBIS',
+    titulo: 'Seguridad y salud ocupacional',
     descripcion:
-      'Retención correcta de ISR en nómina y declaraciones ante Impuestos Internos.',
-    icono: '📊',
-  },
-  {
-    titulo: 'Ministerio de Trabajo',
-    descripcion:
-      'Registro de contratos, reglamentos internos y notificaciones de terminación.',
-    icono: '🏢',
+      'Cumplimiento de normativas SST vigentes, incluyendo Resolución 09-2026 y planes de primeros auxilios.',
+    icono: '🦺',
   },
 ]
 
@@ -216,12 +203,10 @@ export const PLANES = [
     badge: 'Más Popular',
     features: [
       'Posiciones ilimitadas',
-      'Reclutamiento avanzado',
-      'Nómina completa',
-      'Estudios socioeconómicos',
-      'Evaluaciones psicométricas',
-      'Consultoría laboral mensual',
-      'Plataforma digital',
+      'Reclutamiento especializado',
+      'Payroll y nómina completa',
+      'Cumplimiento TSS, DGT3 y ARS/AFP',
+      'Supervisión de proyectos',
       'Reportes semanales',
     ],
     cta: 'Obtener cotización',
@@ -248,61 +233,79 @@ export const PLANES = [
 
 export const VALORES = [
   {
-    titulo: 'Integridad',
+    titulo: 'Cumplimiento legal',
     descripcion:
-      'Actuamos con transparencia y honestidad en cada proceso, manteniendo la confianza de clientes y candidatos como prioridad absoluta.',
-    icono: '🤝',
-  },
-  {
-    titulo: 'Excelencia',
-    descripcion:
-      'Nos comprometemos a superar las expectativas en cada servicio, mejorando continuamente nuestros procesos y resultados.',
-    icono: '🏆',
-  },
-  {
-    titulo: 'Cumplimiento Legal',
-    descripcion:
-      'El respeto irrestricto al Código Laboral y las normativas dominicanas es no negociable en todas nuestras operaciones.',
+      'Operamos alineados a la normativa laboral dominicana: TSS, planillas DGT3, ARS/AFP y contratos formalizados al día.',
     icono: '⚖️',
   },
   {
-    titulo: 'Confidencialidad',
+    titulo: 'Transparencia',
     descripcion:
-      'Protegemos la información de nuestros clientes y candidatos con los más altos estándares de privacidad y discreción profesional.',
-    icono: '🔒',
+      'Procesos documentados y reportería laboral clara para la directiva y los organismos reguladores.',
+    icono: '📊',
   },
   {
-    titulo: 'Innovación',
+    titulo: 'Eficiencia en terreno',
     descripcion:
-      'Adoptamos tecnología y mejores prácticas para ofrecer soluciones de capital humano más eficientes, ágiles y efectivas.',
-    icono: '💡',
+      'Coordinación de equipos y supervisión de operaciones que garantizan continuidad y resultados reales.',
+    icono: '🏗️',
   },
   {
-    titulo: 'Responsabilidad Social',
+    titulo: 'Seguridad primero',
     descripcion:
-      'Contribuimos al desarrollo del talento dominicano y al fortalecimiento del mercado laboral formal en la República Dominicana.',
-    icono: '🌱',
+      'Estándares actualizados de prevención de riesgos laborales para proteger el recurso más valioso: la gente.',
+    icono: '🦺',
+  },
+]
+
+export const SECTORES = [
+  { nombre: 'Construcción', icono: '🏗️' },
+  { nombre: 'Plantas industriales', icono: '🏭' },
+  { nombre: 'Infraestructura', icono: '🛤️' },
+  { nombre: 'Energía y proyectos técnicos', icono: '⚡' },
+  { nombre: 'Empresas comerciales', icono: '🏪' },
+]
+
+export const VALOR_HAKAMO = [
+  {
+    titulo: 'Menor rotación',
+    descripcion:
+      'Gestión humana estructurada que fideliza al personal y estabiliza su operación.',
+  },
+  {
+    titulo: 'Control de costos',
+    descripcion:
+      'Nómina precisa y administración centralizada que protege la rentabilidad de la obra.',
+  },
+  {
+    titulo: 'Cero fricciones legales',
+    descripcion: 'Evite multas: contratos, TSS y DGT3 en regla, siempre.',
+  },
+  {
+    titulo: 'Foco directivo',
+    descripcion:
+      'Su equipo gerencial se concentra en ejecutar y rentabilizar; nosotros gestionamos el personal.',
   },
 ]
 
 export const MISION_VISION = {
   mision: {
-    titulo: 'Misión',
-    icono: '🎯',
+    titulo: 'Quiénes somos',
+    icono: '🤝',
     texto:
-      'Proveer soluciones integrales de capital humano a empresas dominicanas, facilitando la gestión del talento con excelencia, ética profesional y pleno cumplimiento del marco legal laboral vigente, para que nuestros clientes se concentren en su crecimiento.',
+      'Hakamo es una empresa dominicana de outsourcing y gestión humana especializada en obras de construcción, plantas industriales y proyectos de gran escala. Sostenemos la operación diaria de nuestros clientes mediante un acompañamiento B2B integral y transparente: desde la atracción del talento hasta la gestión legal, el cálculo preciso de nómina y la supervisión en campo.',
   },
   vision: {
-    titulo: 'Visión',
-    icono: '🔭',
+    titulo: 'Nuestro compromiso',
+    icono: '🎯',
     texto:
-      'Ser la firma líder de outsourcing y gestión de talento humano en la República Dominicana para 2030, reconocida por la calidad de nuestro servicio, la confianza de nuestros clientes y nuestro compromiso con el desarrollo profesional del talento nacional.',
+      'Asumimos la responsabilidad administrativa del personal técnico y operativo para que el equipo directivo mantenga el foco exclusivo en la rentabilidad y la ejecución del proyecto.',
   },
   valores: {
-    titulo: 'Valores',
-    icono: '⭐',
+    titulo: 'El resultado',
+    icono: '✨',
     texto:
-      'Integridad, excelencia, compromiso con el cliente, cumplimiento legal, confidencialidad, innovación continua y responsabilidad social son los pilares que guían cada decisión en Hakamo.',
+      'Cuando las operaciones, la documentación y el cumplimiento legal se centralizan con un aliado estratégico, el resultado es menor rotación, mayor control de costos y total tranquilidad para la directiva.',
   },
 }
 
@@ -317,7 +320,7 @@ export const FAQ = [
   {
     pregunta: '¿Qué servicios ofrece Hakamo?',
     respuesta:
-      'Ofrecemos outsourcing de personal, reclutamiento y selección, administración de nómina, estudios socioeconómicos, evaluaciones psicométricas, consultoría laboral, gestión documental y supervisión de proyectos.',
+      'Ofrecemos outsourcing de personal, reclutamiento especializado, payroll y administración de nómina, cumplimiento laboral y gestión documental, supervisión de proyectos en campo y seguridad y salud ocupacional.',
   },
   {
     pregunta: '¿Garantizan cumplimiento legal?',

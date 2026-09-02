@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useLayoutEffect, useRef, useState, Children, type ReactNode } from 'react'
-import { motion, useScroll, useTransform, useSpring, useReducedMotion } from 'framer-motion'
+import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion'
 
 const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect
 
@@ -11,10 +11,9 @@ interface HorizontalPanelsProps {
 }
 
 /**
- * Tras el hero:
- * - Desktop (≥1024): scroll vertical → recorrido lateral (sticky).
- * - Móvil/tablet: mismas secciones apiladas (scroll nativo estable).
- * El sticky+transform en táctil se corta entre paneles y pelea con el gesto.
+ * Desktop: scroll vertical mueve capítulos en horizontal (1:1, sin muelle).
+ * Sin overflow interno: la rueda siempre es de la página.
+ * Móvil: capítulos apilados.
  */
 export default function HorizontalPanels({ children, className = '' }: HorizontalPanelsProps) {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -60,17 +59,13 @@ export default function HorizontalPanels({ children, className = '' }: Horizonta
     offset: ['start start', 'end end'],
   })
 
-  // Píxeles (no %): useSpring con strings "%" se rompe.
-  const rawX = useTransform(scrollYProgress, [0, 1], [0, -distance])
-  const x = useSpring(rawX, { stiffness: 110, damping: 28, mass: 0.4 })
-  const progressScale = useSpring(scrollYProgress, { stiffness: 110, damping: 28, mass: 0.4 })
+  const x = useTransform(scrollYProgress, [0, 1], [0, -distance])
 
-  // Móvil / reduced-motion: apilar. Flujo hero → secciones → footer, sin bugs.
   if (prefersReducedMotion || !isDesktop) {
     return (
-      <div ref={containerRef} className={className}>
+      <div ref={containerRef} className={`relative ${className}`.trim()}>
         {panels.map((panel, i) => (
-          <div key={i} className="relative border-b border-ink/10 last:border-b-0">
+          <div key={i} className="relative">
             {panel}
           </div>
         ))}
@@ -86,25 +81,24 @@ export default function HorizontalPanels({ children, className = '' }: Horizonta
     >
       <div
         ref={stickyRef}
-        className="sticky top-[var(--header-h)] h-[calc(100svh-var(--header-h))] overflow-hidden"
+        className="hp-stage sticky top-[var(--header-h)] h-[calc(100svh-var(--header-h))] overflow-hidden"
       >
         <motion.div
           style={{ x, width: panelWidth > 0 ? panelWidth * count : undefined }}
-          className="flex h-full will-change-transform"
+          className="flex h-full touch-pan-y"
         >
           {panels.map((panel, i) => (
             <section
               key={i}
-              className="h-full flex-shrink-0 overflow-x-hidden overflow-y-auto"
+              className="h-full min-h-0 flex-shrink-0 overflow-hidden"
               style={{ width: panelWidth > 0 ? panelWidth : '100%' }}
             >
               {panel}
             </section>
           ))}
         </motion.div>
-
         <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-1 bg-white/10">
-          <motion.div className="h-full origin-left bg-glow" style={{ scaleX: progressScale }} />
+          <motion.div className="h-full origin-left bg-glow" style={{ scaleX: scrollYProgress }} />
         </div>
       </div>
     </div>

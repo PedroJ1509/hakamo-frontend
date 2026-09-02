@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useLayoutEffect, useRef } from "react";
 import type { CSSProperties, ReactNode, RefObject } from "react";
 
 import "./scroll-expand.css";
@@ -60,9 +60,9 @@ export default function ScrollExpand({
   startRadius = 24,
   endRadius = 0,
   mediaZoom = 1.35,
-  scrollDistance = 1.2,
-  holdDistance = 0.35,
-  smoothing = 0.1,
+  scrollDistance = 0.72,
+  holdDistance = 0.08,
+  smoothing = 0,
   overlayScrim = 0.45,
   useWindowScroll = false,
   enabled = true,
@@ -136,7 +136,7 @@ export default function ScrollExpand({
     }
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const root = rootRef.current;
     const track = trackRef.current;
     const stage = stageRef.current;

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
-import { onSiteScroll } from "./landing/scroll-bus";
 
 export function Reveal({
   children,
@@ -23,24 +22,18 @@ export function Reveal({
       node.classList.add("is-visible");
       return;
     }
-    if (typeof CSS !== "undefined" && CSS.supports("animation-timeline: view()")) return;
 
-    const measure = () => {
-      const rect = node.getBoundingClientRect();
-      const vh = window.innerHeight;
-      const visible = rect.top < vh * 1.22 && rect.bottom > vh * 0.1;
-      node.style.transitionDelay = visible ? `${delay}ms` : "0ms";
-      node.classList.toggle("is-visible", visible);
-    };
-
-    measure();
-    const off = onSiteScroll(measure);
-    window.addEventListener("resize", measure);
-    return () => {
-      off();
-      window.removeEventListener("resize", measure);
-    };
-  }, [delay]);
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        node.classList.add("is-visible");
+        io.disconnect();
+      },
+      { threshold: 0.18, rootMargin: "0px 0px -10% 0px" },
+    );
+    io.observe(node);
+    return () => io.disconnect();
+  }, []);
 
   return (
     <div

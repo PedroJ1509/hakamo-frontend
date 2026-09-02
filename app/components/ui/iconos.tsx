@@ -212,20 +212,18 @@ export const ICONOS_CLIENTE: Record<string, (p: Props) => React.ReactElement> = 
 /** Íconos de servicios, por `slug`. */
 export const ICONOS_SERVICIO: Record<string, (p: Props) => React.ReactElement> = {
   'outsourcing-personal': IconEquipo,
-  'reclutamiento-seleccion': IconDiana,
-  'administracion-nomina': IconNomina,
-  'estudios-socioeconomicos': IconLupaDoc,
-  'evaluaciones-psicometricas': IconMente,
-  'consultoria-laboral': IconBalanza,
-  'gestion-documental': IconCarpeta,
+  'reclutamiento-especializado': IconDiana,
+  'payroll-nomina': IconNomina,
+  'cumplimiento-laboral': IconCarpeta,
   'supervision-proyectos': IconCasco,
+  'seguridad-ocupacional': IconSalud,
 }
 
 /** Íconos del marco legal, por título. */
 export const ICONOS_MARCO_LEGAL: Record<string, (p: Props) => React.ReactElement> = {
   'Código Laboral — Ley 16-92': IconPergamino,
   'TSS — Tesorería Seguridad Social': IconInstitucion,
+  'Planillas DGT3': IconGrafico,
   'AFP / ARS — Pensiones y Salud': IconSalud,
-  'DGII — ISR e ITBIS': IconGrafico,
-  'Ministerio de Trabajo': IconEdificio,
+  'Seguridad y salud ocupacional': IconCasco,
 }

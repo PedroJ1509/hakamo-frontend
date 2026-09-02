@@ -20,7 +20,7 @@ function splitTitle(title: string) {
 
 const DOORS = [
   { href: "/nosotros", kicker: "Nosotros", title: "Quiénes somos" },
-  { href: "/servicios", kicker: "Servicios", title: "Ocho soluciones" },
+  { href: "/servicios", kicker: "Servicios", title: "Seis soluciones" },
   { href: "/empleo", kicker: "Empleo", title: "Registra tu perfil" },
 ];
 
@@ -85,8 +85,8 @@ export function HomeLanding({
       <LandingScrollExpand title="En obra">
         <h2>Cada proyecto sostiene su propio equipo</h2>
         <p>
-          Construcción, energía e infraestructura. El mismo estándar en cada operación, con
-          cumplimiento legal dominicano.
+          Construcción, plantas industriales e infraestructura. De la planificación a la ejecución,
+          con cumplimiento legal dominicano.
         </p>
       </LandingScrollExpand>
 

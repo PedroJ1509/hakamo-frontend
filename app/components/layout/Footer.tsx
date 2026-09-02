@@ -210,7 +210,7 @@ export default function Footer() {
         <div className="relative border-t border-white/10">
           <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-6 py-5 sm:flex-row">
             <p className="text-xs text-white/35">
-              © 2026 Hakamo Outsourcing. Todos los derechos reservados.
+              © {new Date().getFullYear()} Hakamo. Todos los derechos reservados.
             </p>
             <div className="flex items-center gap-4">
               <Link href="/contacto" className="text-xs text-white/25 transition-colors hover:text-white/50">

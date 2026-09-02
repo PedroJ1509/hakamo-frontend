@@ -9,9 +9,9 @@ import {
 } from '@/lib/visual-kit/hakamo'
 
 export const metadata: Metadata = {
-  title: 'Hakamo Outsourcing | Capital Humano para Grandes Proyectos',
+  title: 'Hakamo | Gestión Humana & Outsourcing',
   description:
-    'Empresa dominicana especializada en outsourcing de personal, reclutamiento y gestión de talento humano. Cumplimiento legal garantizado.',
+    'Impulsamos talentos, fortalecemos empresas. Outsourcing, reclutamiento, payroll y supervisión de proyectos para construcción, plantas industriales e infraestructura.',
 }
 
 export default function HomePage() {

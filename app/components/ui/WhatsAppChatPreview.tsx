@@ -76,7 +76,7 @@ export default function WhatsAppChatPreview() {
           H
         </div>
         <div>
-          <p className="text-[13px] font-semibold text-white">Hakamo Outsourcing</p>
+          <p className="text-[13px] font-semibold text-white">Hakamo</p>
           <p className="text-[11px] text-emerald-400">en línea</p>
         </div>
       </div>

@@ -6,7 +6,6 @@ import HorizontalPanels from "@/app/components/ui/HorizontalPanels";
 import type { Division, Vacante } from "@/types";
 import { SITE_NAV, SITE_PUBLIC } from "@/lib/visual-kit/hakamo";
 import { LandingHeader } from "../chrome-header";
-import { LandingScrollExpand } from "../landing-scroll-expand";
 import { CinematicTitle } from "../cinematic-title";
 import { EmptyState } from "../empty-state";
 import { Grain } from "../grain";
@@ -99,89 +98,84 @@ export function JobsLanding({
         </div>
       </section>
 
-      <LandingScrollExpand title="Vacantes">
-        <h2>Trabaja en proyectos de alto impacto</h2>
-        <p>Construcción, energía e infraestructura. Postúlate o deja tu perfil para cuando abra una plaza.</p>
-      </LandingScrollExpand>
+      <section id="vacantes" className="relative bg-paper px-4 py-20 text-ink sm:px-6 sm:py-28">
+        <div className="mx-auto max-w-6xl">
+          <p className="text-[11px] uppercase tracking-[0.32em] text-accent">Listado</p>
+          <h2 className="font-display mt-3 max-w-3xl text-3xl leading-snug text-ink sm:text-4xl">
+            Vacantes abiertas
+          </h2>
+          <div className="mt-8 flex flex-wrap gap-2">
+            <Chip href="/empleos" active={!divisionSlug}>
+              Todas
+            </Chip>
+            {divisiones.map((div) => (
+              <Chip
+                key={div.id}
+                href={`/empleos?division=${div.slug}${tipo ? `&tipo=${tipo}` : ""}`}
+                active={divisionSlug === div.slug}
+              >
+                {div.nombre}
+              </Chip>
+            ))}
+          </div>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {Object.entries(TIPO_LABEL).map(([key, label]) => (
+              <Chip
+                key={key}
+                href={`/empleos?${divisionSlug ? `division=${divisionSlug}&` : ""}tipo=${key}`}
+                active={tipo === key}
+              >
+                {label}
+              </Chip>
+            ))}
+          </div>
+
+          {vacantes.length === 0 ? (
+            <div className="mt-12">
+              <EmptyState
+                kicker="Vacantes"
+                title="No hay vacantes disponibles"
+                text="Intenta con otro filtro o deja tu perfil para cuando abra una oportunidad."
+              />
+            </div>
+          ) : (
+            <div className="mt-10 divide-y divide-ink/10 border-y border-ink/10">
+              {vacantes.map((vacante, index) => (
+                <Link
+                  key={vacante.documentId}
+                  href={`/empleos/${vacante.documentId}`}
+                  className="service-row group grid gap-3 py-6 md:grid-cols-[4rem_1fr_auto] md:items-end"
+                >
+                  <span className="font-display text-sm text-accent">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <div>
+                    <h3 className="font-display text-xl tracking-tight text-ink sm:text-2xl">
+                      {vacante.titulo}
+                    </h3>
+                    <p className="mt-2 text-sm leading-6 text-muted">
+                      {[
+                        vacante.division?.nombre,
+                        vacante.ubicacion,
+                        vacante.modalidad ? MODALIDAD_LABEL[vacante.modalidad] : null,
+                        vacante.salario,
+                      ]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </p>
+                  </div>
+                  <p className="text-sm text-muted">
+                    {TIPO_LABEL[vacante.tipo] ?? vacante.tipo}
+                    <span className="ml-2 text-accent transition group-hover:translate-x-0.5">→</span>
+                  </p>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
 
       <HorizontalPanels>
-        <StagePanel tone="paper">
-          <div id="vacantes">
-            <p className="text-[11px] uppercase tracking-[0.32em] text-accent">Listado</p>
-            <h2 className="font-display mt-3 max-w-3xl text-3xl leading-snug text-ink sm:text-4xl">
-              Vacantes abiertas
-            </h2>
-            <div className="mt-8 flex flex-wrap gap-2">
-              <Chip href="/empleos" active={!divisionSlug}>
-                Todas
-              </Chip>
-              {divisiones.map((div) => (
-                <Chip
-                  key={div.id}
-                  href={`/empleos?division=${div.slug}${tipo ? `&tipo=${tipo}` : ""}`}
-                  active={divisionSlug === div.slug}
-                >
-                  {div.nombre}
-                </Chip>
-              ))}
-            </div>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {Object.entries(TIPO_LABEL).map(([key, label]) => (
-                <Chip
-                  key={key}
-                  href={`/empleos?${divisionSlug ? `division=${divisionSlug}&` : ""}tipo=${key}`}
-                  active={tipo === key}
-                >
-                  {label}
-                </Chip>
-              ))}
-            </div>
-
-            {vacantes.length === 0 ? (
-              <div className="mt-12">
-                <EmptyState
-                  kicker="Vacantes"
-                  title="No hay vacantes disponibles"
-                  text="Intenta con otro filtro o deja tu perfil para cuando abra una oportunidad."
-                />
-              </div>
-            ) : (
-              <div className="mt-10 divide-y divide-ink/10 border-y border-ink/10">
-                {vacantes.map((vacante, index) => (
-                  <Link
-                    key={vacante.documentId}
-                    href={`/empleos/${vacante.documentId}`}
-                    className="service-row group grid gap-3 py-6 md:grid-cols-[4rem_1fr_auto] md:items-end"
-                  >
-                    <span className="font-display text-sm text-accent">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <div>
-                      <h3 className="font-display text-xl tracking-tight text-ink sm:text-2xl">
-                        {vacante.titulo}
-                      </h3>
-                      <p className="mt-2 text-sm leading-6 text-muted">
-                        {[
-                          vacante.division?.nombre,
-                          vacante.ubicacion,
-                          vacante.modalidad ? MODALIDAD_LABEL[vacante.modalidad] : null,
-                          vacante.salario,
-                        ]
-                          .filter(Boolean)
-                          .join(" · ")}
-                      </p>
-                    </div>
-                    <p className="text-sm text-muted">
-                      {TIPO_LABEL[vacante.tipo] ?? vacante.tipo}
-                      <span className="ml-2 text-accent transition group-hover:translate-x-0.5">→</span>
-                    </p>
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-        </StagePanel>
-
         <StagePanel tone="night">
           <p className="text-[11px] uppercase tracking-[0.32em] text-glow">¿No ves tu perfil?</p>
           <h2 className="font-display mt-3 max-w-3xl text-3xl leading-snug sm:text-4xl">

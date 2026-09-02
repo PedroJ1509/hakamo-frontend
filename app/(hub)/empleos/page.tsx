@@ -4,7 +4,7 @@ import { JobsLanding } from "@/app/components/visual-kit/landing/jobs-landing";
 import type { Division, Vacante } from "@/types";
 
 export const metadata: Metadata = {
-  title: "Empleos — Hakamo Outsourcing",
+  title: "Empleos — Hakamo",
   description:
     "Vacantes abiertas en Hakamo. Postúlate a proyectos de construcción, energía e infraestructura o deja tu perfil.",
 };
