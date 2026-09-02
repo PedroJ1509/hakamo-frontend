@@ -23,8 +23,8 @@ export function LandingScrollExpand({
       startHeight={54}
       startRadius={28}
       overlayScrim={0.52}
-      scrollDistance={0.72}
-      holdDistance={0.08}
+      scrollDistance={0.85}
+      holdDistance={0.06}
       smoothing={0}
     >
       {children}

@@ -148,6 +148,7 @@ export default function ScrollExpand({
     let current = 0;
     let target = 0;
     let stageH = 0;
+    let trackStart = 0;
     let running = false;
 
     const headerOffset = () => {
@@ -156,14 +157,27 @@ export default function ScrollExpand({
       return header instanceof HTMLElement ? Math.round(header.getBoundingClientRect().height) : 0;
     };
 
+    const trackDocTop = () => track.getBoundingClientRect().top + window.scrollY;
+
     const measure = () => {
       const c = propsRef.current;
       const offset = headerOffset();
-      stageH = Math.max(1, (c.useWindowScroll ? window.innerHeight : root.clientHeight) - offset);
+      trackStart = trackDocTop();
+
+      if (c.useWindowScroll) {
+        stage.style.removeProperty("height");
+        stage.style.removeProperty("top");
+        stageH = Math.max(1, Math.round(stage.getBoundingClientRect().height) || stage.offsetHeight);
+      } else {
+        stageH = Math.max(1, root.clientHeight);
+        stage.style.height = `${stageH}px`;
+        stage.style.top = `${offset}px`;
+      }
+
       if (stageH <= 0) return;
-      stage.style.height = `${stageH}px`;
-      stage.style.top = `${offset}px`;
-      track.style.height = `${stageH * (1 + Math.max(0, c.scrollDistance) + Math.max(0, c.holdDistance))}px`;
+
+      const scrollSpan = Math.max(0, c.scrollDistance) + Math.max(0, c.holdDistance);
+      track.style.height = `${stageH * (1 + scrollSpan)}px`;
 
       const w = root.clientWidth || stageH;
       stage.style.setProperty("--se-title-size", `${clamp(w * 0.075, 20, 84)}px`);
@@ -174,8 +188,9 @@ export default function ScrollExpand({
       if (!c.enabled) return 1;
       const span = stageH * Math.max(0.01, c.scrollDistance);
       if (c.useWindowScroll) {
-        const top = track.getBoundingClientRect().top - headerOffset();
-        return clamp(-top / span, 0, 1);
+        const offset = headerOffset();
+        const scrollInto = window.scrollY + offset - trackStart;
+        return clamp(scrollInto / span, 0, 1);
       }
       return clamp(root.scrollTop / span, 0, 1);
     };
@@ -223,13 +238,16 @@ export default function ScrollExpand({
     const scroller = useWindowScroll ? window : root;
     scroller.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
+    window.visualViewport?.addEventListener("resize", onResize);
     const ro = new ResizeObserver(onResize);
     ro.observe(root);
+    ro.observe(stage);
 
     return () => {
       if (raf) cancelAnimationFrame(raf);
       scroller.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
+      window.visualViewport?.removeEventListener("resize", onResize);
       ro.disconnect();
     };
   }, [applyProgress, useWindowScroll]);

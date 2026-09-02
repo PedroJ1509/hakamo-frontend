@@ -21,7 +21,7 @@
 .scroll-expand__track {
   position: relative;
   width: 100%;
-  height: calc((100svh - var(--header-h)) * 1.8);
+  min-height: calc((100svh - var(--header-h)) * 1.8);
 }
 
 .scroll-expand__stage {

@@ -120,7 +120,7 @@ body {
   position: relative;
   background: var(--night);
   min-height: 100svh;
-  overflow-x: hidden;
+  overflow-x: clip;
   overflow-anchor: none;
 }
 
