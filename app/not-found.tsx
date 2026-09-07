@@ -1,66 +1,68 @@
-import Link from 'next/link'
-
-const PRIMARY = '#1E3A5F'
+import Link from "next/link";
+import { SITE_NAV, SITE_PUBLIC } from "@/lib/visual-kit/hakamo";
+import { btnGhostOnNight, btnGlow } from "@/lib/visual-kit/styles";
 
 export default function NotFound() {
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center px-6 text-center" style={{ backgroundColor: '#F8F9FA' }}>
+    <main className="landing relative flex min-h-[100svh] flex-col overflow-hidden bg-night text-paper">
+      <div className="absolute inset-0" aria-hidden>
+        <div className="hero-field" />
+        <div className="hero-vignette" />
+        <div className="hero-veil" />
+      </div>
 
-      {/* 404 grande */}
-      <div className="relative mb-8">
+      <header className="chrome-header relative z-10 flex items-center justify-between px-4 sm:px-6">
+        <Link href="/" className="font-display text-lg tracking-tight text-paper">
+          {SITE_PUBLIC.name}
+        </Link>
+        <nav className="hidden items-center gap-6 text-sm text-paper/65 lg:flex">
+          {SITE_NAV.map((link) => (
+            <Link key={link.href} href={link.href} className="transition hover:text-paper">
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+      </header>
+
+      <div className="relative z-10 mx-auto flex w-full max-w-3xl flex-1 flex-col items-center justify-center px-4 pb-16 pt-10 text-center sm:px-6">
+        <p className="text-[11px] font-medium uppercase tracking-[0.42em] text-glow">Error 404</p>
+
         <p
-          className="text-[10rem] md:text-[14rem] font-black leading-none select-none"
-          style={{ color: `${PRIMARY}12`, fontFamily: 'var(--font-space-grotesk, sans-serif)' }}
+          className="font-display mt-4 select-none text-[clamp(6rem,22vw,11rem)] leading-none tracking-[-0.04em] text-paper/[0.08]"
+          aria-hidden
         >
           404
         </p>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div
-            className="w-20 h-20 rounded-2xl flex items-center justify-center shadow-lg"
-            style={{ backgroundColor: PRIMARY }}
-          >
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10" />
-              <line x1="12" y1="8" x2="12" y2="12" />
-              <line x1="12" y1="16" x2="12.01" y2="16" />
-            </svg>
-          </div>
+
+        <h1 className="font-display -mt-10 max-w-xl text-[clamp(1.85rem,5vw,3rem)] leading-[1.1] tracking-[-0.03em] italic sm:-mt-14">
+          Esta página no está en el expediente
+        </h1>
+
+        <p className="mt-5 max-w-md text-sm leading-6 text-paper/65 sm:text-base">
+          La ruta no existe o fue movida. Vuelve al inicio o sigue hacia servicios, empleo o
+          contacto.
+        </p>
+
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+          <Link href="/" className={btnGlow}>
+            Volver al inicio
+          </Link>
+          <Link href="/servicios" className={btnGhostOnNight}>
+            Ver servicios
+          </Link>
+          <Link href="/contacto" className={btnGhostOnNight}>
+            Contacto
+          </Link>
         </div>
+
+        <nav className="mt-14 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-paper/45 lg:hidden">
+          {SITE_NAV.map((link) => (
+            <Link key={link.href} href={link.href} className="hover:text-glow">
+              {link.label}
+            </Link>
+          ))}
+        </nav>
       </div>
-
-      <h1
-        className="text-2xl md:text-3xl font-bold mb-3"
-        style={{ color: '#0D1B5E', fontFamily: 'var(--font-space-grotesk, sans-serif)' }}
-      >
-        Página no encontrada
-      </h1>
-      <p className="text-gray-500 max-w-md mb-10 leading-relaxed">
-        La página que buscas no existe o fue movida. Puedes volver al inicio o explorar nuestros servicios.
-      </p>
-
-      <div className="flex flex-wrap gap-4 justify-center">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-white text-sm font-semibold transition-all hover:opacity-90"
-          style={{ backgroundColor: PRIMARY }}
-        >
-          ← Volver al inicio
-        </Link>
-        <Link
-          href="/servicios"
-          className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-sm font-semibold border-2 transition-all hover:bg-white"
-          style={{ borderColor: PRIMARY, color: PRIMARY }}
-        >
-          Ver servicios
-        </Link>
-        <Link
-          href="/blog"
-          className="px-7 py-3.5 rounded-xl text-sm font-medium bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"
-        >
-          Ir al blog
-        </Link>
-      </div>
-
     </main>
-  )
+  );
 }

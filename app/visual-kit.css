@@ -392,7 +392,7 @@ body {
   display: grid;
   grid-template-columns: 2.4rem minmax(0, 1fr);
   column-gap: 0.95rem;
-  align-items: center;
+  align-items: start;
 }
 
 .service-timeline-dot {
@@ -403,6 +403,7 @@ body {
   place-items: center;
   width: 2.35rem;
   height: 2.35rem;
+  margin-top: 1.35rem;
   border-radius: 999px;
   border: 1px solid color-mix(in srgb, var(--glow) 48%, transparent);
   background: color-mix(in srgb, var(--night) 88%, black);
@@ -430,10 +431,83 @@ body {
   padding: 1.2rem 1.3rem 1.3rem;
   color: var(--ink);
   box-shadow: var(--shadow-elevated);
+  transition: border-color 200ms ease;
 }
 
-.service-timeline-card:hover {
+.service-timeline-card:hover,
+.service-timeline-card.is-open {
   border-color: color-mix(in srgb, var(--accent) 28%, transparent);
+}
+
+.service-timeline-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  max-width: 28rem;
+  padding: 0.55rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--glow) 28%, transparent);
+  background: color-mix(in srgb, var(--glow) 8%, transparent);
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+
+.service-timeline-hint::before {
+  content: "";
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: var(--glow);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--glow) 55%, transparent);
+}
+
+.service-timeline-detail {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 280ms ease;
+}
+
+.service-timeline-card.is-open .service-timeline-detail {
+  grid-template-rows: 1fr;
+}
+
+.service-timeline-detail > p {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.service-timeline-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+
+.service-timeline-toggle:hover {
+  color: color-mix(in srgb, var(--accent) 70%, black);
+}
+
+.service-timeline-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.service-timeline-chevron {
+  transition: transform 220ms ease;
+}
+
+.service-timeline-card.is-open .service-timeline-chevron {
+  transform: rotate(180deg);
 }
 
 @media (min-width: 1024px) {

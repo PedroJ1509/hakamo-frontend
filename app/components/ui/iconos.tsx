@@ -214,9 +214,7 @@ export const ICONOS_SERVICIO: Record<string, (p: Props) => React.ReactElement> =
   'outsourcing-personal': IconEquipo,
   'reclutamiento-especializado': IconDiana,
   'payroll-nomina': IconNomina,
-  'cumplimiento-laboral': IconCarpeta,
-  'supervision-proyectos': IconCasco,
-  'seguridad-ocupacional': IconSalud,
+  'flujo-de-caja': IconGrafico,
 }
 
 /** Íconos del marco legal, por título. */

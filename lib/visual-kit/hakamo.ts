@@ -14,7 +14,7 @@ export const SITE_PUBLIC: SitePublic = {
   tagline: COMPANY_INFO.tagline,
   heroTitle: 'Impulsamos talentos, fortalecemos empresas',
   heroSubtitle:
-    'Soluciones integrales para la gestión empresarial, de la planificación a la ejecución. Outsourcing, reclutamiento, payroll y supervisión de proyectos.',
+    'Soluciones integrales para la gestión empresarial. Outsourcing, reclutamiento, payroll y mejora de flujo de caja.',
   about: COMPANY_INFO.description,
   phone: COMPANY_INFO.telefono,
   email: COMPANY_INFO.email,
@@ -27,7 +27,7 @@ export const LANDING_COPY: LandingCopy = {
   skip: 'Saltar al contenido',
   scrollHint: 'Baja para continuar',
   offeringsKicker: 'Servicios',
-  offeringsTitle: 'Seis soluciones integrales para su operación',
+  offeringsTitle: 'Cuatro soluciones para su operación',
   processKicker: 'Cómo trabajamos',
   processTitle: 'Un proceso claro, de principio a fin',
   aboutKicker: 'Hakamo',
@@ -63,40 +63,40 @@ export const LANDING_HOURS: HourRow[] = [
 
 export const LANDING_HERO_BACKGROUNDS = {
   home: {
-    src: '/visual-kit/heroes/home.jpg',
-    alt: 'Trabajadores montando estructura de acero en obra industrial',
-    objectPosition: '50% 40%',
+    src: '/visual-kit/heroes/home-rrhh.jpg',
+    alt: 'Oficina moderna de gestión de talento y reclutamiento',
+    objectPosition: '50% 45%',
     priority: true,
   },
   about: {
-    src: '/visual-kit/heroes/about.jpg',
-    alt: 'Equipo de profesionales colaborando',
-    objectPosition: '50% 35%',
+    src: '/visual-kit/heroes/about-rrhh.jpg',
+    alt: 'Equipo de profesionales colaborando en gestión humana',
+    objectPosition: '50% 40%',
   },
   services: {
-    src: '/visual-kit/heroes/services.jpg',
-    alt: 'Ingeniera en planta industrial',
-    objectPosition: '55% 42%',
+    src: '/visual-kit/heroes/services-rrhh.jpg',
+    alt: 'Sesión de trabajo sobre servicios de talento y nómina',
+    objectPosition: '50% 40%',
   },
   contact: {
-    src: '/visual-kit/heroes/contact.jpg',
-    alt: 'Reunión de negocios para cotización de servicios',
+    src: '/visual-kit/heroes/contact-rrhh.jpg',
+    alt: 'Apretón de manos en reunión comercial',
     objectPosition: '50% 40%',
   },
   employment: {
-    src: '/visual-kit/heroes/employment.jpg',
-    alt: 'Obreros en sitio de construcción',
-    objectPosition: '50% 45%',
+    src: '/visual-kit/heroes/employment-rrhh.jpg',
+    alt: 'Profesional en entrevista de empleo',
+    objectPosition: '50% 28%',
   },
   jobs: {
-    src: '/visual-kit/heroes/jobs.jpg',
-    alt: 'Supervisores revisando planos en obra',
-    objectPosition: '45% 42%',
+    src: '/visual-kit/heroes/jobs-rrhh.jpg',
+    alt: 'Equipo en sesión de planificación laboral',
+    objectPosition: '50% 40%',
   },
   jobDetail: {
-    src: '/visual-kit/heroes/job-detail.jpg',
-    alt: 'Profesionales evaluando un proyecto',
-    objectPosition: '50% 38%',
+    src: '/visual-kit/heroes/job-detail-rrhh.jpg',
+    alt: 'Especialista de RRHH en proceso de selección',
+    objectPosition: '55% 32%',
   },
 } satisfies Record<string, LandingHeroBackground>
 

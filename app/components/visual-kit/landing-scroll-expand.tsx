@@ -6,7 +6,7 @@ import ScrollExpand from "./scroll-expand";
 export function LandingScrollExpand({
   title,
   children,
-  alt = "Equipo en un proyecto de infraestructura",
+  alt = "Equipo de profesionales de gestión humana",
 }: {
   title: string;
   children?: ReactNode;

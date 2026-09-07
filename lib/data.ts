@@ -37,7 +37,9 @@ export const SERVICIOS = [
     slug: 'outsourcing-personal',
     titulo: 'Outsourcing de personal',
     descripcion:
-      'Personal técnico y operativo cualificado, listo para el terreno. Suministro y administración integral del talento para obras y plantas industriales, con alineación cultural y seguridad en campo desde el primer día.',
+      'Personal técnico y operativo cualificado, listo para el terreno en obras y plantas industriales.',
+    detalle:
+      'Asumimos el suministro y la administración integral del talento: contratación, inducción, alineación cultural y seguridad en campo desde el primer día. Su equipo directivo mantiene el foco en la obra; nosotros sostenemos la operación diaria del personal técnico y operativo.',
     icono: '👥',
     tags: ['Obras', 'Plantas industriales', 'Staffing integral'],
   },
@@ -45,41 +47,30 @@ export const SERVICIOS = [
     slug: 'reclutamiento-especializado',
     titulo: 'Reclutamiento especializado',
     descripcion:
-      'Atracción y selección de perfiles clave — técnicos, operativos y administrativos — conectando a las empresas con el talento ideal para operar con eficiencia y confianza.',
+      'Atracción y selección de perfiles técnicos, operativos y administrativos clave.',
+    detalle:
+      'Diseñamos el proceso de atracción según el perfil y el ritmo de su proyecto. Evaluamos competencias, referencias y ajuste al puesto para conectar a su empresa con el talento ideal — de operarios de campo a roles administrativos — con eficiencia y confianza.',
     icono: '🎯',
     tags: ['Perfiles técnicos', 'Operativos', 'Administrativos'],
   },
   {
     slug: 'payroll-nomina',
     titulo: 'Payroll y administración de nómina',
-    descripcion:
-      'Cálculo preciso de nómina y pagos sin retrasos, con control de costos laborales y esquemas salariales competitivos.',
+    descripcion: 'Cálculo preciso de nómina y pagos sin retrasos, con control de costos laborales.',
+    detalle:
+      'Procesamos salarios, deducciones y esquemas competitivos con puntualidad. Usted obtiene reportería clara de costos laborales; su personal recibe pagos correctos y a tiempo, sin fricciones administrativas que distraigan la operación.',
     icono: '💰',
     tags: ['Payroll', 'Control de costos', 'Pagos puntuales'],
   },
   {
-    slug: 'cumplimiento-laboral',
-    titulo: 'Cumplimiento laboral y gestión documental',
+    slug: 'flujo-de-caja',
+    titulo: 'Mejora tu flujo de caja',
     descripcion:
-      'Formalización de contratos, reportería laboral y gestión de TSS, planillas DGT3 y ARS/AFP, para mantener su empresa alineada a la ley y con estabilidad jurídica en cada obra o proyecto.',
-    icono: '📁',
-    tags: ['TSS', 'DGT3', 'Contratos formalizados'],
-  },
-  {
-    slug: 'supervision-proyectos',
-    titulo: 'Supervisión de proyectos en campo',
-    descripcion:
-      'Acompañamiento en cada fase del proyecto: coordinación de equipos, supervisión de operaciones y control de cumplimiento, de la planificación a la ejecución.',
-    icono: '🏗️',
-    tags: ['Coordinación', 'Supervisión', 'Control de avance'],
-  },
-  {
-    slug: 'seguridad-ocupacional',
-    titulo: 'Seguridad y salud ocupacional',
-    descripcion:
-      'Supervisión del cumplimiento de los estándares de seguridad y la normativa vigente (ej. Resolución 09-2026: botiquines y planes de primeros auxilios), con herramientas de vanguardia en prevención y gestión de riesgos laborales.',
-    icono: '🦺',
-    tags: ['SST', 'Resolución 09-2026', 'Prevención de riesgos'],
+      'Libera capital de trabajo: nosotros asumimos la carga de nómina y usted ejecuta el proyecto con más liquidez.',
+    detalle:
+      'Al externalizar personal y payroll, deja de adelantar quincenas, aportes y contingencias laborales con su propia caja. Hakamo administra el costo del personal con previsibilidad; su empresa retiene liquidez para materiales, avance de obra y oportunidades de crecimiento, con reportería clara de costos.',
+    icono: '📈',
+    tags: ['Liquidez', 'Capital de trabajo', 'Costos previsibles'],
   },
 ]
 
@@ -320,7 +311,7 @@ export const FAQ = [
   {
     pregunta: '¿Qué servicios ofrece Hakamo?',
     respuesta:
-      'Ofrecemos outsourcing de personal, reclutamiento especializado, payroll y administración de nómina, cumplimiento laboral y gestión documental, supervisión de proyectos en campo y seguridad y salud ocupacional.',
+      'Ofrecemos outsourcing de personal, reclutamiento especializado, payroll y administración de nómina, y soluciones para mejorar el flujo de caja de su operación.',
   },
   {
     pregunta: '¿Garantizan cumplimiento legal?',

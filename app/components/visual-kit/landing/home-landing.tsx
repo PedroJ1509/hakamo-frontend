@@ -22,7 +22,7 @@ function splitTitle(title: string) {
 
 const DOORS = [
   { href: "/nosotros", kicker: "Nosotros", title: "Quiénes somos" },
-  { href: "/servicios", kicker: "Servicios", title: "Seis soluciones" },
+  { href: "/servicios", kicker: "Servicios", title: "Cuatro soluciones" },
   { href: "/empleo", kicker: "Empleo", title: "Registra tu perfil" },
 ];
 
@@ -79,11 +79,11 @@ export function HomeLanding({
         </div>
       </LandingHeroSection>
 
-      <LandingScrollExpand title="En obra">
-        <h2>Cada proyecto sostiene su propio equipo</h2>
+      <LandingScrollExpand title="Talento" alt="Equipo de profesionales de gestión humana">
+        <h2>Cada operación sostiene su propio equipo</h2>
         <p>
-          Construcción, plantas industriales e infraestructura. De la planificación a la ejecución,
-          con cumplimiento legal dominicano.
+          Reclutamiento, nómina y cumplimiento legal. El mismo estándar en cada cliente, con foco
+          en la gente y en la liquidez de su negocio.
         </p>
       </LandingScrollExpand>
 

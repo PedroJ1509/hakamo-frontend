@@ -14,12 +14,10 @@ const NAVEGAR = [
 ]
 
 const SERVICIOS_FOOTER = [
-  'Outsourcing Personal',
-  'Reclutamiento y Selección',
-  'Gestión de Nómina',
-  'Estudios Socioeconómicos',
-  'Consultoría Laboral',
-  'Bolsa de Empleo',
+  'Outsourcing de personal',
+  'Reclutamiento especializado',
+  'Payroll y nómina',
+  'Mejora tu flujo de caja',
 ]
 
 const SOCIALES = [
