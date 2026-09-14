@@ -105,8 +105,8 @@ export function JobsDetail() {
       <LandingHeader
         name={site.name}
         links={SITE_NAV}
-        ctaHref="/empleos"
-        ctaLabel="Ver vacantes"
+        ctaHref="/contacto"
+        ctaLabel="Contactar"
         cvHref={site.cvHref}
         cvLabel={site.cvLabel}
       />

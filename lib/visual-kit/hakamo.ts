@@ -23,7 +23,7 @@ export const SITE_PUBLIC: SitePublic = {
   email: COMPANY_INFO.email,
   address: COMPANY_INFO.ubicacion,
   ctaHref: '/contacto',
-  ctaLabel: 'Solicitar cotización',
+  ctaLabel: 'Contactar',
   cvHref: '/cv',
   cvLabel: 'Postúlate aquí',
 }

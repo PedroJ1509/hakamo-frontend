@@ -199,8 +199,8 @@ export function DirectionsLanding() {
       <LandingHeader
         name={site.name}
         links={SITE_NAV}
-        ctaHref="/agendar-visita"
-        ctaLabel="Agendar visita"
+        ctaHref="/contacto"
+        ctaLabel="Contactar"
         cvHref={site.cvHref}
         cvLabel={site.cvLabel}
         tone="paper"

@@ -107,7 +107,7 @@ export function ChromeHeader({
           </div>
 
           <nav
-            className={`chrome-nav-tray mx-4 hidden min-w-0 flex-1 justify-center xl:flex ${
+            className={`chrome-nav-tray mx-4 hidden min-w-0 flex-1 justify-center lg:flex ${
               night ? "chrome-nav-tray-night" : "chrome-nav-tray-paper"
             }`}
             aria-label="Principal"
@@ -128,7 +128,7 @@ export function ChromeHeader({
             })}
           </nav>
 
-          <div className="hidden shrink-0 items-center justify-end gap-2 xl:flex 2xl:gap-2.5">
+          <div className="hidden shrink-0 items-center justify-end gap-2 lg:flex 2xl:gap-2.5">
             <a
               href={`tel:${COMPANY_INFO.whatsapp}`}
               className={`chrome-phone-chip ${night ? "chrome-phone-chip-night" : "chrome-phone-chip-paper"}`}
@@ -157,7 +157,7 @@ export function ChromeHeader({
 
           <button
             type="button"
-            className={`chrome-menu-btn shrink-0 xl:hidden ${night ? "text-paper" : "text-ink"}`}
+            className={`chrome-menu-btn shrink-0 lg:hidden ${night ? "text-paper" : "text-ink"}`}
             aria-expanded={open}
             aria-controls="site-menu"
             aria-label={open ? "Cerrar menú" : "Abrir menú"}
@@ -187,7 +187,7 @@ export function ChromeHeader({
       {open ? (
         <div
           id="site-menu"
-          className={`chrome-mobile-panel fixed inset-x-0 bottom-0 top-[var(--header-h)] z-[70] overflow-y-auto xl:hidden ${
+          className={`chrome-mobile-panel fixed inset-x-0 bottom-0 top-[var(--header-h)] z-[70] overflow-y-auto lg:hidden ${
             night ? "chrome-mobile-panel-night" : "chrome-mobile-panel-paper"
           }`}
         >

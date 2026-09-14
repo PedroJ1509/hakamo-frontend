@@ -237,6 +237,12 @@ body {
   background: color-mix(in srgb, currentColor 5%, transparent);
 }
 
+@media (min-width: 1024px) {
+  .chrome-menu-btn {
+    display: none;
+  }
+}
+
 .chrome-mobile-panel-night {
   background:
     radial-gradient(ellipse at 80% 0%, color-mix(in srgb, var(--glow) 14%, transparent), transparent 42%),

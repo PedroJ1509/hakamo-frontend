@@ -72,8 +72,8 @@ export function EmploymentLanding() {
       <LandingHeader
         name={site.name}
         links={SITE_NAV}
-        ctaHref="/cv"
-        ctaLabel="Postúlate aquí"
+        ctaHref="/contacto"
+        ctaLabel="Contactar"
         cvHref={site.cvHref}
         cvLabel={site.cvLabel}
         tone="paper"

@@ -160,7 +160,7 @@ export function VisitLanding() {
           name={site.name}
           links={SITE_NAV}
           ctaHref="/contacto"
-          ctaLabel="Contacto"
+          ctaLabel="Contactar"
           cvHref={site.cvHref}
           cvLabel={site.cvLabel}
           tone="paper"
@@ -205,7 +205,7 @@ export function VisitLanding() {
         name={site.name}
         links={SITE_NAV}
         ctaHref="/contacto"
-        ctaLabel="Contacto"
+        ctaLabel="Contactar"
         cvHref={site.cvHref}
         cvLabel={site.cvLabel}
         tone="paper"
