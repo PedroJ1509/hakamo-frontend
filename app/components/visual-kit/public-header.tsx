@@ -10,6 +10,8 @@ export function PublicHeader({
   ctaHref,
   ctaLabel,
   ctaExternal = false,
+  cvHref,
+  cvLabel,
 }: {
   name: string;
   variant?: "light" | "dark";
@@ -17,6 +19,8 @@ export function PublicHeader({
   ctaHref: string;
   ctaLabel: string;
   ctaExternal?: boolean;
+  cvHref?: string;
+  cvLabel?: string;
 }) {
   return (
     <ChromeHeader
@@ -25,6 +29,8 @@ export function PublicHeader({
       ctaHref={ctaHref}
       ctaLabel={ctaLabel}
       ctaExternal={ctaExternal}
+      cvHref={cvHref}
+      cvLabel={cvLabel}
       placement="sticky"
       tone={variant === "dark" ? "night" : "paper"}
     />

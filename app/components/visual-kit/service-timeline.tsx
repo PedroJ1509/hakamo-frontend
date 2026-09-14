@@ -74,10 +74,10 @@ export function ServiceTimeline({ items }: { items: readonly Servicio[] }) {
       <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6">
         <p className="text-[11px] uppercase tracking-[0.32em] text-glow">Catálogo</p>
         <h2 className="font-display mt-3 max-w-3xl text-3xl leading-snug sm:text-4xl">
-          Cuatro soluciones para su operación
+          Cinco soluciones para su operación
         </h2>
         <p className="mt-4 max-w-xl text-sm leading-6 text-paper/65">
-          De outsourcing a liquidez — personal, nómina y flujo de caja con cumplimiento legal dominicano.
+          Outsourcing, reclutamiento, gestión documental, nómina y supervisión de obras — con cumplimiento legal dominicano.
         </p>
         <p className="service-timeline-hint mt-6">
           Selecciona un servicio para ver el detalle

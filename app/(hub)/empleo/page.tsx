@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { EmploymentLanding } from "@/app/components/visual-kit/landing/employment-landing";
 
 export const metadata: Metadata = {
-  title: "Empleo — Hakamo",
+  title: "Cultura — Hakamo",
   description:
-    "Encuentra tu próxima oportunidad laboral. Registra tu perfil y te contactamos cuando haya una vacante que encaje contigo.",
+    "Cómo es trabajar con Hakamo: proceso, áreas, formación, vida laboral y cuidado al colaborador.",
 };
 
 export default function EmpleoPage() {

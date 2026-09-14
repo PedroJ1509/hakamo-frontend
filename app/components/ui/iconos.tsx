@@ -203,6 +203,7 @@ export const IconTienda = (p: Props) => (
 
 /** Íconos por sector de cliente, según su nombre. */
 export const ICONOS_CLIENTE: Record<string, (p: Props) => React.ReactElement> = {
+  'Grupo Cafra': IconGrua,
   'Energía 2000': IconRayo,
   'Lindsayca Group': IconGrua,
   'TSK Dominicana': IconLlave,
@@ -213,8 +214,9 @@ export const ICONOS_CLIENTE: Record<string, (p: Props) => React.ReactElement> = 
 export const ICONOS_SERVICIO: Record<string, (p: Props) => React.ReactElement> = {
   'outsourcing-personal': IconEquipo,
   'reclutamiento-especializado': IconDiana,
+  'gestion-documental': IconCarpeta,
   'payroll-nomina': IconNomina,
-  'flujo-de-caja': IconGrafico,
+  'supervision-proyectos': IconCasco,
 }
 
 /** Íconos del marco legal, por título. */

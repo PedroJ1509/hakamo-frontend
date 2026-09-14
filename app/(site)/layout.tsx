@@ -11,6 +11,8 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
         links={SITE_NAV}
         ctaHref={SITE_PUBLIC.ctaHref}
         ctaLabel={SITE_PUBLIC.ctaLabel}
+        cvHref={SITE_PUBLIC.cvHref}
+        cvLabel={SITE_PUBLIC.cvLabel}
       />
       {children}
       <PublicFooter site={SITE_PUBLIC} links={SITE_NAV} />

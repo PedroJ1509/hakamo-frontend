@@ -42,6 +42,8 @@ export type SitePublic = {
   address?: string;
   ctaHref: string;
   ctaLabel: string;
+  cvHref?: string;
+  cvLabel?: string;
 };
 
 export type LandingCopy = {

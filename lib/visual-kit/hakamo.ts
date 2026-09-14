@@ -5,7 +5,10 @@ export const SITE_NAV: NavLink[] = [
   { href: '/', label: 'Inicio' },
   { href: '/nosotros', label: 'Nosotros' },
   { href: '/servicios', label: 'Servicios' },
-  { href: '/empleo', label: 'Empleo' },
+  { href: '/empleo', label: 'Cultura' },
+  { href: '/empleos', label: 'Vacantes' },
+  { href: '/cv', label: 'Tu CV' },
+  { href: '/faq', label: 'FAQ' },
   { href: '/contacto', label: 'Contacto' },
 ]
 
@@ -14,20 +17,22 @@ export const SITE_PUBLIC: SitePublic = {
   tagline: COMPANY_INFO.tagline,
   heroTitle: 'Impulsamos talentos, fortalecemos empresas',
   heroSubtitle:
-    'Soluciones integrales para la gestión empresarial. Outsourcing, reclutamiento, payroll y mejora de flujo de caja.',
+    'Soluciones integrales para la gestión empresarial, de la planificación a la ejecución. Outsourcing · Reclutamiento · Payroll · Supervisión de proyectos. Startup dominicana especializada en obras de construcción, plantas industriales y proyectos de gran escala.',
   about: COMPANY_INFO.description,
   phone: COMPANY_INFO.telefono,
   email: COMPANY_INFO.email,
   address: COMPANY_INFO.ubicacion,
   ctaHref: '/contacto',
   ctaLabel: 'Solicitar cotización',
+  cvHref: '/cv',
+  cvLabel: 'Postúlate aquí',
 }
 
 export const LANDING_COPY: LandingCopy = {
   skip: 'Saltar al contenido',
   scrollHint: 'Baja para continuar',
   offeringsKicker: 'Servicios',
-  offeringsTitle: 'Cuatro soluciones para su operación',
+  offeringsTitle: 'Seis soluciones para su operación',
   processKicker: 'Cómo trabajamos',
   processTitle: 'Un proceso claro, de principio a fin',
   aboutKicker: 'Hakamo',
@@ -56,9 +61,9 @@ export const LANDING_STEPS: Step[] = PROCESO_EMPRESAS.map((item) => ({
 
 export const LANDING_HOURS: HourRow[] = [
   { label: 'Oficina', value: COMPANY_INFO.ubicacion },
-  { label: 'WhatsApp / Cotizaciones', value: '829-679-0671' },
-  { label: 'Correo general', value: COMPANY_INFO.email },
-  { label: 'Reclutamiento', value: COMPANY_INFO.emailReclutamiento },
+  { label: 'WhatsApp', value: COMPANY_INFO.telefono },
+  { label: 'Teléfono', value: COMPANY_INFO.telefonoAlt },
+  { label: 'Correo', value: COMPANY_INFO.email },
 ]
 
 export const LANDING_HERO_BACKGROUNDS = {
@@ -80,18 +85,24 @@ export const LANDING_HERO_BACKGROUNDS = {
   },
   contact: {
     src: '/visual-kit/heroes/contact-rrhh.jpg',
-    alt: 'Apretón de manos en reunión comercial',
-    objectPosition: '50% 40%',
+    alt: 'Espacio de atención y contacto con clientes',
+    objectPosition: '68% 32%',
+    priority: true,
   },
   employment: {
     src: '/visual-kit/heroes/employment-rrhh.jpg',
-    alt: 'Profesional en entrevista de empleo',
-    objectPosition: '50% 28%',
+    alt: 'Cultura y equipo Hakamo en el día a día',
+    objectPosition: '72% 28%',
   },
   jobs: {
     src: '/visual-kit/heroes/jobs-rrhh.jpg',
-    alt: 'Equipo en sesión de planificación laboral',
-    objectPosition: '50% 40%',
+    alt: 'Oportunidades laborales y vacantes abiertas',
+    objectPosition: '70% 35%',
+  },
+  faq: {
+    src: '/visual-kit/contact/workspace.jpg',
+    alt: 'Espacio de trabajo para resolver consultas',
+    objectPosition: '65% 40%',
   },
   jobDetail: {
     src: '/visual-kit/heroes/job-detail-rrhh.jpg',
@@ -107,7 +118,7 @@ export const LANDING_STORY: StoryCard[] = [
     kicker: 'Escala',
     caption: 'Proyectos industriales',
     title: 'A escala',
-    text: 'Experiencia comprobada en energía, infraestructura e ingeniería. El mismo estándar en cada operación.',
+    text: 'De Manzanillo a todo el país. Construcción, energía e infraestructura con el mismo estándar en cada operación.',
     span: [0.14, 0.24, 0.36, 0.46],
   },
   {
@@ -134,7 +145,7 @@ export const LANDING_STORY: StoryCard[] = [
     kicker: 'Confianza',
     caption: CLIENTES.map((c) => c.nombre).join(' · '),
     title: 'Aliadas',
-    text: 'Energía, construcción, ingeniería y retail nos confían la gestión de su personal.',
+    text: 'Grupo Cafra y operaciones de energía, construcción e ingeniería nos confían la gestión de su personal.',
     span: [0.74, 0.84, 0.96, 1],
   },
 ]

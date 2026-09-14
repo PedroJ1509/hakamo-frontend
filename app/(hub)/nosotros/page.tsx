@@ -4,7 +4,7 @@ import { AboutLanding } from "@/app/components/visual-kit/landing/about-landing"
 export const metadata: Metadata = {
   title: "Nosotros — Hakamo",
   description:
-    "Conoce a Hakamo: su aliado estratégico en gestión humana para construcción, plantas industriales y proyectos de gran escala.",
+    "Startup dominicana de outsourcing de personal, reclutamiento y gestión de proyectos para el sector construcción. Misión, visión, valores y trayectoria de Hakamo.",
 };
 
 export default function NosotrosPage() {

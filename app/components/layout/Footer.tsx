@@ -8,7 +8,7 @@ const ACCENT = '#2563EB'
 const NAVEGAR = [
   { href: '/', label: 'Inicio' },
   { href: '/servicios', label: 'Servicios' },
-  { href: '/empleo', label: 'Buscar Empleo' },
+  { href: '/empleo', label: 'Cultura' },
   { href: '/nosotros', label: 'Nosotros' },
   { href: '/contacto', label: 'Contacto' },
 ]
@@ -16,8 +16,8 @@ const NAVEGAR = [
 const SERVICIOS_FOOTER = [
   'Outsourcing de personal',
   'Reclutamiento especializado',
-  'Payroll y nómina',
-  'Mejora tu flujo de caja',
+  'Gestión documental y legal',
+  'Nómina y supervisión de obras',
 ]
 
 const SOCIALES = [
@@ -116,8 +116,8 @@ export default function Footer() {
                 />
               </Link>
               <p className="mb-7 max-w-xs text-sm leading-relaxed text-white/55">
-                Empresa dominicana especializada en outsourcing de personal, reclutamiento y gestión
-                de talento humano. Cumplimiento legal garantizado.
+                Outsourcing de gestión humana para el sector construcción. Impulsamos talentos,
+                fortalecemos empresas.
               </p>
               <div className="flex gap-3">
                 {SOCIALES.map((s) => (

@@ -27,7 +27,7 @@ const display = Fraunces({
 export const metadata: Metadata = {
   title: 'Hakamo | Gestión Humana & Outsourcing',
   description:
-    'Impulsamos talentos, fortalecemos empresas. Outsourcing, reclutamiento, payroll y supervisión de proyectos para construcción, plantas industriales e infraestructura.',
+    'Impulsamos talentos, fortalecemos empresas. Outsourcing de gestión humana para el sector construcción: reclutamiento, nómina, cumplimiento legal y supervisión de proyectos.',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

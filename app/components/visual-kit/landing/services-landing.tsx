@@ -1,7 +1,17 @@
 "use client";
 
 import HorizontalPanels from "@/app/components/ui/HorizontalPanels";
-import { MARCO_LEGAL, PLANES, PROCESO_EMPRESAS, SECTORES, SERVICIOS, VALOR_HAKAMO } from "@/lib/data";
+import {
+  COBERTURA,
+  COMPROMISO_HSE,
+  DOSSIER_CIERRE,
+  MARCO_LEGAL,
+  PLANES,
+  PROCESO_EMPRESAS,
+  SECTORES,
+  SERVICIOS,
+  VALOR_HAKAMO,
+} from "@/lib/data";
 import { SITE_NAV, SITE_PUBLIC, LANDING_HERO_BACKGROUNDS } from "@/lib/visual-kit/hakamo";
 import { LandingHeader } from "../chrome-header";
 import { CinematicTitle } from "../cinematic-title";
@@ -36,16 +46,20 @@ export function ServicesLanding() {
         ctaHref={site.ctaHref}
         ctaLabel={site.ctaLabel}
         ctaExternal={site.ctaHref.startsWith("http")}
+        cvHref={site.cvHref}
+        cvLabel={site.cvLabel}
       />
 
       <LandingHeroSection background={LANDING_HERO_BACKGROUNDS.services}>
         <div className="landing-hero-inner mx-auto max-w-3xl px-4 text-center sm:px-6">
           <p className="text-[11px] font-medium uppercase tracking-[0.42em] text-glow">Lo que ofrecemos</p>
           <div className="mt-5">
-            <CinematicTitle lines={["Soluciones integrales para", "su operación"]} />
+            <CinematicTitle lines={["Soluciones para cada", "obra y cada equipo"]} />
           </div>
-          <p className="mt-6 max-w-lg text-sm leading-6 text-paper/70 sm:text-base">
-            Outsourcing, reclutamiento, payroll, cumplimiento legal y supervisión en campo. Todo
+          <p className="mt-6 max-w-2xl text-sm leading-6 text-paper/70 sm:text-base">
+            Soluciones integrales para su operación: outsourcing de personal; reclutamiento
+            especializado; payroll y administración de nómina; cumplimiento laboral y gestión
+            documental; supervisión de proyectos en campo; y seguridad y salud ocupacional. Todo
             alineado a la normativa laboral dominicana.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
@@ -60,8 +74,31 @@ export function ServicesLanding() {
       <ServiceTimeline items={SERVICIOS} />
 
       <section className="bg-paper px-4 py-20 sm:px-6 sm:py-24">
+        <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-2">
+          <Reveal from="up">
+            <article className="h-full rounded-[1.6rem] border border-ink/10 bg-white p-6 sm:p-8">
+              <p className="text-[11px] uppercase tracking-[0.32em] text-accent">Seguridad</p>
+              <h2 className="font-display mt-3 text-2xl leading-snug text-ink sm:text-3xl">
+                {COMPROMISO_HSE.titulo}
+              </h2>
+              <p className="mt-4 text-sm leading-6 text-muted">{COMPROMISO_HSE.texto}</p>
+            </article>
+          </Reveal>
+          <Reveal from="up" delay={80}>
+            <article className="h-full rounded-[1.6rem] border border-ink/10 bg-white p-6 sm:p-8">
+              <p className="text-[11px] uppercase tracking-[0.32em] text-accent">{COBERTURA.titulo}</p>
+              <h2 className="font-display mt-3 text-2xl leading-snug text-ink sm:text-3xl">
+                Montecristi y todo el territorio nacional
+              </h2>
+              <p className="mt-4 text-sm leading-6 text-muted">{COBERTURA.texto}</p>
+            </article>
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="bg-paper px-4 py-20 sm:px-6 sm:py-24">
         <div className="mx-auto max-w-6xl">
-          <p className="text-[11px] uppercase tracking-[0.32em] text-accent">¿Por qué Hakamo?</p>
+          <p className="text-[11px] uppercase tracking-[0.32em] text-accent">¿Por qué trabajar con Hakamo?</p>
           <h2 className="font-display mt-3 max-w-3xl text-3xl leading-snug text-ink sm:text-4xl">
             Valor para su directiva y su obra
           </h2>
@@ -184,6 +221,21 @@ export function ServicesLanding() {
       </HorizontalPanels>
 
       <Marquee items={SERVICIOS.map((item) => item.titulo)} />
+
+      <section className="bg-night px-4 py-16 text-paper sm:px-6 sm:py-20">
+        <div className="mx-auto max-w-3xl text-center">
+          <p className="text-[11px] uppercase tracking-[0.32em] text-glow">{DOSSIER_CIERRE.lineaServicios}</p>
+          <h2 className="font-display mt-4 text-3xl leading-snug sm:text-4xl">{DOSSIER_CIERRE.titulo}</h2>
+          <p className="mt-4 text-sm leading-6 text-paper/70">{DOSSIER_CIERRE.texto}</p>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <MagneticButton href="/contacto">Solicitar cotización</MagneticButton>
+            <MagneticButton href="https://wa.me/18296790671" variant="ghost" external>
+              WhatsApp 829-679-0671
+            </MagneticButton>
+          </div>
+        </div>
+      </section>
+
       <PublicFooter site={site} links={SITE_NAV} />
     </div>
   );

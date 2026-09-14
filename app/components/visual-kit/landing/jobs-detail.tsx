@@ -102,7 +102,14 @@ export function JobsDetail() {
     <div className="landing">
       <ScrollProgress />
       <Grain />
-      <LandingHeader name={site.name} links={SITE_NAV} ctaHref="/empleos" ctaLabel="Ver vacantes" />
+      <LandingHeader
+        name={site.name}
+        links={SITE_NAV}
+        ctaHref="/empleos"
+        ctaLabel="Ver vacantes"
+        cvHref={site.cvHref}
+        cvLabel={site.cvLabel}
+      />
 
       {cargando ? (
         <section className="flex min-h-[100svh] items-center justify-center bg-night px-4 pt-[var(--header-h)] text-sm text-paper/55">

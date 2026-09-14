@@ -17,7 +17,7 @@ const NAV_LINKS = [
   { href: '/', label: 'Inicio' },
   { href: '/nosotros', label: 'Nosotros' },
   { href: '/servicios', label: 'Servicios' },
-  { href: '/empleo', label: 'Empleo' },
+  { href: '/empleo', label: 'Cultura' },
   { href: '/contacto', label: 'Contacto' },
 ]
 

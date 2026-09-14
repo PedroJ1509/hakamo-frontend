@@ -129,7 +129,7 @@ export default function ContactForm() {
       <button
         type="submit"
         disabled={enviando}
-        className="inline-flex w-full items-center justify-center rounded-full bg-night px-5 py-3 text-sm font-semibold text-paper transition hover:bg-[color-mix(in_srgb,var(--night)_88%,white)] disabled:cursor-not-allowed disabled:opacity-60"
+        className="inline-flex w-full items-center justify-center rounded-full bg-accent px-5 py-3 text-sm font-semibold text-paper transition hover:bg-[color-mix(in_srgb,var(--accent)_88%,black)] disabled:cursor-not-allowed disabled:opacity-60"
       >
         {enviando ? "Enviando..." : "Enviar mensaje"}
       </button>
