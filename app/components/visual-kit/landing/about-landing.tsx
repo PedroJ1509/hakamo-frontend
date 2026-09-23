@@ -61,14 +61,8 @@ export function AboutLanding() {
           <div className="mt-5">
             <CinematicTitle lines={["Outsourcing de gestión humana", "para el sector construcción"]} />
           </div>
-          <p className="mt-6 max-w-lg text-sm leading-6 text-paper/70 sm:text-base">
+          <p className="mt-6 max-w-2xl text-sm leading-6 text-paper/70 sm:text-base">
             {QUIENES_SOMOS.lead}
-          </p>
-          <p className="mt-4 max-w-2xl text-sm leading-6 text-paper/60">
-            {QUIENES_SOMOS.aliado}
-          </p>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-paper/55">
-            {QUIENES_SOMOS.responsabilidad}
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             <MagneticButton href="/servicios">Ver servicios</MagneticButton>
@@ -106,7 +100,7 @@ export function AboutLanding() {
           <h2 className="font-display mt-3 max-w-3xl text-3xl leading-snug sm:text-4xl">
             Su aliado estratégico en gestión humana
           </h2>
-          <p className="mt-4 max-w-2xl text-sm leading-6 text-paper/65">{QUIENES_SOMOS.aliado}</p>
+          <p className="mt-4 max-w-2xl text-sm leading-6 text-paper/65">{QUIENES_SOMOS.resultado}</p>
           <div className="mt-8 grid gap-3 sm:grid-cols-2">
             {PILARES.map((pilar) => (
               <article key={pilar.titulo} className="h-full rounded-[1.6rem] border border-white/10 bg-white/5 p-5">

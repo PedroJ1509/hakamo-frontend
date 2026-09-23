@@ -98,16 +98,13 @@ export function ChromeHeader({
   return (
     <>
       <header className={barClass}>
-        <div className="chrome-header-inner mx-auto flex h-full max-w-7xl items-center justify-between gap-3 px-3 sm:gap-4 sm:px-5 xl:px-6">
-          <div className="flex min-w-0 shrink-0 items-center gap-3">
+        <div className="chrome-header-inner mx-auto flex h-full w-full max-w-7xl items-center justify-between gap-2 px-3 sm:gap-3 sm:px-5 xl:px-6">
+          <div className="flex shrink-0 items-center gap-3">
             <Logo name={name} inverted={night} className={night ? "text-paper" : "text-ink"} />
-            <span className={`chrome-header-tagline ${night ? "text-paper/40" : "text-muted"}`}>
-              Gestión humana
-            </span>
           </div>
 
           <nav
-            className={`chrome-nav-tray mx-4 hidden min-w-0 flex-1 justify-center lg:flex ${
+            className={`chrome-nav-tray hidden flex-1 justify-center lg:flex ${
               night ? "chrome-nav-tray-night" : "chrome-nav-tray-paper"
             }`}
             aria-label="Principal"
@@ -128,16 +125,7 @@ export function ChromeHeader({
             })}
           </nav>
 
-          <div className="hidden shrink-0 items-center justify-end gap-2 lg:flex 2xl:gap-2.5">
-            <a
-              href={`tel:${COMPANY_INFO.whatsapp}`}
-              className={`chrome-phone-chip ${night ? "chrome-phone-chip-night" : "chrome-phone-chip-paper"}`}
-              aria-label="Llamar a Hakamo"
-            >
-              <PhoneIcon />
-              <span className="chrome-phone-text">{COMPANY_INFO.telefono}</span>
-            </a>
-            <span className={`chrome-header-divider ${night ? "bg-white/15" : "bg-ink/10"}`} aria-hidden />
+          <div className="hidden shrink-0 items-center justify-end gap-2 lg:flex">
             {placement === "fixed" ? (
               <>
                 {showCv ? (

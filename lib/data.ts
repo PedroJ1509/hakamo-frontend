@@ -3,7 +3,7 @@ export const COMPANY_INFO = {
   legalName: 'Hakamo Gestión Humana & Outsourcing',
   tagline: 'Impulsamos talentos, fortalecemos empresas.',
   description:
-    'Startup dominicana especializada en outsourcing de personal, reclutamiento estratégico y gestión administrativa de proyectos en el sector construcción. Combinamos experiencia técnica, cumplimiento legal y sensibilidad humana para impulsar la eficiencia operativa de nuestros clientes.',
+    'Startup dominicana de outsourcing y gestión humana especializada en obras de construcción, plantas industriales y proyectos de gran escala. Asumimos reclutamiento, cumplimiento legal, nómina y supervisión en campo para que la directiva se concentre en el proyecto.',
   email: 'gestionhumanahakamo@gmail.com',
   emailReclutamiento: 'reclutamiento.hakamo@gmail.com',
   whatsapp: '8296790671',
@@ -30,11 +30,7 @@ export const STATS = [
 export const QUIENES_SOMOS = {
   titulo: 'Quiénes somos',
   lead:
-    'Somos una empresa startup dominicana especializada en outsourcing de personal, reclutamiento estratégico y gestión administrativa de proyectos en el sector construcción. Combinamos experiencia técnica, cumplimiento legal y sensibilidad humana para ofrecer soluciones que impulsan la eficiencia operativa de nuestros clientes.',
-  aliado:
-    'Hakamo es una empresa dominicana de outsourcing y gestión humana especializada en obras de construcción, plantas industriales y proyectos de gran escala. Sostenemos la operación diaria de nuestros clientes mediante un acompañamiento B2B integral y transparente: desde la atracción del talento hasta la gestión legal, el cálculo preciso de nómina y la supervisión en campo.',
-  responsabilidad:
-    'Asumimos la responsabilidad administrativa del personal técnico y operativo para que el equipo directivo mantenga el foco exclusivo en la rentabilidad y la ejecución del proyecto.',
+    'Somos una startup dominicana de outsourcing y gestión humana especializada en obras de construcción, plantas industriales y proyectos de gran escala. Asumimos la operación del personal técnico y operativo —reclutamiento, cumplimiento legal, nómina y supervisión en campo— para que la directiva mantenga el foco en la rentabilidad y la ejecución del proyecto.',
   resultado:
     'Cuando las operaciones, la documentación y el cumplimiento legal se centralizan con un aliado estratégico, el resultado es menor rotación, mayor control de costos y total tranquilidad para la directiva.',
   origen:

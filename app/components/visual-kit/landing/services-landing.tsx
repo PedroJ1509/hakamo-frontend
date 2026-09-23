@@ -21,9 +21,13 @@ import { MagneticButton } from "../magnetic-button";
 import { Marquee } from "../marquee";
 import { PublicFooter } from "../public-footer";
 import { Reveal } from "../reveal";
+import { ScrollHighlightText } from "../scroll-highlight-text";
 import { ScrollProgress } from "../scroll-progress";
 import { ServiceTimeline } from "../service-timeline";
 import { StagePanel } from "../stage-panel";
+
+const SERVICIOS_LEAD =
+  "Soluciones integrales para su operación: outsourcing de personal; reclutamiento especializado; payroll y administración de nómina; cumplimiento laboral y gestión documental; supervisión de proyectos en campo; y seguridad y salud ocupacional. Todo alineado a la normativa laboral dominicana.";
 
 export function ServicesLanding() {
   const site = SITE_PUBLIC;
@@ -56,12 +60,6 @@ export function ServicesLanding() {
           <div className="mt-5">
             <CinematicTitle lines={["Soluciones para cada", "obra y cada equipo"]} />
           </div>
-          <p className="mt-6 max-w-2xl text-sm leading-6 text-paper/70 sm:text-base">
-            Soluciones integrales para su operación: outsourcing de personal; reclutamiento
-            especializado; payroll y administración de nómina; cumplimiento laboral y gestión
-            documental; supervisión de proyectos en campo; y seguridad y salud ocupacional. Todo
-            alineado a la normativa laboral dominicana.
-          </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             <MagneticButton href={site.ctaHref}>Obtener cotización</MagneticButton>
             <MagneticButton href="/contacto" variant="ghost">
@@ -71,7 +69,17 @@ export function ServicesLanding() {
         </div>
       </LandingHeroSection>
 
-      <ServiceTimeline items={SERVICIOS} />
+      <ScrollHighlightText
+        kicker="Servicios"
+        text={SERVICIOS_LEAD}
+        hint="Sigue abajo"
+        nextHref="#contenido"
+        tone="night"
+      />
+
+      <div id="contenido" className="scroll-mt-[var(--header-h)]">
+        <ServiceTimeline items={SERVICIOS} />
+      </div>
 
       <section className="bg-paper px-4 py-20 sm:px-6 sm:py-24">
         <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-2">
@@ -132,26 +140,35 @@ export function ServicesLanding() {
         </div>
       </section>
 
-      <HorizontalPanels>
-        <StagePanel tone="paper">
-          <p className="text-[11px] uppercase tracking-[0.32em] text-accent">Marco legal dominicano</p>
-          <h2 className="font-display mt-3 max-w-3xl text-3xl leading-snug text-ink sm:text-4xl">
-            Cumplimiento total con la ley dominicana
-          </h2>
-          <p className="mt-3 max-w-xl text-sm leading-6 text-muted">
-            Operamos bajo el Código Laboral (Ley 16-92) y las regulaciones de seguridad social
-            vigentes. Asumimos la responsabilidad patronal.
-          </p>
-          <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {MARCO_LEGAL.map((item) => (
-              <article key={item.titulo} className="h-full rounded-[1.6rem] border border-ink/10 bg-white p-5">
-                <h3 className="font-display text-lg text-ink">{item.titulo}</h3>
-                <p className="mt-2 text-sm leading-5 text-muted">{item.descripcion}</p>
-              </article>
-            ))}
+      <section className="bg-paper px-4 py-16 text-ink sm:px-6 sm:py-20 lg:py-24">
+        <div className="legal-layout mx-auto w-full max-w-6xl">
+          <div className="legal-layout-intro">
+            <p className="text-[11px] uppercase tracking-[0.32em] text-accent">Marco legal dominicano</p>
+            <h2 className="font-display mt-3 max-w-xl text-3xl leading-snug text-ink sm:text-4xl">
+              Cumplimiento total con la ley dominicana
+            </h2>
+            <p className="mt-3 max-w-md text-sm leading-6 text-muted">
+              Operamos bajo el Código Laboral (Ley 16-92) y las regulaciones de seguridad social
+              vigentes. Asumimos la responsabilidad patronal.
+            </p>
           </div>
-        </StagePanel>
+          <ol className="legal-rail">
+            {MARCO_LEGAL.map((item, index) => (
+              <li key={item.titulo} className="legal-rail-item">
+                <span className="legal-rail-num" aria-hidden>
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <div className="legal-rail-body">
+                  <h3 className="font-display text-lg text-ink sm:text-xl">{item.titulo}</h3>
+                  <p className="mt-1.5 text-sm leading-6 text-muted">{item.descripcion}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
 
+      <HorizontalPanels>
         <StagePanel tone="night">
           <p className="text-[11px] uppercase tracking-[0.32em] text-glow">Cómo trabajamos</p>
           <h2 className="font-display mt-3 max-w-3xl text-3xl leading-snug sm:text-4xl">
@@ -180,32 +197,24 @@ export function ServicesLanding() {
             Cumplimiento legal incluido en todos los planes. Cotización a medida según el tamaño y
             ritmo de tu operación.
           </p>
-          <div className="mt-8 grid gap-3 lg:grid-cols-3">
+          <div className="plans-compare mt-8">
             {PLANES.map((plan) => (
               <article
                 key={plan.nombre}
-                className={`h-full rounded-[1.6rem] p-5 ${
-                  plan.destacado
-                    ? "border border-accent bg-night text-paper"
-                    : "border border-ink/10 bg-white"
-                }`}
+                className={`plans-compare-col ${plan.destacado ? "is-featured" : ""}`}
               >
-                {plan.badge ? (
-                  <p className={`text-[11px] uppercase tracking-[0.32em] ${plan.destacado ? "text-glow" : "text-accent"}`}>
-                    {plan.badge}
-                  </p>
-                ) : null}
-                <h3 className={`font-display text-xl ${plan.destacado ? "mt-1.5" : ""}`}>{plan.nombre}</h3>
-                <p className={`mt-1 text-sm ${plan.destacado ? "text-paper/55" : "text-muted"}`}>{plan.precio}</p>
-                <p className={`mt-2 text-sm leading-5 ${plan.destacado ? "text-paper/65" : "text-muted"}`}>
-                  {plan.descripcion}
+                <p className={`plans-compare-badge ${plan.badge ? "" : "is-empty"}`}>
+                  {plan.badge || "·"}
                 </p>
-                <ul className={`mt-3 space-y-1 text-[13px] leading-5 ${plan.destacado ? "text-paper/70" : "text-ink/80"}`}>
+                <h3 className="plans-compare-title font-display">{plan.nombre}</h3>
+                <p className="plans-compare-price">{plan.precio}</p>
+                <p className="plans-compare-desc">{plan.descripcion}</p>
+                <ul className="plans-compare-features">
                   {plan.features.map((feature) => (
                     <li key={feature}>{feature}</li>
                   ))}
                 </ul>
-                <div className="mt-4">
+                <div className="plans-compare-cta">
                   <MagneticButton
                     href={plan.ctaLink}
                     variant={plan.destacado ? "glow" : "ink"}

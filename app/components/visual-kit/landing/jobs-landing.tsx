@@ -45,10 +45,12 @@ export function JobsLanding({
   vacantes,
   divisiones,
   total,
+  embedded = false,
 }: {
   vacantes: VacanteCard[];
   divisiones: Division[];
   total: number;
+  embedded?: boolean;
 }) {
   const site = SITE_PUBLIC;
   const [nombre, setNombre] = useState("");
@@ -83,27 +85,8 @@ export function JobsLanding({
 
   const hasFilters = Boolean(nombre || localizacion || area || tiempo);
 
-  return (
-    <div className="min-h-[100svh] bg-paper text-ink">
-      <ScrollProgress />
-
-      <a
-        href="#contenido"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[90] focus:rounded-full focus:bg-accent focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-paper"
-      >
-        Saltar al contenido
-      </a>
-
-      <LandingHeader
-        name={site.name}
-        links={SITE_NAV}
-        ctaHref="/contacto"
-        ctaLabel="Contactar"
-        cvHref={site.cvHref}
-        cvLabel={site.cvLabel}
-        tone="paper"
-      />
-
+  const body = (
+    <>
       <LandingHeroSection background={LANDING_HERO_BACKGROUNDS.jobs} tone="paper" compact>
         <div className="landing-hero-inner landing-hero-inner-compact landing-hero-inner--start mx-auto max-w-6xl px-4 sm:px-6">
           <div className="max-w-xl">
@@ -124,7 +107,7 @@ export function JobsLanding({
             <a href="#vacantes" className={btnPrimary}>
               Ver vacantes
             </a>
-            <a href="/cv" className={btnSecondary}>
+            <a href="/cv/tu-cv" className={btnSecondary}>
               Dejar mi perfil
             </a>
           </div>
@@ -252,7 +235,7 @@ export function JobsLanding({
                 return (
                   <Link
                     key={vacante.documentId}
-                    href={`/empleos/${vacante.documentId}`}
+                    href={`/cv/vacantes/${vacante.documentId}`}
                     className="jobs-masonry-item group"
                   >
                     <div className={`jobs-masonry-media ${ratioClass}`}>
@@ -310,12 +293,39 @@ export function JobsLanding({
             Guardamos tu perfil y te contactamos cuando surja una oportunidad que se ajuste a ti.
           </p>
           <div className="mt-8">
-            <a href="/cv" className={btnPrimary}>
+            <a href="/cv/tu-cv" className={btnPrimary}>
               Registrar perfil
             </a>
           </div>
         </div>
       </section>
+    </>
+  );
+
+  if (embedded) return body;
+
+  return (
+    <div className="min-h-[100svh] bg-paper text-ink">
+      <ScrollProgress />
+
+      <a
+        href="#contenido"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[90] focus:rounded-full focus:bg-accent focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-paper"
+      >
+        Saltar al contenido
+      </a>
+
+      <LandingHeader
+        name={site.name}
+        links={SITE_NAV}
+        ctaHref="/contacto"
+        ctaLabel="Contactar"
+        cvHref={site.cvHref}
+        cvLabel={site.cvLabel}
+        tone="paper"
+      />
+
+      {body}
 
       <PublicFooter site={site} links={SITE_NAV} tone="paper" />
     </div>

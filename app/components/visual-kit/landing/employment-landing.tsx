@@ -16,7 +16,7 @@ import { LandingHeroSection } from "../landing-hero-section";
 import { PublicFooter } from "../public-footer";
 import { ScrollProgress } from "../scroll-progress";
 
-/** Solo lo que no está en /cv ni /empleos */
+/** Solo lo que no está en el portal /cv */
 const DIFERENCIALES = [
   "Contrato, nómina y beneficios a cargo de Hakamo",
   "Inducción y acompañamiento al integrar el proyecto",
@@ -95,7 +95,7 @@ export function EmploymentLanding() {
             <a href="#proceso" className={btnPrimary}>
               Ver el proceso
             </a>
-            <Link href="/empleos" className={btnSecondary}>
+            <Link href="/cv#vacantes" className={btnSecondary}>
               Vacantes abiertas
             </Link>
           </div>
@@ -283,10 +283,10 @@ export function EmploymentLanding() {
             Para postularte usa Tu CV; para puestos abiertos, Vacantes.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link href="/cv" className={btnPrimary}>
+            <Link href="/cv#tu-cv" className={btnPrimary}>
               Ir a Tu CV
             </Link>
-            <Link href="/empleos" className={btnSecondary}>
+            <Link href="/cv#vacantes" className={btnSecondary}>
               Ver vacantes
             </Link>
           </div>

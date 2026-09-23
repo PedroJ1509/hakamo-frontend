@@ -71,12 +71,12 @@ export function ServiceTimeline({ items }: { items: readonly Servicio[] }) {
   return (
     <section className="service-timeline" id="catalogo">
       <div className="lamp-glow" aria-hidden />
-      <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6">
+      <div className="relative z-10 mx-auto max-w-6xl px-4 text-center sm:px-6">
         <p className="text-[11px] uppercase tracking-[0.32em] text-glow">Catálogo</p>
-        <h2 className="font-display mt-3 max-w-3xl text-3xl leading-snug sm:text-4xl">
+        <h2 className="font-display mx-auto mt-3 max-w-3xl text-3xl leading-snug sm:text-4xl">
           Cinco soluciones para su operación
         </h2>
-        <p className="mt-4 max-w-xl text-sm leading-6 text-paper/65">
+        <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-paper/65">
           Outsourcing, reclutamiento, gestión documental, nómina y supervisión de obras — con cumplimiento legal dominicano.
         </p>
         <p className="service-timeline-hint mt-6">

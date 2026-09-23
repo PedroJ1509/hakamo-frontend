@@ -5,11 +5,15 @@ export const SITE_NAV: NavLink[] = [
   { href: '/', label: 'Inicio' },
   { href: '/nosotros', label: 'Nosotros' },
   { href: '/servicios', label: 'Servicios' },
+  { href: '/proyectos', label: 'Proyectos' },
   { href: '/empleo', label: 'Cultura' },
-  { href: '/empleos', label: 'Vacantes' },
-  { href: '/cv', label: 'Tu CV' },
   { href: '/faq', label: 'FAQ' },
   { href: '/contacto', label: 'Contacto' },
+]
+
+export const POSTULATE_NAV: NavLink[] = [
+  { href: '/cv#vacantes', label: 'Vacantes' },
+  { href: '/cv#tu-cv', label: 'Tu CV' },
 ]
 
 export const SITE_PUBLIC: SitePublic = {
@@ -17,7 +21,7 @@ export const SITE_PUBLIC: SitePublic = {
   tagline: COMPANY_INFO.tagline,
   heroTitle: 'Impulsamos talentos, fortalecemos empresas',
   heroSubtitle:
-    'Soluciones integrales para la gestión empresarial, de la planificación a la ejecución. Outsourcing · Reclutamiento · Payroll · Supervisión de proyectos. Startup dominicana especializada en obras de construcción, plantas industriales y proyectos de gran escala.',
+    'Outsourcing, reclutamiento, payroll y supervisión de proyectos para construcción e industria. Startup dominicana con acompañamiento B2B de punta a punta.',
   about: COMPANY_INFO.description,
   phone: COMPANY_INFO.telefono,
   email: COMPANY_INFO.email,
@@ -98,6 +102,11 @@ export const LANDING_HERO_BACKGROUNDS = {
     src: '/visual-kit/heroes/jobs-rrhh.jpg',
     alt: 'Oportunidades laborales y vacantes abiertas',
     objectPosition: '70% 35%',
+  },
+  projects: {
+    src: '/visual-kit/obra.jpg',
+    alt: 'Obra y proyectos en campo',
+    objectPosition: '55% 40%',
   },
   faq: {
     src: '/visual-kit/contact/workspace.jpg',

@@ -24,9 +24,9 @@ function splitTitle(title: string) {
 const DOORS = [
   { href: "/nosotros", kicker: "Nosotros", title: "Quiénes somos" },
   { href: "/servicios", kicker: "Servicios", title: "Seis soluciones" },
-  { href: "/empleo", kicker: "Empleo", title: "Registra tu perfil" },
+  { href: "/proyectos", kicker: "Proyectos", title: "Obras en campo" },
+  { href: "/empleo", kicker: "Cultura", title: "Cómo trabajamos" },
   { href: "/cv", kicker: "Candidatos", title: "Postúlate aquí" },
-  { href: "/empleos", kicker: "Vacantes", title: "Oportunidades abiertas" },
   { href: "/faq", kicker: "FAQ", title: "Preguntas frecuentes" },
 ];
 
@@ -108,9 +108,6 @@ export function HomeLanding({
               Su aliado estratégico en gestión humana
             </h2>
             <p className="mt-4 text-sm leading-6 text-muted">{QUIENES_SOMOS.lead}</p>
-            <p className="mt-3 text-sm leading-6 text-muted">{QUIENES_SOMOS.aliado}</p>
-            <p className="mt-3 text-sm leading-6 text-muted">{QUIENES_SOMOS.responsabilidad}</p>
-            <p className="mt-3 text-sm leading-6 text-muted">{QUIENES_SOMOS.resultado}</p>
             <div className="mt-6">
               <MagneticButton href="/nosotros" variant="ink">
                 Conocer Hakamo

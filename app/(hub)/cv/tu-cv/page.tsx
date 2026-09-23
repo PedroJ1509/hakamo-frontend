@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
 
-export default function EmpleosPage() {
+export default function PostulateTuCvRedirect() {
   redirect('/cv')
 }

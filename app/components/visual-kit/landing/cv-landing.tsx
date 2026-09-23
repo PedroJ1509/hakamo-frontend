@@ -1,46 +1,84 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import type { Division, Vacante } from "@/types";
 import { COMPANY_INFO } from "@/lib/data";
-import { SITE_NAV, SITE_PUBLIC } from "@/lib/visual-kit/hakamo";
+import { resolveVacanteImage, type VacanteCard } from "@/lib/demo-vacantes";
 import { btnPrimary, btnSecondary } from "@/lib/visual-kit/styles";
 import { CvBuilder } from "../cv/cv-builder";
 import { CvUpload } from "../cv/cv-upload";
-import { LandingHeader } from "../chrome-header";
-import { PublicFooter } from "../public-footer";
+import { EmptyState } from "../empty-state";
 import { Reveal } from "../reveal";
-import { ScrollProgress } from "../scroll-progress";
+import { MODALIDAD_LABEL, TIPO_LABEL } from "./jobs-landing";
 
 type Mode = "builder" | "upload" | null;
+type TiempoFilter = "" | "remoto" | "parcial" | "completo";
 
 const STEPS = [
-  { n: "01", title: "Arma o sube tu CV", hint: "Te guiamos o cargas el archivo" },
-  { n: "02", title: "Envías tu perfil", hint: "Quedas en nuestra base" },
-  { n: "03", title: "Te contactamos", hint: "Si hay una vacante para ti" },
+  { n: "01", title: "Revisa vacantes", hint: "O deja tu perfil abierto" },
+  { n: "02", title: "Arma o sube tu CV", hint: "Te guiamos paso a paso" },
+  { n: "03", title: "Te contactamos", hint: "Si hay un puesto para ti" },
 ];
 
 const BENEFITS = ["Gratis", "Vacantes reales", "Te ayudamos con el CV", "Te avisamos"];
 
-const AREA_SHORT: { label: string; q: string }[] = [
-  { label: "Construcción", q: "Construcción e Infraestructura" },
-  { label: "Energía", q: "Energía y Electricidad" },
-  { label: "Salud e higiene", q: "Salud e Higiene" },
-  { label: "Seguridad", q: "Seguridad industrial y eléctrica" },
-  { label: "Oficina", q: "Administración y Oficina" },
-  { label: "Mantenimiento", q: "Mantenimiento" },
-  { label: "Industria", q: "Manufactura e Industria" },
-  { label: "Retail", q: "Retail y Comercio" },
-  { label: "Logística", q: "Transporte y Logística" },
+const TIEMPO_OPTIONS: { value: TiempoFilter; label: string }[] = [
+  { value: "", label: "Todos" },
+  { value: "remoto", label: "Remoto" },
+  { value: "parcial", label: "Parcial" },
+  { value: "completo", label: "Completo" },
 ];
 
-export function CvLanding() {
-  const site = SITE_PUBLIC;
-  const router = useRouter();
+function matchesTiempo(vacante: Vacante, tiempo: TiempoFilter) {
+  if (!tiempo) return true;
+  if (tiempo === "remoto") return vacante.modalidad === "remoto";
+  if (tiempo === "parcial") return vacante.tipo === "medio_tiempo";
+  return vacante.tipo === "tiempo_completo";
+}
+
+export function CvLanding({
+  vacantes = [],
+  divisiones = [],
+}: {
+  vacantes?: VacanteCard[];
+  divisiones?: Division[];
+}) {
   const [mode, setMode] = useState<Mode>(null);
   const [query, setQuery] = useState("");
+  const [localizacion, setLocalizacion] = useState("");
+  const [area, setArea] = useState("");
+  const [tiempo, setTiempo] = useState<TiempoFilter>("");
+
+  const locations = useMemo(() => {
+    const set = new Set(
+      vacantes.map((item) => item.ubicacion?.trim()).filter((value): value is string => Boolean(value)),
+    );
+    return Array.from(set).sort((a, b) => a.localeCompare(b, "es"));
+  }, [vacantes]);
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return vacantes.filter((item) => {
+      if (q && !item.titulo.toLowerCase().includes(q) && !item.descripcion?.toLowerCase().includes(q)) {
+        return false;
+      }
+      if (localizacion && item.ubicacion !== localizacion) return false;
+      if (area && item.division?.slug !== area) return false;
+      if (!matchesTiempo(item, tiempo)) return false;
+      return true;
+    });
+  }, [vacantes, query, localizacion, area, tiempo]);
+
+  const hasFilters = Boolean(query || localizacion || area || tiempo);
+
+  const clearFilters = () => {
+    setQuery("");
+    setLocalizacion("");
+    setArea("");
+    setTiempo("");
+  };
 
   const choose = (next: Mode) => {
     setMode(next);
@@ -51,33 +89,13 @@ export function CvLanding() {
 
   const searchJobs = (event: React.FormEvent) => {
     event.preventDefault();
-    const q = query.trim();
-    router.push(q ? `/empleos?q=${encodeURIComponent(q)}` : "/empleos");
+    document.getElementById("vacantes")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   return (
-    <div className="min-h-[100svh] bg-paper text-ink">
-      <ScrollProgress />
-
-      <a
-        href="#contenido"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[90] focus:rounded-full focus:bg-accent focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-paper"
-      >
-        Saltar al contenido
-      </a>
-
-      <LandingHeader
-        name={site.name}
-        links={SITE_NAV}
-        ctaHref="/contacto"
-        ctaLabel="Contactar"
-        cvHref={site.cvHref}
-        cvLabel={site.cvLabel}
-        tone="paper"
-      />
-
+    <>
       {/* Hero */}
-      <section id="contenido" className="relative min-h-[72svh] overflow-hidden sm:min-h-[78svh]">
+      <section className="relative min-h-[70svh] overflow-hidden sm:min-h-[76svh]">
         <div className="absolute inset-0" aria-hidden>
           <Image
             src="/visual-kit/heroes/cv-seeker.jpg"
@@ -96,17 +114,17 @@ export function CvLanding() {
           />
         </div>
 
-        <div className="relative mx-auto flex min-h-[72svh] max-w-6xl flex-col justify-end px-4 pb-14 pt-24 sm:min-h-[78svh] sm:justify-center sm:px-6 sm:pb-20 sm:pt-28">
+        <div className="relative mx-auto flex min-h-[70svh] max-w-6xl flex-col justify-end px-4 pb-14 pt-24 sm:min-h-[76svh] sm:justify-center sm:px-6 sm:pb-20 sm:pt-28">
           <div className="max-w-xl text-left">
             <p className="text-[11px] font-semibold uppercase tracking-[0.36em] text-accent">
-              Empleo en República Dominicana
+              Postúlate en Hakamo
             </p>
             <h1 className="font-display mt-4 text-[clamp(2.2rem,5.5vw,3.8rem)] leading-[1.05] tracking-[-0.03em] text-ink">
               Encuentra tu próxima
               <span className="mt-1 block italic text-accent">oportunidad</span>
             </h1>
             <p className="mt-5 max-w-md text-sm leading-6 text-muted sm:text-base">
-              Busca vacantes o deja tu CV. Gratis y fácil.
+              Revisa vacantes o deja tu CV. Todo en un solo lugar, gratis.
             </p>
 
             <form
@@ -124,29 +142,32 @@ export function CvLanding() {
                 className="w-full flex-1 rounded-full border-0 bg-transparent px-4 py-3 text-sm text-ink outline-none placeholder:text-muted"
               />
               <button type="submit" className={`${btnPrimary} w-full sm:w-auto sm:shrink-0`}>
-                Buscar empleos
+                Buscar
               </button>
             </form>
 
             <div className="mt-5 flex flex-wrap items-center gap-3">
-              <Link href="/empleos" className={btnSecondary}>
+              <a href="#vacantes" className={btnSecondary}>
                 Ver vacantes
-              </Link>
-              <button
-                type="button"
-                onClick={() => choose("builder")}
-                className="text-sm font-semibold text-accent"
-              >
-                Crear mi CV →
-              </button>
+              </a>
+              <a href="#tu-cv" className="text-sm font-semibold text-accent">
+                Dejar mi CV →
+              </a>
             </div>
+
+            {vacantes.length > 0 ? (
+              <p className="mt-6 text-[11px] uppercase tracking-[0.28em] text-accent">
+                {vacantes.length} vacante{vacantes.length === 1 ? "" : "s"} abierta
+                {vacantes.length === 1 ? "" : "s"}
+              </p>
+            ) : null}
           </div>
         </div>
       </section>
 
-      {/* Beneficios en una sola franja */}
+      {/* Beneficios */}
       <section className="border-y border-ink/8 bg-white px-4 py-5 sm:px-6">
-        <ul className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-6 gap-y-2 sm:justify-between sm:gap-x-4">
+        <ul className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-6 gap-y-2 sm:justify-between">
           {BENEFITS.map((item) => (
             <li key={item} className="flex items-center gap-2 text-sm font-medium text-ink">
               <span className="inline-block h-1.5 w-1.5 rounded-full bg-accent" aria-hidden />
@@ -156,55 +177,210 @@ export function CvLanding() {
         </ul>
       </section>
 
-      {/* Áreas + pasos juntos, más visual */}
+      {/* Cómo postularte */}
       <section className="bg-paper px-4 py-12 sm:px-6 sm:py-14">
-        <div className="mx-auto max-w-6xl space-y-12">
-          <div>
-            <div className="text-center">
-              <h2 className="font-display text-2xl text-ink sm:text-3xl">¿En qué área?</h2>
-              <Link href="/empleos" className="mt-2 inline-block text-sm font-semibold text-accent">
-                Ver vacantes →
-              </Link>
-            </div>
-            <div className="mt-5 flex justify-center gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              {AREA_SHORT.map((area) => (
-                <Link
-                  key={area.label}
-                  href={`/empleos?q=${encodeURIComponent(area.q)}`}
-                  className="shrink-0 rounded-full border border-ink/10 bg-white px-4 py-2 text-sm text-ink transition hover:border-accent hover:text-accent"
-                >
-                  {area.label}
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <h2 className="font-display text-center text-2xl text-ink sm:text-3xl">Cómo postularte</h2>
-            <ol className="apply-timeline mt-8">
-              {STEPS.map((step, index) => (
-                <li key={step.n} className="apply-timeline-item">
-                  <span className="apply-timeline-dot" aria-hidden>
-                    {step.n}
-                  </span>
-                  {index < STEPS.length - 1 ? <span className="apply-timeline-line" aria-hidden /> : null}
-                  <div className="apply-timeline-content">
-                    <h3 className="font-display text-lg text-ink sm:text-xl">{step.title}</h3>
-                    <p className="mt-1 text-sm text-muted">{step.hint}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </div>
+        <div className="mx-auto max-w-6xl">
+          <h2 className="font-display text-center text-2xl text-ink sm:text-3xl">Cómo postularte</h2>
+          <ol className="apply-timeline mt-8">
+            {STEPS.map((step, index) => (
+              <li key={step.n} className="apply-timeline-item">
+                <span className="apply-timeline-dot" aria-hidden>
+                  {step.n}
+                </span>
+                {index < STEPS.length - 1 ? <span className="apply-timeline-line" aria-hidden /> : null}
+                <div className="apply-timeline-content">
+                  <h3 className="font-display text-lg text-ink sm:text-xl">{step.title}</h3>
+                  <p className="mt-1 text-sm text-muted">{step.hint}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
 
-      {/* Dos caminos CV */}
-      <section className="bg-paper px-4 py-16 sm:px-6 sm:py-20">
+      {/* Vacantes */}
+      <section id="vacantes" className="scroll-mt-[var(--header-h)] bg-white px-4 py-16 text-ink sm:px-6 sm:py-20">
+        <div className="mx-auto max-w-6xl">
+          <p className="text-center text-[11px] uppercase tracking-[0.32em] text-accent">Vacantes</p>
+          <h2 className="font-display mt-3 text-center text-3xl leading-snug text-ink sm:text-4xl">
+            Oportunidades abiertas
+          </h2>
+          <p className="mx-auto mt-3 max-w-lg text-center text-sm text-muted">
+            Filtra por puesto, ciudad o área. Si no ves tu perfil, deja tu CV más abajo.
+          </p>
+
+          <form className="jobs-filters mt-10" onSubmit={(event) => event.preventDefault()}>
+            <label className="jobs-filter-field">
+              <span className="visit-label">Nombre</span>
+              <input
+                type="search"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Buscar por puesto"
+                className="visit-input"
+              />
+            </label>
+
+            <label className="jobs-filter-field">
+              <span className="visit-label">Localización</span>
+              <select
+                value={localizacion}
+                onChange={(event) => setLocalizacion(event.target.value)}
+                className="visit-input"
+              >
+                <option value="">Todas</option>
+                {locations.map((loc) => (
+                  <option key={loc} value={loc}>
+                    {loc}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className="jobs-filter-field">
+              <span className="visit-label">Área</span>
+              <select
+                value={area}
+                onChange={(event) => setArea(event.target.value)}
+                className="visit-input"
+              >
+                <option value="">Todas</option>
+                {divisiones.map((div) => (
+                  <option key={div.id} value={div.slug}>
+                    {div.nombre}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </form>
+
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+            <span className="mr-1 text-xs font-medium uppercase tracking-[0.18em] text-muted">
+              Tiempo
+            </span>
+            {TIEMPO_OPTIONS.map((option) => (
+              <button
+                key={option.value || "all"}
+                type="button"
+                onClick={() => setTiempo(option.value)}
+                className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${
+                  tiempo === option.value
+                    ? "bg-accent text-paper"
+                    : "border border-ink/10 bg-white text-muted hover:border-accent hover:text-accent"
+                }`}
+              >
+                {option.label}
+              </button>
+            ))}
+            {hasFilters ? (
+              <button
+                type="button"
+                onClick={clearFilters}
+                className="ml-2 text-xs font-semibold text-accent underline-offset-2 hover:underline"
+              >
+                Limpiar
+              </button>
+            ) : null}
+          </div>
+
+          <p className="mt-6 text-center text-sm text-muted">
+            {filtered.length} resultado{filtered.length === 1 ? "" : "s"}
+          </p>
+
+          {filtered.length === 0 ? (
+            <div className="mt-10">
+              <EmptyState
+                kicker="Vacantes"
+                title="No hay vacantes con esos filtros"
+                text="Prueba otra búsqueda o deja tu perfil más abajo."
+              />
+              <div className="mt-6 text-center">
+                <a href="#tu-cv" className={btnPrimary}>
+                  Dejar mi CV
+                </a>
+              </div>
+            </div>
+          ) : (
+            <div className="jobs-masonry mt-8">
+              {filtered.map((vacante, index) => {
+                const meta = [
+                  vacante.division?.nombre,
+                  vacante.ubicacion,
+                  vacante.modalidad ? MODALIDAD_LABEL[vacante.modalidad] : null,
+                ]
+                  .filter(Boolean)
+                  .join(" · ");
+                const maxLen = index % 3 === 0 ? 140 : index % 3 === 1 ? 80 : 40;
+                const excerpt = vacante.descripcion?.replace(/\s+/g, " ").trim().slice(0, maxLen) || null;
+                const showExcerpt = Boolean(excerpt && excerpt.length > 24);
+                const image = resolveVacanteImage(vacante, index);
+                const ratioClass =
+                  index % 3 === 0
+                    ? "jobs-masonry-media--tall"
+                    : index % 3 === 1
+                      ? "jobs-masonry-media--wide"
+                      : "jobs-masonry-media--square";
+
+                return (
+                  <Link
+                    key={vacante.documentId}
+                    href={`/cv/vacantes/${vacante.documentId}`}
+                    className="jobs-masonry-item group"
+                  >
+                    <div className={`jobs-masonry-media ${ratioClass}`}>
+                      <Image
+                        src={image}
+                        alt=""
+                        fill
+                        className="object-cover transition duration-500 group-hover:scale-[1.03]"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      />
+                    </div>
+                    <div className="jobs-masonry-body">
+                      <span className="font-display text-xs text-accent">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <h3 className="font-display mt-2 text-xl tracking-tight text-ink transition group-hover:text-accent sm:text-2xl">
+                        {vacante.titulo}
+                      </h3>
+                      {meta ? <p className="mt-2 text-sm leading-6 text-muted">{meta}</p> : null}
+                      {showExcerpt ? (
+                        <p className="mt-3 text-sm leading-6 text-ink/70">
+                          {excerpt}
+                          {vacante.descripcion && vacante.descripcion.length > excerpt!.length ? "…" : ""}
+                        </p>
+                      ) : null}
+                      <div className="mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-ink/8 pt-4">
+                        <span className="text-xs font-medium uppercase tracking-[0.18em] text-muted">
+                          {vacante.modalidad === "remoto"
+                            ? "Remoto"
+                            : TIPO_LABEL[vacante.tipo] ?? vacante.tipo}
+                        </span>
+                        <span className="text-sm text-accent transition group-hover:translate-x-0.5">
+                          Ver →
+                        </span>
+                      </div>
+                      {vacante.salario ? (
+                        <p className="mt-3 text-sm font-medium text-ink">{vacante.salario}</p>
+                      ) : null}
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Tu CV */}
+      <section id="tu-cv" className="scroll-mt-[var(--header-h)] border-t border-ink/8 bg-paper px-4 py-16 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-6xl">
           <div className="mx-auto max-w-xl text-center">
-            <h2 className="font-display text-3xl text-ink sm:text-4xl">Deja tu perfil</h2>
-            <p className="mt-3 text-sm text-muted">Crea tu CV o súbelo. Luego lo enviamos a Hakamo.</p>
+            <p className="text-[11px] uppercase tracking-[0.32em] text-accent">Tu CV</p>
+            <h2 className="font-display mt-3 text-3xl text-ink sm:text-4xl">Deja tu perfil</h2>
+            <p className="mt-3 text-sm text-muted">
+              Crea tu CV con nosotros o súbelo. Quedas en nuestra base y te avisamos.
+            </p>
           </div>
 
           <div className="mt-8 grid gap-3 md:grid-cols-2">
@@ -253,7 +429,7 @@ export function CvLanding() {
         </div>
       </section>
 
-      <section id="formulario" className="bg-paper px-4 pb-20 pt-6 sm:px-6 sm:pb-24">
+      <section id="formulario" className="scroll-mt-[var(--header-h)] bg-paper px-4 pb-20 pt-2 sm:px-6 sm:pb-24">
         <div className="mx-auto max-w-3xl">
           {!mode && (
             <div className="border-t border-ink/10 px-2 py-12 text-center">
@@ -296,18 +472,11 @@ export function CvLanding() {
           <p className="text-sm text-muted">
             ¿Dudas? WhatsApp <span className="font-semibold text-ink">{COMPANY_INFO.telefono}</span>
           </p>
-          <div className="flex flex-wrap gap-3">
-            <a href={COMPANY_INFO.social.whatsapp} target="_blank" rel="noreferrer" className={btnPrimary}>
-              WhatsApp
-            </a>
-            <Link href="/empleos" className={btnSecondary}>
-              Vacantes
-            </Link>
-          </div>
+          <a href={COMPANY_INFO.social.whatsapp} target="_blank" rel="noreferrer" className={btnPrimary}>
+            WhatsApp
+          </a>
         </div>
       </section>
-
-      <PublicFooter site={site} links={SITE_NAV} tone="paper" />
-    </div>
+    </>
   );
 }

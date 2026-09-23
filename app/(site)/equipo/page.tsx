@@ -83,7 +83,7 @@ export default function EquipoPage() {
             ¿Tienes talento y quieres crecer? Revisa nuestras vacantes disponibles.
           </p>
           <Link
-            href="/empleos"
+            href="/cv"
             className="inline-flex items-center gap-2 px-8 py-4 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90"
             style={{ backgroundColor: PRIMARY }}
           >

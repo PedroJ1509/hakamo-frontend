@@ -50,7 +50,7 @@ interface FormData {
 
 const initialForm: FormData = { nombre: "", email: "", telefono: "", cartaPresentacion: "" };
 
-export function JobsDetail() {
+export function JobsDetail({ embedded = false }: { embedded?: boolean }) {
   const params = useParams();
   const id = params.id as string;
   const site = SITE_PUBLIC;
@@ -98,25 +98,14 @@ export function JobsDetail() {
     }
   };
 
-  return (
-    <div className="landing">
-      <ScrollProgress />
-      <Grain />
-      <LandingHeader
-        name={site.name}
-        links={SITE_NAV}
-        ctaHref="/contacto"
-        ctaLabel="Contactar"
-        cvHref={site.cvHref}
-        cvLabel={site.cvLabel}
-      />
-
+  const content = (
+    <>
       {cargando ? (
-        <section className="flex min-h-[100svh] items-center justify-center bg-night px-4 pt-[var(--header-h)] text-sm text-paper/55">
+        <section className="flex min-h-[60svh] items-center justify-center bg-night px-4 text-sm text-paper/55">
           Cargando vacante...
         </section>
       ) : !vacante ? (
-        <section className="flex min-h-[100svh] items-center bg-paper px-4 pt-[var(--header-h)]">
+        <section className="flex min-h-[60svh] items-center bg-paper px-4">
           <div className="mx-auto w-full max-w-xl">
             <EmptyState
               kicker="404"
@@ -124,7 +113,7 @@ export function JobsDetail() {
               text="Vuelve al listado para ver las oportunidades abiertas."
             />
             <div className="mt-8 text-center">
-              <MagneticButton href="/empleos" variant="ink">
+              <MagneticButton href="/cv#vacantes" variant="ink">
                 Ver vacantes
               </MagneticButton>
             </div>
@@ -196,7 +185,7 @@ export function JobsDetail() {
                         Recibimos tu información. Nos comunicaremos contigo si tu perfil se ajusta.
                       </p>
                       <div className="mt-6">
-                        <MagneticButton href="/empleos" variant="ink" size="sm">
+                        <MagneticButton href="/cv#vacantes" variant="ink" size="sm">
                           Ver otras vacantes
                         </MagneticButton>
                       </div>
@@ -290,7 +279,26 @@ export function JobsDetail() {
           </section>
         </>
       )}
+    </>
+  );
 
+  if (embedded) {
+    return <div className="landing bg-paper">{content}</div>;
+  }
+
+  return (
+    <div className="landing">
+      <ScrollProgress />
+      <Grain />
+      <LandingHeader
+        name={site.name}
+        links={SITE_NAV}
+        ctaHref="/contacto"
+        ctaLabel="Contactar"
+        cvHref={site.cvHref}
+        cvLabel={site.cvLabel}
+      />
+      {content}
       <PublicFooter site={site} links={SITE_NAV} />
     </div>
   );
