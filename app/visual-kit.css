@@ -1304,6 +1304,44 @@ body {
   }
 }
 
+.faq-night .faq-list {
+  border-top-color: color-mix(in srgb, white 14%, transparent);
+}
+
+.faq-night .faq-item {
+  border-bottom-color: color-mix(in srgb, white 14%, transparent);
+}
+
+.faq-night .faq-index {
+  color: var(--glow);
+}
+
+.faq-night .faq-question {
+  color: var(--paper);
+}
+
+.faq-night .faq-trigger:hover .faq-question {
+  color: var(--glow);
+}
+
+.faq-night .faq-icon {
+  border-color: color-mix(in srgb, white 22%, transparent);
+  background: transparent;
+}
+
+.faq-night .faq-icon-bar {
+  background: var(--glow);
+}
+
+.faq-night .faq-item.is-open .faq-icon {
+  border-color: color-mix(in srgb, var(--glow) 55%, transparent);
+  background: color-mix(in srgb, var(--glow) 14%, transparent);
+}
+
+.faq-night .faq-answer {
+  color: color-mix(in srgb, var(--paper) 68%, transparent);
+}
+
 .faq-list {
   border-top: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
 }

@@ -10,7 +10,8 @@ import {
   PROCESO_CANDIDATOS,
 } from "@/lib/data";
 import { SITE_NAV, SITE_PUBLIC, LANDING_HERO_BACKGROUNDS } from "@/lib/visual-kit/hakamo";
-import { btnPrimary, btnSecondary } from "@/lib/visual-kit/styles";
+import { btnGhostOnNight, btnGlow } from "@/lib/visual-kit/styles";
+import { Grain } from "../grain";
 import { LandingHeader } from "../chrome-header";
 import { LandingHeroSection } from "../landing-hero-section";
 import { PublicFooter } from "../public-footer";
@@ -59,12 +60,13 @@ export function EmploymentLanding() {
   const site = SITE_PUBLIC;
 
   return (
-    <div className="min-h-[100svh] bg-paper text-ink">
+    <div className="landing min-h-[100svh] bg-night text-paper">
       <ScrollProgress />
+      <Grain />
 
       <a
         href="#contenido"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[90] focus:rounded-full focus:bg-accent focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-paper"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[90] focus:rounded-full focus:bg-glow focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-night"
       >
         Saltar al contenido
       </a>
@@ -76,26 +78,25 @@ export function EmploymentLanding() {
         ctaLabel="Contactar"
         cvHref={site.cvHref}
         cvLabel={site.cvLabel}
-        tone="paper"
       />
 
-      <LandingHeroSection background={LANDING_HERO_BACKGROUNDS.employment} tone="paper" compact>
+      <LandingHeroSection background={LANDING_HERO_BACKGROUNDS.employment} compact>
         <div className="landing-hero-inner landing-hero-inner-compact landing-hero-inner--start mx-auto max-w-6xl px-4 sm:px-6">
           <div className="max-w-xl">
-          <p className="text-[11px] font-medium uppercase tracking-[0.42em] text-accent">Cultura</p>
-          <h1 className="font-display mt-5 text-[clamp(2.1rem,6vw,4rem)] leading-[1.05] tracking-[-0.03em] text-ink">
+          <p className="text-[11px] font-medium uppercase tracking-[0.42em] text-glow">Cultura</p>
+          <h1 className="font-display mt-5 text-[clamp(2.1rem,6vw,4rem)] leading-[1.05] tracking-[-0.03em] text-paper">
             Cómo es trabajar
-            <span className="mt-1 block italic text-accent">con Hakamo</span>
+            <span className="mt-1 block italic text-glow">con Hakamo</span>
           </h1>
-          <p className="mt-6 max-w-lg text-sm leading-6 text-muted sm:text-base">
+          <p className="mt-6 max-w-lg text-sm leading-6 text-paper/65 sm:text-base">
             Qué implica formar parte de nuestros proyectos: contrato, inducción, seguridad y vida
             laboral en campo.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <a href="#proceso" className={btnPrimary}>
+            <a href="#proceso" className={btnGlow}>
               Ver el proceso
             </a>
-            <Link href="/cv#vacantes" className={btnSecondary}>
+            <Link href="/cv#vacantes" className={btnGhostOnNight}>
               Vacantes abiertas
             </Link>
           </div>
@@ -103,12 +104,12 @@ export function EmploymentLanding() {
         </div>
       </LandingHeroSection>
 
-      <section className="bg-white px-4 py-10 sm:px-6 sm:py-14" aria-label="Galería">
+      <section className="bg-night px-4 py-10 sm:px-6 sm:py-14" aria-label="Galería">
         <div className="mx-auto grid max-w-6xl grid-cols-2 gap-2 sm:gap-3 md:grid-cols-4 md:grid-rows-2 md:gap-4">
           {GALLERY.map((photo, index) => (
             <div
               key={photo.src}
-              className={`relative overflow-hidden bg-paper ${
+              className={`relative overflow-hidden bg-night ${
                 index === 0
                   ? "aspect-[4/5] md:col-span-2 md:row-span-2 md:aspect-auto md:min-h-[28rem]"
                   : index === 3
@@ -128,7 +129,7 @@ export function EmploymentLanding() {
         </div>
       </section>
 
-      <section className="bg-paper px-4 py-16 sm:px-6 sm:py-20">
+      <section className="bg-night px-4 py-16 sm:px-6 sm:py-20">
         <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-center lg:gap-14">
           <div className="relative aspect-[4/5] overflow-hidden sm:aspect-[5/4] lg:aspect-[4/5]">
             <Image
@@ -140,17 +141,17 @@ export function EmploymentLanding() {
             />
           </div>
           <div>
-            <p className="text-[11px] uppercase tracking-[0.32em] text-accent">Candidatos</p>
-            <h2 className="font-display mt-3 max-w-xl text-3xl leading-snug text-ink sm:text-4xl">
+            <p className="text-[11px] uppercase tracking-[0.32em] text-glow">Candidatos</p>
+            <h2 className="font-display mt-3 max-w-xl text-3xl leading-snug text-paper sm:text-4xl">
               Lo que nos distingue
             </h2>
-            <div className="mt-8 divide-y divide-ink/10 border-y border-ink/10">
+            <div className="mt-8 divide-y divide-white/10 border-y border-white/10">
               {DIFERENCIALES.map((item, index) => (
                 <article key={item} className="grid gap-3 py-4 md:grid-cols-[3.5rem_1fr] md:items-center">
-                  <span className="font-display text-sm text-accent">
+                  <span className="font-display text-sm text-glow">
                     {String(index + 1).padStart(2, "0")}
                   </span>
-                  <p className="font-display text-lg tracking-tight text-ink sm:text-xl">{item}</p>
+                  <p className="font-display text-lg tracking-tight text-paper sm:text-xl">{item}</p>
                 </article>
               ))}
             </div>
@@ -158,35 +159,35 @@ export function EmploymentLanding() {
         </div>
       </section>
 
-      <section id="proceso" className="border-t border-ink/8 bg-white px-4 py-16 sm:px-6 sm:py-20">
+      <section id="proceso" className="border-t border-white/10 bg-night px-4 py-16 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-6xl">
-          <p className="text-[11px] uppercase tracking-[0.32em] text-accent">Proceso</p>
-          <h2 className="font-display mt-3 max-w-3xl text-3xl leading-snug text-ink sm:text-4xl">
+          <p className="text-[11px] uppercase tracking-[0.32em] text-glow">Proceso</p>
+          <h2 className="font-display mt-3 max-w-3xl text-3xl leading-snug text-paper sm:text-4xl">
             Del registro al proyecto
           </h2>
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {PROCESO_CANDIDATOS.map((paso) => (
               <article key={paso.paso}>
-                <p className="font-display text-2xl text-accent">{paso.paso}</p>
-                <h3 className="mt-3 font-display text-lg text-ink">{paso.titulo}</h3>
-                <p className="mt-1 text-[11px] uppercase tracking-[0.22em] text-muted">
+                <p className="font-display text-2xl text-glow">{paso.paso}</p>
+                <h3 className="mt-3 font-display text-lg text-paper">{paso.titulo}</h3>
+                <p className="mt-1 text-[11px] uppercase tracking-[0.22em] text-paper/65">
                   {paso.subtitulo}
                 </p>
-                <p className="mt-3 text-sm leading-6 text-muted">{paso.descripcion}</p>
+                <p className="mt-3 text-sm leading-6 text-paper/65">{paso.descripcion}</p>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="border-t border-ink/8 bg-paper px-4 py-16 sm:px-6 sm:py-20">
+      <section className="border-t border-white/10 bg-night px-4 py-16 sm:px-6 sm:py-20">
         <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-start lg:gap-14">
           <div>
-            <p className="text-[11px] uppercase tracking-[0.32em] text-accent">Sectores</p>
-            <h2 className="font-display mt-3 max-w-xl text-3xl leading-snug text-ink sm:text-4xl">
+            <p className="text-[11px] uppercase tracking-[0.32em] text-glow">Sectores</p>
+            <h2 className="font-display mt-3 max-w-xl text-3xl leading-snug text-paper sm:text-4xl">
               Áreas donde colocamos talento
             </h2>
-            <p className="mt-4 max-w-md text-sm leading-6 text-muted">
+            <p className="mt-4 max-w-md text-sm leading-6 text-paper/65">
               Indica tu área al registrarte para priorizar vacantes afines.
             </p>
             <div className="relative mt-8 hidden aspect-[4/5] overflow-hidden lg:block">
@@ -203,28 +204,28 @@ export function EmploymentLanding() {
             {AREAS_EMPLEO.filter((area) => area !== "Otro").map((area, index) => (
               <article
                 key={area}
-                className="flex items-center gap-3 border-b border-ink/8 px-1 py-3"
+                className="flex items-center gap-3 border-b border-white/10 px-1 py-3"
               >
-                <span className="font-display text-sm text-accent">
+                <span className="font-display text-sm text-glow">
                   {String(index + 1).padStart(2, "0")}
                 </span>
-                <h3 className="font-display text-base tracking-tight text-ink sm:text-lg">{area}</h3>
+                <h3 className="font-display text-base tracking-tight text-paper sm:text-lg">{area}</h3>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="bg-white px-4 py-16 sm:px-6 sm:py-20">
+      <section className="bg-night px-4 py-16 sm:px-6 sm:py-20">
         <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-2 lg:items-center lg:gap-14">
           <div>
-            <p className="text-[11px] uppercase tracking-[0.32em] text-accent">Formación</p>
-            <h2 className="font-display mt-3 max-w-xl text-3xl leading-snug text-ink sm:text-4xl">
+            <p className="text-[11px] uppercase tracking-[0.32em] text-glow">Formación</p>
+            <h2 className="font-display mt-3 max-w-xl text-3xl leading-snug text-paper sm:text-4xl">
               {FORMACION.titulo}
             </h2>
-            <p className="mt-4 max-w-xl text-sm leading-6 text-muted">{FORMACION.texto}</p>
-            <p className="mt-6 max-w-xl text-sm leading-6 text-muted">
-              <span className="font-medium text-ink">{FERIA_TRABAJO.titulo}.</span> {FERIA_TRABAJO.texto}
+            <p className="mt-4 max-w-xl text-sm leading-6 text-paper/65">{FORMACION.texto}</p>
+            <p className="mt-6 max-w-xl text-sm leading-6 text-paper/65">
+              <span className="font-medium text-paper">{FERIA_TRABAJO.titulo}.</span> {FERIA_TRABAJO.texto}
             </p>
           </div>
           <div className="grid grid-cols-2 gap-3">
@@ -250,10 +251,10 @@ export function EmploymentLanding() {
         </div>
       </section>
 
-      <section className="border-t border-ink/8 bg-paper px-4 py-16 sm:px-6 sm:py-20">
+      <section className="border-t border-white/10 bg-night px-4 py-16 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-6xl">
-          <p className="text-[11px] uppercase tracking-[0.32em] text-accent">Vida laboral</p>
-          <h2 className="font-display mt-3 max-w-3xl text-3xl leading-snug text-ink sm:text-4xl">
+          <p className="text-[11px] uppercase tracking-[0.32em] text-glow">Vida laboral</p>
+          <h2 className="font-display mt-3 max-w-3xl text-3xl leading-snug text-paper sm:text-4xl">
             Actividades y cuidado al colaborador
           </h2>
           <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -268,32 +269,32 @@ export function EmploymentLanding() {
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
                 </div>
-                <h3 className="font-display text-lg text-ink">{item.titulo}</h3>
-                <p className="mt-2 text-sm leading-6 text-muted">{item.texto}</p>
+                <h3 className="font-display text-lg text-paper">{item.titulo}</h3>
+                <p className="mt-2 text-sm leading-6 text-paper/65">{item.texto}</p>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="border-t border-ink/8 bg-white px-4 py-16 sm:px-6 sm:py-20">
+      <section className="border-t border-white/10 bg-night px-4 py-16 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-xl text-center">
-          <h2 className="font-display text-3xl text-ink sm:text-4xl">Siguiente paso</h2>
-          <p className="mt-3 text-sm text-muted">
+          <h2 className="font-display text-3xl text-paper sm:text-4xl">Siguiente paso</h2>
+          <p className="mt-3 text-sm text-paper/65">
             Para postularte usa Tu CV; para puestos abiertos, Vacantes.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link href="/cv#tu-cv" className={btnPrimary}>
+            <Link href="/cv#tu-cv" className={btnGlow}>
               Ir a Tu CV
             </Link>
-            <Link href="/cv#vacantes" className={btnSecondary}>
+            <Link href="/cv#vacantes" className={btnGhostOnNight}>
               Ver vacantes
             </Link>
           </div>
         </div>
       </section>
 
-      <PublicFooter site={site} links={SITE_NAV} tone="paper" />
+      <PublicFooter site={site} links={SITE_NAV} />
     </div>
   );
 }

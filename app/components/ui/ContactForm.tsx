@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { fieldClass, labelClass } from "@/lib/visual-kit/styles";
+import { btnGlow, fieldClass, labelClass } from "@/lib/visual-kit/styles";
 
 interface FormData {
   nombre: string;
@@ -17,7 +17,13 @@ const initialForm: FormData = {
   mensaje: "",
 };
 
-export default function ContactForm() {
+const fieldNight =
+  "mt-1.5 w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2.5 text-sm text-paper outline-none transition placeholder:text-paper/35 focus:border-glow focus:ring-2 focus:ring-glow/40";
+
+export default function ContactForm({ tone = "paper" }: { tone?: "paper" | "night" }) {
+  const night = tone === "night";
+  const label = night ? "text-sm font-medium text-paper/80" : labelClass;
+  const field = night ? fieldNight : fieldClass;
   const [formData, setFormData] = useState<FormData>(initialForm);
   const [enviando, setEnviando] = useState(false);
   const [enviado, setEnviado] = useState(false);
@@ -51,11 +57,15 @@ export default function ContactForm() {
   if (enviado) {
     return (
       <div className="py-6 text-center">
-        <p className="font-display text-2xl text-ink">Mensaje enviado</p>
-        <p className="mt-3 text-sm leading-6 text-muted">
+        <p className={`font-display text-2xl ${night ? "text-paper" : "text-ink"}`}>Mensaje enviado</p>
+        <p className={`mt-3 text-sm leading-6 ${night ? "text-paper/65" : "text-muted"}`}>
           Gracias por escribirnos. Un especialista de Hakamo te contactará en menos de 24 horas.
         </p>
-        <button type="button" onClick={() => setEnviado(false)} className="mt-6 text-sm font-semibold text-accent">
+        <button
+          type="button"
+          onClick={() => setEnviado(false)}
+          className={`mt-6 text-sm font-semibold ${night ? "text-glow" : "text-accent"}`}
+        >
           Enviar otro mensaje →
         </button>
       </div>
@@ -66,7 +76,7 @@ export default function ContactForm() {
     <form onSubmit={handleSubmit} className="space-y-5">
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
-          <label className={labelClass} htmlFor="nombre">
+          <label className={label} htmlFor="nombre">
             Nombre
           </label>
           <input
@@ -77,11 +87,11 @@ export default function ContactForm() {
             onChange={handleChange}
             required
             placeholder="Tu nombre"
-            className={fieldClass}
+            className={field}
           />
         </div>
         <div>
-          <label className={labelClass} htmlFor="telefono">
+          <label className={label} htmlFor="telefono">
             Teléfono
           </label>
           <input
@@ -91,12 +101,12 @@ export default function ContactForm() {
             value={formData.telefono}
             onChange={handleChange}
             placeholder="829-000-0000"
-            className={fieldClass}
+            className={field}
           />
         </div>
       </div>
       <div>
-        <label className={labelClass} htmlFor="email">
+        <label className={label} htmlFor="email">
           Correo
         </label>
         <input
@@ -107,11 +117,11 @@ export default function ContactForm() {
           onChange={handleChange}
           required
           placeholder="tu@correo.com"
-          className={fieldClass}
+          className={field}
         />
       </div>
       <div>
-        <label className={labelClass} htmlFor="mensaje">
+        <label className={label} htmlFor="mensaje">
           Mensaje
         </label>
         <textarea
@@ -122,14 +132,18 @@ export default function ContactForm() {
           required
           rows={4}
           placeholder="Cuéntanos qué necesitas..."
-          className={`${fieldClass} resize-none`}
+          className={`${field} resize-none`}
         />
       </div>
       {error ? <p className="text-sm text-danger">{error}</p> : null}
       <button
         type="submit"
         disabled={enviando}
-        className="inline-flex w-full items-center justify-center rounded-full bg-accent px-5 py-3 text-sm font-semibold text-paper transition hover:bg-[color-mix(in_srgb,var(--accent)_88%,black)] disabled:cursor-not-allowed disabled:opacity-60"
+        className={
+          night
+            ? `${btnGlow} w-full disabled:cursor-not-allowed disabled:opacity-60`
+            : "inline-flex w-full items-center justify-center rounded-full bg-accent px-5 py-3 text-sm font-semibold text-paper transition hover:bg-[color-mix(in_srgb,var(--accent)_88%,black)] disabled:cursor-not-allowed disabled:opacity-60"
+        }
       >
         {enviando ? "Enviando..." : "Enviar mensaje"}
       </button>

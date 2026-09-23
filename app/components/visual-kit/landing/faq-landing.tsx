@@ -4,7 +4,8 @@ import { useId, useState } from "react";
 import Link from "next/link";
 import { COMPANY_INFO, FAQ } from "@/lib/data";
 import { SITE_NAV, SITE_PUBLIC, LANDING_HERO_BACKGROUNDS } from "@/lib/visual-kit/hakamo";
-import { btnPrimary, btnSecondary } from "@/lib/visual-kit/styles";
+import { btnGhostOnNight, btnGlow } from "@/lib/visual-kit/styles";
+import { Grain } from "../grain";
 import { LandingHeader } from "../chrome-header";
 import { LandingHeroSection } from "../landing-hero-section";
 import { PublicFooter } from "../public-footer";
@@ -113,12 +114,13 @@ export function FaqLanding() {
   const active = GROUPS.find((item) => item.id === group) ?? GROUPS[0];
 
   return (
-    <div className="min-h-[100svh] bg-paper text-ink">
+    <div className="faq-night landing min-h-[100svh] bg-night text-paper">
       <ScrollProgress />
+      <Grain />
 
       <a
         href="#contenido"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[90] focus:rounded-full focus:bg-accent focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-paper"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[90] focus:rounded-full focus:bg-glow focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-night"
       >
         Saltar al contenido
       </a>
@@ -130,25 +132,24 @@ export function FaqLanding() {
         ctaLabel="Contactar"
         cvHref={site.cvHref}
         cvLabel={site.cvLabel}
-        tone="paper"
       />
 
-      <LandingHeroSection background={LANDING_HERO_BACKGROUNDS.faq} tone="paper" compact>
+      <LandingHeroSection background={LANDING_HERO_BACKGROUNDS.faq} compact>
         <div className="landing-hero-inner landing-hero-inner-compact landing-hero-inner--start mx-auto max-w-6xl px-4 sm:px-6">
           <div className="max-w-xl">
-          <p className="text-[11px] font-medium uppercase tracking-[0.42em] text-accent">FAQ</p>
-          <h1 className="font-display mt-5 text-[clamp(2.1rem,6vw,4rem)] leading-[1.05] tracking-[-0.03em] text-ink">
+          <p className="text-[11px] font-medium uppercase tracking-[0.42em] text-glow">FAQ</p>
+          <h1 className="font-display mt-5 text-[clamp(2.1rem,6vw,4rem)] leading-[1.05] tracking-[-0.03em] text-paper">
             Preguntas
-            <span className="mt-1 block italic text-accent">frecuentes</span>
+            <span className="mt-1 block italic text-glow">frecuentes</span>
           </h1>
-          <p className="mt-6 max-w-lg text-sm leading-6 text-muted sm:text-base">
+          <p className="mt-6 max-w-lg text-sm leading-6 text-paper/70 sm:text-base">
             Outsourcing, reclutamiento, payroll, cumplimiento y seguridad ocupacional.
           </p>
           </div>
         </div>
       </LandingHeroSection>
 
-      <section className="bg-white px-4 py-16 sm:px-6 sm:py-24">
+      <section className="bg-night px-4 py-16 sm:px-6 sm:py-24">
         <div className="mx-auto max-w-3xl">
           <div className="flex flex-wrap justify-center gap-2" role="tablist" aria-label="Temas">
             {GROUPS.map((item) => (
@@ -159,8 +160,8 @@ export function FaqLanding() {
                 aria-selected={group === item.id}
                 className={`rounded-full px-4 py-2 text-sm font-medium transition ${
                   group === item.id
-                    ? "bg-accent text-paper"
-                    : "border border-ink/10 bg-paper text-muted hover:border-accent hover:text-accent"
+                    ? "bg-glow text-night"
+                    : "border border-white/20 bg-transparent text-paper/70 hover:border-glow hover:text-glow"
                 }`}
                 onClick={() => setGroup(item.id)}
               >
@@ -175,23 +176,23 @@ export function FaqLanding() {
         </div>
       </section>
 
-      <section className="border-t border-ink/8 bg-paper px-4 py-16 sm:px-6 sm:py-20">
+      <section className="border-t border-white/10 bg-night px-4 py-16 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-xl text-center">
-          <p className="text-[11px] uppercase tracking-[0.32em] text-accent">Más ayuda</p>
-          <h2 className="font-display mt-3 text-3xl text-ink sm:text-4xl">¿No está tu respuesta?</h2>
-          <p className="mt-4 text-sm leading-6 text-muted">
+          <p className="text-[11px] uppercase tracking-[0.32em] text-glow">Más ayuda</p>
+          <h2 className="font-display mt-3 text-3xl text-paper sm:text-4xl">¿No está tu respuesta?</h2>
+          <p className="mt-4 text-sm leading-6 text-paper/65">
             Escríbenos a {COMPANY_INFO.email} o por WhatsApp al {COMPANY_INFO.telefono}. Respondemos
             en menos de 24 horas.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link href="/contacto" className={btnPrimary}>
+            <Link href="/contacto" className={btnGlow}>
               Contactar
             </Link>
             <a
               href={COMPANY_INFO.social.whatsapp}
               target="_blank"
               rel="noreferrer"
-              className={btnSecondary}
+              className={btnGhostOnNight}
             >
               WhatsApp
             </a>
@@ -199,7 +200,7 @@ export function FaqLanding() {
         </div>
       </section>
 
-      <PublicFooter site={site} links={SITE_NAV} tone="paper" />
+      <PublicFooter site={site} links={SITE_NAV} />
     </div>
   );
 }
