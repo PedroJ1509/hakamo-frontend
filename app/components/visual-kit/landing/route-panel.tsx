@@ -1,7 +1,8 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { CIUDADES_RD } from "@/lib/ciudades-rd";
 import { COMPANY_INFO } from "@/lib/data";
 import { btnGhostOnNight, btnGlow } from "@/lib/visual-kit/styles";
 
@@ -12,13 +13,21 @@ const DEST = {
   label: COMPANY_INFO.ubicacion,
 };
 
-const CITY_PRESETS = [
-  { id: "santo-domingo", label: "Santo Domingo", lat: 18.4861, lng: -69.9312 },
-  { id: "santiago", label: "Santiago", lat: 19.4517, lng: -70.697 },
-  { id: "puerto-plata", label: "Puerto Plata", lat: 19.7934, lng: -70.6884 },
-  { id: "mao", label: "Mao", lat: 19.5519, lng: -71.0783 },
-  { id: "dap", label: "Dajabón", lat: 19.5488, lng: -71.7083 },
-];
+const KNOWN_COORDS: Record<string, { lat: number; lng: number }> = {
+  "santo domingo": { lat: 18.4861, lng: -69.9312 },
+  santiago: { lat: 19.4517, lng: -70.697 },
+  "puerto plata": { lat: 19.7934, lng: -70.6884 },
+  mao: { lat: 19.5519, lng: -71.0783 },
+  dajabon: { lat: 19.5488, lng: -71.7083 },
+};
+
+function foldCity(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .toLocaleLowerCase("es")
+    .trim();
+}
 
 type OriginMode = "exact" | "city";
 
@@ -66,6 +75,24 @@ async function fetchRoute(fromLat: number, fromLng: number): Promise<{ minutes: 
   }
 }
 
+async function geocodeCity(name: string): Promise<{ lat: number; lng: number } | null> {
+  const known = KNOWN_COORDS[foldCity(name)];
+  if (known) return known;
+  try {
+    const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=do&q=${encodeURIComponent(`${name}, República Dominicana`)}`;
+    const res = await fetch(url, { headers: { Accept: "application/json" } });
+    if (!res.ok) return null;
+    const data = await res.json();
+    const hit = Array.isArray(data) ? data[0] : null;
+    const lat = Number(hit?.lat);
+    const lng = Number(hit?.lon);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+    return { lat, lng };
+  } catch {
+    return null;
+  }
+}
+
 async function reverseGeocode(lat: number, lng: number): Promise<string | null> {
   try {
     const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&zoom=16&addressdetails=0`;
@@ -89,7 +116,9 @@ export function RoutePanel() {
   const [locating, setLocating] = useState(false);
   const [error, setError] = useState("");
   const [origin, setOrigin] = useState<OriginPoint | null>(null);
-  const [presetId, setPresetId] = useState("");
+  const [cityQuery, setCityQuery] = useState("");
+  const [cityOpen, setCityOpen] = useState(false);
+  const cityBoxRef = useRef<HTMLDivElement>(null);
 
   const mapsEmbedSrc = useMemo(() => {
     if (origin) {
@@ -132,7 +161,8 @@ export function RoutePanel() {
     }
 
     setMode("exact");
-    setPresetId("");
+    setCityQuery("");
+    setCityOpen(false);
     setLocating(true);
     setLoading(true);
     setError("");
@@ -169,17 +199,38 @@ export function RoutePanel() {
     );
   };
 
-  const onCityChange = async (id: string) => {
-    setPresetId(id);
+  const cityMatches = useMemo(() => {
+    const query = foldCity(cityQuery);
+    if (!query) return CIUDADES_RD;
+    return CIUDADES_RD.filter((city) => foldCity(city).includes(query));
+  }, [cityQuery]);
+
+  useEffect(() => {
+    if (!cityOpen) return;
+    const onPointer = (event: MouseEvent) => {
+      if (!cityBoxRef.current?.contains(event.target as Node)) setCityOpen(false);
+    };
+    document.addEventListener("mousedown", onPointer);
+    return () => document.removeEventListener("mousedown", onPointer);
+  }, [cityOpen]);
+
+  const chooseCity = async (name: string) => {
+    const label = name.trim();
     setMode("city");
-    if (!id) {
+    setCityOpen(false);
+    if (!label) {
       setOrigin(null);
       setRoute(null);
       return;
     }
-    const city = CITY_PRESETS.find((c) => c.id === id);
-    if (!city) return;
-    await applyOrigin(city.lat, city.lng, city.label);
+    setCityQuery(label);
+    const point = await geocodeCity(label);
+    if (!point) {
+      setError("No encontramos esa ciudad. Revisa el nombre e inténtalo de nuevo.");
+      setRoute(null);
+      return;
+    }
+    await applyOrigin(point.lat, point.lng, label);
   };
 
   return (
@@ -210,6 +261,7 @@ export function RoutePanel() {
             type="button"
             onClick={() => {
               setMode("city");
+              setCityOpen(true);
               setError("");
             }}
             className={`rounded-[1.25rem] border px-4 py-4 text-left transition ${
@@ -225,18 +277,61 @@ export function RoutePanel() {
         </div>
 
         {mode === "city" ? (
-          <div className="mt-5">
+          <div className="relative mt-5" ref={cityBoxRef}>
             <label className="text-sm font-medium text-paper/80" htmlFor="ciudad">
               Ciudad de partida
             </label>
-            <select id="ciudad" className={fieldNight} value={presetId} onChange={(e) => void onCityChange(e.target.value)}>
-              <option value="">Selecciona una ciudad</option>
-              {CITY_PRESETS.map((city) => (
-                <option key={city.id} value={city.id}>
-                  {city.label}
-                </option>
-              ))}
-            </select>
+            <input
+              id="ciudad"
+              value={cityQuery}
+              onChange={(event) => {
+                setCityQuery(event.target.value);
+                setCityOpen(true);
+                setError("");
+              }}
+              onFocus={() => setCityOpen(true)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  event.preventDefault();
+                  const exact = cityMatches.find((city) => foldCity(city) === foldCity(cityQuery));
+                  const picked = exact ?? (cityMatches.length === 1 ? cityMatches[0] : cityQuery);
+                  void chooseCity(picked);
+                }
+                if (event.key === "Escape") setCityOpen(false);
+              }}
+              placeholder="Escribe o elige tu ciudad"
+              autoComplete="off"
+              role="combobox"
+              aria-expanded={cityOpen}
+              aria-controls="ciudad-lista"
+              className={fieldNight}
+            />
+            {cityOpen ? (
+              <ul
+                id="ciudad-lista"
+                role="listbox"
+                className="absolute z-30 mt-1 max-h-60 w-full overflow-y-auto rounded-xl border border-white/20 bg-[#10243f] py-1 shadow-xl"
+              >
+                {cityMatches.length > 0 ? (
+                  cityMatches.map((city) => (
+                    <li key={city} role="option" aria-selected={foldCity(city) === foldCity(cityQuery)}>
+                      <button
+                        type="button"
+                        className="block w-full px-3 py-2 text-left text-sm text-white hover:bg-white/10"
+                        onMouseDown={(event) => event.preventDefault()}
+                        onClick={() => void chooseCity(city)}
+                      >
+                        {city}
+                      </button>
+                    </li>
+                  ))
+                ) : (
+                  <li className="px-3 py-2 text-sm text-white">
+                    No está en la lista. Pulsa Enter para buscar «{cityQuery.trim()}».
+                  </li>
+                )}
+              </ul>
+            ) : null}
           </div>
         ) : null}
 
