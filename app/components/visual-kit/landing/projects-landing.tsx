@@ -267,7 +267,7 @@ export function ProjectsLanding() {
               Solicitar personal
             </MagneticButton>
             <a
-              href="/cv"
+              href="/empleos"
               className="inline-flex items-center justify-center rounded-full border border-ink/15 px-5 py-3 text-sm font-semibold text-ink transition hover:border-accent hover:text-accent"
             >
               Busco empleo

@@ -17,7 +17,7 @@ export default function PrivacidadPage() {
           <Link href="/empresas" className="text-muted hover:text-accent">
             Empresas
           </Link>
-          <Link href="/cv" className="text-muted hover:text-accent">
+          <Link href="/empleos" className="text-muted hover:text-accent">
             Talentos
           </Link>
         </nav>

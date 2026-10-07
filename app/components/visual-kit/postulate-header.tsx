@@ -25,7 +25,7 @@ export function PostulateHeader() {
   const [open, setOpen] = useState(false);
   const [activeHash, setActiveHash] = useState("");
   const site = SITE_PUBLIC;
-  const onLanding = pathname === "/cv";
+  const onLanding = pathname === "/empleos";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16);
@@ -103,9 +103,12 @@ export function PostulateHeader() {
           >
             {POSTULATE_NAV.map((link) => {
               const hash = link.href.split("#")[1];
+              const path = link.href.split("#")[0];
               const active = hash
                 ? onLanding && isSectionActive(activeHash, link.href)
-                : pathname === link.href;
+                : path === "/empleos"
+                  ? pathname === "/empleos"
+                  : pathname === path || pathname.startsWith(`${path}/`);
               const href = hash && onLanding ? `#${hash}` : link.href;
               return (
                 <a
@@ -127,7 +130,7 @@ export function PostulateHeader() {
             >
               Empresas
             </Link>
-            <Link href="/cv#vacantes" className={btnPrimary}>
+            <Link href="/empleos/vacantes" className={btnPrimary}>
               Buscar empleo
             </Link>
           </div>
@@ -164,9 +167,12 @@ export function PostulateHeader() {
             <nav className="flex flex-col gap-1.5" aria-label="Portal móvil">
               {POSTULATE_NAV.map((link) => {
                 const hash = link.href.split("#")[1];
+                const path = link.href.split("#")[0];
                 const active = hash
                   ? onLanding && isSectionActive(activeHash, link.href)
-                  : pathname === link.href;
+                  : path === "/empleos"
+                    ? pathname === "/empleos"
+                    : pathname === path || pathname.startsWith(`${path}/`);
                 const href = hash && onLanding ? `#${hash}` : link.href;
                 return (
                   <a
@@ -190,7 +196,7 @@ export function PostulateHeader() {
               >
                 Empresas
               </Link>
-              <Link href="/cv#vacantes" className={btnPrimary} onClick={() => setOpen(false)}>
+              <Link href="/empleos/vacantes" className={btnPrimary} onClick={() => setOpen(false)}>
                 Buscar empleo
               </Link>
             </div>

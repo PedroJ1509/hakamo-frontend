@@ -72,7 +72,7 @@ export async function getHeroSlides() {
 }
 
 export async function getVacantes() {
-  const res = await fetch(`${STRAPI_URL}/api/vacantes?filters[estado][$eq]=activa&populate=*&sort=fechaPublicacion:desc`)
+  const res = await fetch(`${STRAPI_URL}/api/vacantes?populate=*&sort=fechaPublicacion:desc`)
   if (!res.ok) throw new Error('Error al obtener vacantes')
   return res.json()
 }

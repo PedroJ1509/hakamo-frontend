@@ -1,13 +1,13 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import Image from "next/image";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { COMPANY_INFO } from "@/lib/data";
 import { SITE_NAV, SITE_PUBLIC } from "@/lib/visual-kit/hakamo";
 import { btnGhostOnNight, btnGlow } from "@/lib/visual-kit/styles";
-import { Grain } from "../grain";
 import { LandingHeader } from "../chrome-header";
+import { Grain } from "../grain";
+import { LandingHeroSection } from "../landing-hero-section";
 import { PublicFooter } from "../public-footer";
 import { Reveal } from "../reveal";
 import { ScrollProgress } from "../scroll-progress";
@@ -59,6 +59,13 @@ const initial: FormState = {
   detalle: "",
 };
 
+function todayIso() {
+  const now = new Date();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${now.getFullYear()}-${month}-${day}`;
+}
+
 function buildMessage(data: FormState) {
   return [
     "Agendar visita — Hakamo",
@@ -85,6 +92,12 @@ export function VisitLanding() {
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
 
+  const today = useMemo(() => todayIso(), []);
+
+  useEffect(() => {
+    if (!done) return;
+    window.scrollTo(0, 0);
+  }, [done]);
   const patch = (partial: Partial<FormState>) => setData((d) => ({ ...d, ...partial }));
   const message = useMemo(() => buildMessage(data), [data]);
   const progress = ((step + 1) / STEPS.length) * 100;
@@ -104,6 +117,10 @@ export function VisitLanding() {
     if (step === 1) {
       if (!data.motivo || !data.modalidad) {
         setError("Elige un motivo y cómo prefieres la visita.");
+        return false;
+      }
+      if (data.fechaPreferida && data.fechaPreferida < today) {
+        setError("La fecha preferida no puede ser anterior a hoy.");
         return false;
       }
     }
@@ -166,10 +183,13 @@ export function VisitLanding() {
           cvHref={site.cvHref}
           cvLabel={site.cvLabel}
         />
-        <section className="mx-auto max-w-lg px-4 py-24 text-center sm:px-6">
+        <section className="flex min-h-[100svh] w-full items-center justify-center px-4 pb-16 pt-[calc(var(--header-h)+1.5rem)] sm:px-6">
+          <div className="w-full text-center">
           <p className="text-[11px] uppercase tracking-[0.32em] text-glow">Listo</p>
-          <h1 className="font-display mt-4 text-4xl italic text-paper">Solicitud preparada</h1>
-          <p className="mt-4 text-sm leading-6 text-paper/65">
+          <h1 className="font-display mt-4 text-[clamp(2.4rem,5vw,4.25rem)] italic leading-[1.05] text-paper">
+            Solicitud preparada
+          </h1>
+          <p className="mx-auto mt-6 max-w-3xl text-base leading-7 text-paper/65 sm:text-lg">
             Abrimos WhatsApp y tu correo con el resumen. Si alguno no se abrió, usa los botones.
           </p>
           <div className="mt-10 flex flex-wrap justify-center gap-3">
@@ -193,6 +213,7 @@ export function VisitLanding() {
           <Link href="/contacto" className="mt-10 inline-block text-sm font-semibold text-glow">
             Volver a contacto →
           </Link>
+          </div>
         </section>
         <PublicFooter site={site} links={SITE_NAV} />
       </div>
@@ -212,35 +233,27 @@ export function VisitLanding() {
         cvLabel={site.cvLabel}
       />
 
-      <section className="relative overflow-hidden">
-        <div className="relative min-h-[48svh] sm:min-h-[56svh]">
-          <Image
-            src="/visual-kit/contact/meeting.jpg"
-            alt="Reunión para agendar visita con Hakamo"
-            fill
-            priority
-            className="object-cover"
-            sizes="100vw"
-          />
-          <div
-            aria-hidden
-            className="absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(180deg, color-mix(in srgb, var(--night) 35%, transparent) 0%, color-mix(in srgb, var(--night) 55%, transparent) 42%, var(--night) 100%), radial-gradient(ellipse at 18% 10%, color-mix(in srgb, var(--glow) 16%, transparent), transparent 42%)",
-            }}
-          />
-          <div className="relative z-[1] mx-auto flex min-h-[48svh] max-w-6xl flex-col justify-end px-4 pb-10 pt-28 sm:min-h-[56svh] sm:px-6 sm:pb-14">
-            <p className="text-[11px] font-medium uppercase tracking-[0.42em] text-glow">Solicitar</p>
-            <h1 className="font-display mt-4 max-w-3xl text-[clamp(2rem,5.5vw,3.6rem)] leading-[1.06] tracking-[-0.03em] italic text-paper">
-              Agendar visita
-            </h1>
-            <p className="mt-4 max-w-lg text-sm leading-6 text-paper/70 sm:text-base">
-              Un flujo corto. Al final enviamos el resumen a WhatsApp y a {COMPANY_INFO.email}.
-            </p>
-          </div>
+      <LandingHeroSection
+        background={{
+          src: "/visual-kit/contact/meeting.jpg",
+          alt: "Reunión para agendar visita con Hakamo",
+          objectPosition: "50% 40%",
+          priority: true,
+        }}
+      >
+        <div className="landing-hero-inner mx-auto max-w-3xl px-4 text-center sm:px-6">
+          <p className="text-[11px] font-medium uppercase tracking-[0.42em] text-glow">Solicitar</p>
+          <h1 className="font-display mt-5 text-[clamp(2.1rem,6vw,4rem)] leading-[1.05] tracking-[-0.03em] text-paper">
+            Agendar
+            <span className="mt-1 block italic text-glow">visita</span>
+          </h1>
+          <p className="mx-auto mt-6 max-w-2xl text-sm leading-6 text-paper/70 sm:text-base">
+            Un flujo corto. Al final enviamos el resumen a WhatsApp y a {COMPANY_INFO.email}.
+          </p>
         </div>
+      </LandingHeroSection>
 
+      <section className="bg-night">
         <div className="bg-night px-4 pt-8 sm:px-6">
           <div className="mx-auto max-w-6xl">
             <div className="flex items-center justify-between gap-4">
@@ -381,8 +394,17 @@ export function VisitLanding() {
                       <input
                         type="date"
                         className="visit-input"
+                        min={today}
                         value={data.fechaPreferida}
-                        onChange={(e) => patch({ fechaPreferida: e.target.value })}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          if (value && value < today) {
+                            setError("La fecha preferida no puede ser anterior a hoy.");
+                            return;
+                          }
+                          setError("");
+                          patch({ fechaPreferida: value });
+                        }}
                       />
                     </LineField>
                     <LineField label="¿Cómo nos conoció?">

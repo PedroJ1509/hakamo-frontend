@@ -107,7 +107,7 @@ export function JobsLanding({
             <a href="#vacantes" className={btnPrimary}>
               Ver vacantes
             </a>
-            <a href="/cv/tu-cv" className={btnSecondary}>
+            <a href="/empleos#tu-cv" className={btnSecondary}>
               Dejar mi perfil
             </a>
           </div>
@@ -235,7 +235,7 @@ export function JobsLanding({
                 return (
                   <Link
                     key={vacante.documentId}
-                    href={`/cv/vacantes/${vacante.documentId}`}
+                    href={`/empleos/vacantes/${vacante.documentId}`}
                     className="jobs-masonry-item group"
                   >
                     <div className={`jobs-masonry-media ${ratioClass}`}>
@@ -293,7 +293,7 @@ export function JobsLanding({
             Guardamos tu perfil y te contactamos cuando surja una oportunidad que se ajuste a ti.
           </p>
           <div className="mt-8">
-            <a href="/cv/tu-cv" className={btnPrimary}>
+            <a href="/empleos#tu-cv" className={btnPrimary}>
               Registrar perfil
             </a>
           </div>

@@ -34,13 +34,6 @@ const CHANNELS = [
     detail: "Cotizaciones y atención empresarial",
     external: false,
   },
-  {
-    href: `mailto:${COMPANY_INFO.emailReclutamiento}`,
-    kicker: "Correo reclutamiento",
-    title: COMPANY_INFO.emailReclutamiento,
-    detail: "Vacantes y perfiles candidatos",
-    external: false,
-  },
 ];
 
 export function ContactLanding() {
@@ -67,25 +60,23 @@ export function ContactLanding() {
         cvLabel={site.cvLabel}
       />
 
-      <LandingHeroSection background={LANDING_HERO_BACKGROUNDS.contact} compact>
-        <div className="landing-hero-inner landing-hero-inner-compact landing-hero-inner--start mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="max-w-xl">
-            <p className="text-[11px] font-medium uppercase tracking-[0.42em] text-glow">Hablemos</p>
-            <h1 className="font-display mt-5 text-[clamp(2.1rem,6vw,4rem)] leading-[1.05] tracking-[-0.03em] text-paper">
-              Hablemos de
-              <span className="mt-1 block italic text-glow">su proyecto</span>
-            </h1>
-            <p className="mt-6 max-w-lg text-sm leading-6 text-paper/70 sm:text-base">
-              Escríbenos o llámanos. Respondemos en menos de 24 horas.
-            </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <a href="#formulario" className={btnGlow}>
-                Escribirnos ahora
-              </a>
-              <a href="#ruta" className={btnGhostOnNight}>
-                Cómo llegar
-              </a>
-            </div>
+      <LandingHeroSection background={LANDING_HERO_BACKGROUNDS.contact}>
+        <div className="landing-hero-inner mx-auto max-w-3xl px-4 text-center sm:px-6">
+          <p className="text-[11px] font-medium uppercase tracking-[0.42em] text-glow">Hablemos</p>
+          <h1 className="font-display mt-5 text-[clamp(2.1rem,6vw,4rem)] leading-[1.05] tracking-[-0.03em] text-paper">
+            Hablemos de
+            <span className="mt-1 block italic text-glow">su proyecto</span>
+          </h1>
+          <p className="mx-auto mt-6 max-w-2xl text-sm leading-6 text-paper/70 sm:text-base">
+            Escríbenos o llámanos. Respondemos en menos de 24 horas.
+          </p>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <a href="#formulario" className={btnGlow}>
+              Escribirnos ahora
+            </a>
+            <a href="#ruta" className={btnGhostOnNight}>
+              Cómo llegar
+            </a>
           </div>
         </div>
       </LandingHeroSection>

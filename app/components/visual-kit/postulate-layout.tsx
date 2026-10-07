@@ -27,7 +27,7 @@ export function PostulateLayout({ children }: { children: React.ReactNode }) {
         site={site}
         links={POSTULATE_NAV}
         tone="paper"
-        ctaHref="/cv#vacantes"
+        ctaHref="/empleos/vacantes"
         ctaLabel="Buscar empleo"
         staffHref="/empresas"
         staffLabel="Empresas"

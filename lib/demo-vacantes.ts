@@ -100,6 +100,7 @@ export const DEMO_VACANTES: VacanteCard[] = [
     ubicacion: "Santo Domingo",
     modalidad: "presencial",
     tipo: "medio_tiempo",
+    estado: "cerrada",
     descripcion: "Apoyo en nómina, expedientes y atención a candidatos.",
   }),
   vacante({
@@ -131,6 +132,7 @@ export const DEMO_VACANTES: VacanteCard[] = [
     ubicacion: "Haina",
     modalidad: "presencial",
     tipo: "contrato",
+    estado: "cerrada",
     descripcion: "Soldadura estructural para montajes industriales.",
   }),
   vacante({
@@ -151,6 +153,7 @@ export const DEMO_VACANTES: VacanteCard[] = [
     ubicacion: "Santo Domingo Norte",
     modalidad: "presencial",
     tipo: "medio_tiempo",
+    estado: "cerrada",
     descripcion: "Turnos rotativos en instalaciones corporativas y clínicas.",
   }),
 ];

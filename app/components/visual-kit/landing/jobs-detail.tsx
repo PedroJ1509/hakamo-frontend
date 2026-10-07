@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import BlocksRenderer from "@/app/components/ui/BlocksRenderer";
+import { COMPANY_INFO } from "@/lib/data";
 import { SITE_NAV, SITE_PUBLIC, LANDING_HERO_BACKGROUNDS } from "@/lib/visual-kit/hakamo";
 import { btnPrimary, fieldClass, labelClass } from "@/lib/visual-kit/styles";
 import { LandingHeader } from "../chrome-header";
@@ -40,6 +41,7 @@ interface VacanteData {
   tipo: string;
   salario: string;
   fechaCierre: string;
+  estado?: "activa" | "cerrada";
   division: { nombre: string } | null;
 }
 
@@ -63,6 +65,7 @@ export function JobsDetail({ embedded = false }: { embedded?: boolean }) {
   const [enviado, setEnviado] = useState(false);
   const [error, setError] = useState("");
   const [cvFile, setCvFile] = useState<File | null>(null);
+  const cerrada = vacante?.estado === "cerrada";
 
   useEffect(() => {
     const demo = DEMO_VACANTES.find((item) => item.documentId === id) as VacanteData | undefined;
@@ -141,7 +144,7 @@ export function JobsDetail({ embedded = false }: { embedded?: boolean }) {
               text="Vuelve al listado para ver las oportunidades abiertas."
             />
             <div className="mt-8 text-center">
-              <MagneticButton href="/cv#vacantes" variant="ink">
+              <MagneticButton href="/empleos/vacantes" variant="ink">
                 Ver vacantes
               </MagneticButton>
             </div>
@@ -173,10 +176,16 @@ export function JobsDetail({ embedded = false }: { embedded?: boolean }) {
                   .filter(Boolean)
                   .join(" · ")}
               </p>
-              <div className="mt-8">
-                <a href="#postular" className={btnPrimary}>
-                  Postularme
-                </a>
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+                {cerrada ? (
+                  <span className="rounded-full bg-ink px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-paper">
+                    No disponible
+                  </span>
+                ) : (
+                  <a href="#postular" className={btnPrimary}>
+                    Postularme
+                  </a>
+                )}
               </div>
             </div>
           </LandingHeroSection>
@@ -215,7 +224,32 @@ export function JobsDetail({ embedded = false }: { embedded?: boolean }) {
               <div id="postular">
                 <div className="glass-panel rounded-[2rem] p-7">
                   <p className="text-[11px] uppercase tracking-[0.32em] text-accent">Postulación</p>
+                  {cerrada ? (
+                    <>
+                      <h2 className="font-display mt-3 text-2xl text-ink">Esta vacante no está disponible</h2>
+                      <p className="mt-3 text-sm leading-6 text-muted">
+                        El puesto ya no recibe postulaciones. Revisa otras oportunidades o deja tu CV en{" "}
+                        <a href={`mailto:${COMPANY_INFO.emailReclutamiento}`} className="font-semibold text-accent">
+                          {COMPANY_INFO.emailReclutamiento}
+                        </a>
+                        .
+                      </p>
+                      <div className="mt-6">
+                        <Link href="/empleos/vacantes" className={btnPrimary}>
+                          Ver vacantes
+                        </Link>
+                      </div>
+                    </>
+                  ) : (
+                    <>
                   <h2 className="font-display mt-3 text-2xl text-ink">Postularme a esta vacante</h2>
+                  <p className="mt-2 text-sm text-muted">
+                    O envía tu CV a{" "}
+                    <a href={`mailto:${COMPANY_INFO.emailReclutamiento}`} className="font-semibold text-accent">
+                      {COMPANY_INFO.emailReclutamiento}
+                    </a>
+                    .
+                  </p>
                   {enviado ? (
                     <div className="mt-8 text-center">
                       <p className="font-display text-2xl text-ink">Postulación enviada</p>
@@ -223,7 +257,7 @@ export function JobsDetail({ embedded = false }: { embedded?: boolean }) {
                         Recibimos tu información. Nos comunicaremos contigo si tu perfil se ajusta.
                       </p>
                       <div className="mt-6">
-                        <MagneticButton href="/cv#vacantes" variant="ink" size="sm">
+                        <MagneticButton href="/empleos/vacantes" variant="ink" size="sm">
                           Ver otras vacantes
                         </MagneticButton>
                       </div>
@@ -288,7 +322,7 @@ export function JobsDetail({ embedded = false }: { embedded?: boolean }) {
                         />
                         <p className="mt-2 text-sm text-muted">
                           Si aún no tienes CV,{" "}
-                          <Link href="/cv#tu-cv" className="font-semibold text-accent">
+                          <Link href="/empleos#tu-cv" className="font-semibold text-accent">
                             créalo aquí
                           </Link>
                           .
@@ -318,15 +352,19 @@ export function JobsDetail({ embedded = false }: { embedded?: boolean }) {
                       </button>
                     </form>
                   )}
+                    </>
+                  )}
                 </div>
               </div>
             </div>
           </section>
-          <div className="fixed inset-x-0 bottom-0 z-40 border-t border-ink/10 bg-white p-3 sm:hidden">
-            <a href="#postular" className={`${btnPrimary} w-full`}>
-              Postularme
-            </a>
-          </div>
+          {cerrada ? null : (
+            <div className="fixed inset-x-0 bottom-0 z-40 border-t border-ink/10 bg-white p-3 sm:hidden">
+              <a href="#postular" className={`${btnPrimary} w-full`}>
+                Postularme
+              </a>
+            </div>
+          )}
         </>
       )}
     </>

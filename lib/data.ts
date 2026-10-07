@@ -5,7 +5,7 @@ export const COMPANY_INFO = {
   description:
     'Startup dominicana de outsourcing y gestión humana especializada en obras de construcción, plantas industriales y proyectos de gran escala. Asumimos reclutamiento, cumplimiento legal, nómina y supervisión en campo para que la directiva se concentre en el proyecto.',
   email: 'gestionhumanahakamo@gmail.com',
-  emailReclutamiento: 'reclutamiento.hakamo@gmail.com',
+  emailReclutamiento: 'info@hakamo.com.do',
   whatsapp: '8296790671',
   telefono: '829-679-0671',
   telefonoAlt: '829-679-6842',
@@ -511,7 +511,7 @@ export const FAQ = [
   {
     pregunta: '¿Cómo los contacto?',
     respuesta:
-      'WhatsApp / cotizaciones: 829-679-0671. Teléfono: 829-679-6842. Correos: gestionhumanahakamo@gmail.com y reclutamiento.hakamo@gmail.com. Redes: Instagram @hakamord y LinkedIn Hakamo. Web: https://hakamo.com.do. Enlace: t.mtrbio.com/hakamord.',
+      'WhatsApp / cotizaciones: 829-679-0671. Teléfono: 829-679-6842. Correo: gestionhumanahakamo@gmail.com. Para postularte: info@hakamo.com.do. Redes: Instagram @hakamord y LinkedIn Hakamo. Web: https://hakamo.com.do. Enlace: t.mtrbio.com/hakamord.',
   },
 ]
 

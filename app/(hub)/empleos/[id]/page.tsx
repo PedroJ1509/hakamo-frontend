@@ -6,5 +6,5 @@ export default async function EmpleoDetailRedirect({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  redirect(`/cv/vacantes/${id}`)
+  redirect(`/empleos/vacantes/${id}`)
 }

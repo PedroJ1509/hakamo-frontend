@@ -1,5 +1,10 @@
-import { JobsDetail } from '@/app/components/visual-kit/landing/jobs-detail'
+import { redirect } from 'next/navigation'
 
-export default function PostulateVacanteDetailPage() {
-  return <JobsDetail embedded />
+export default async function CvVacanteRedirect({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const { id } = await params
+  redirect(`/empleos/vacantes/${id}`)
 }

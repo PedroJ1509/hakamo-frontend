@@ -15,7 +15,7 @@ export function GateLanding() {
           <Link href="/empresas" className="text-paper/80 transition hover:text-glow">
             Empresas
           </Link>
-          <Link href="/cv" className="text-paper/80 transition hover:text-glow">
+          <Link href="/empleos" className="text-paper/80 transition hover:text-glow">
             Talentos
           </Link>
         </nav>
@@ -33,7 +33,7 @@ export function GateLanding() {
           <Link href="/empresas" className={`${btnGlow} w-full sm:w-auto`}>
             Busco talento
           </Link>
-          <Link href="/cv" className={`${btnGhostOnNight} w-full sm:w-auto`}>
+          <Link href="/empleos" className={`${btnGhostOnNight} w-full sm:w-auto`}>
             Busco empleo
           </Link>
         </div>

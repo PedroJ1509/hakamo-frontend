@@ -7,7 +7,7 @@ import { btnGhostOnNight, btnGlow, btnPrimary, btnSecondary } from "@/lib/visual
 export function PublicFooter({
   site,
   links,
-  staffHref = "/cv",
+  staffHref = "/empleos",
   staffLabel = "Busco empleo",
   ctaHref,
   ctaLabel,
@@ -74,8 +74,11 @@ export function PublicFooter({
             </div>
             <div>
               <dt className="text-[11px] uppercase tracking-[0.28em] text-accent">Correo</dt>
-              <dd className="mt-3 text-sm text-muted">{COMPANY_INFO.email}</dd>
-              <dd className="mt-1 text-sm text-muted">{COMPANY_INFO.emailReclutamiento}</dd>
+              <dd className="mt-3 text-sm text-muted">
+                <a href={`mailto:${COMPANY_INFO.emailReclutamiento}`} className="hover:text-accent">
+                  {COMPANY_INFO.emailReclutamiento}
+                </a>
+              </dd>
             </div>
             <div>
               <dt className="text-[11px] uppercase tracking-[0.28em] text-accent">Redes</dt>
@@ -154,8 +157,11 @@ export function PublicFooter({
           {site.email ? (
             <div>
               <dt className="text-[11px] uppercase tracking-[0.28em] text-glow">Correo</dt>
-              <dd className="mt-3 text-sm text-paper/65">{COMPANY_INFO.email}</dd>
-              <dd className="mt-1 text-sm text-paper/65">{COMPANY_INFO.emailReclutamiento}</dd>
+              <dd className="mt-3 text-sm text-paper/65">
+                <a href={`mailto:${COMPANY_INFO.email}`} className="hover:text-glow">
+                  {COMPANY_INFO.email}
+                </a>
+              </dd>
             </div>
           ) : null}
           <div>

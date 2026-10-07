@@ -13,8 +13,9 @@ export const EMPRESAS_NAV: NavLink[] = [
 export const SITE_NAV: NavLink[] = EMPRESAS_NAV
 
 export const TALENTOS_NAV: NavLink[] = [
-  { href: '/cv#vacantes', label: 'Empleos' },
-  { href: '/cv#tu-cv', label: 'Mi CV' },
+  { href: '/empleos', label: 'Empleos' },
+  { href: '/empleos/vacantes', label: 'Vacantes' },
+  { href: '/empleos#tu-cv', label: 'Mi perfil' },
   { href: '/empleo', label: 'Cómo es trabajar' },
 ]
 
@@ -32,7 +33,7 @@ export const SITE_PUBLIC: SitePublic = {
   address: COMPANY_INFO.ubicacion,
   ctaHref: '/empresas/solicitar',
   ctaLabel: 'Solicitar personal',
-  cvHref: '/cv',
+  cvHref: '/empleos',
   cvLabel: 'Busco empleo',
 }
 
