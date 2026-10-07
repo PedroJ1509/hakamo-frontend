@@ -1008,6 +1008,61 @@ body {
   box-shadow: inset 0 0 0 4px var(--accent);
 }
 
+.visit-night .visit-label {
+  color: color-mix(in srgb, var(--paper) 55%, transparent);
+}
+
+.visit-night .visit-input {
+  border-bottom-color: color-mix(in srgb, white 18%, transparent);
+  color: var(--paper);
+}
+
+.visit-night .visit-input::placeholder {
+  color: color-mix(in srgb, var(--paper) 35%, transparent);
+}
+
+.visit-night .visit-input:focus {
+  border-bottom-color: var(--glow);
+}
+
+.visit-night .visit-input[type="date"] {
+  color-scheme: dark;
+}
+
+.visit-night .visit-choice {
+  border-color: color-mix(in srgb, white 12%, transparent);
+  background: color-mix(in srgb, white 5%, transparent);
+}
+
+.visit-night .visit-choice:hover {
+  border-color: color-mix(in srgb, var(--glow) 45%, transparent);
+  background: color-mix(in srgb, white 8%, transparent);
+}
+
+.visit-night .visit-choice.is-active {
+  border-color: color-mix(in srgb, var(--glow) 70%, transparent);
+  background: color-mix(in srgb, var(--glow) 12%, transparent);
+  box-shadow: none;
+}
+
+.visit-night .visit-choice-title {
+  color: var(--paper);
+}
+
+.visit-night .visit-choice-note {
+  color: color-mix(in srgb, var(--paper) 58%, transparent);
+}
+
+.visit-night .visit-radio {
+  border-color: color-mix(in srgb, white 28%, transparent);
+  background: transparent;
+}
+
+.visit-night .visit-radio.is-active {
+  border-color: var(--glow);
+  box-shadow: inset 0 0 0 4px var(--glow);
+}
+
 .apply-timeline {
   position: relative;
   display: grid;

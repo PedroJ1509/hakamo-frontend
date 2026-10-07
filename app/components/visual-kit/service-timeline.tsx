@@ -2,6 +2,7 @@
 
 import { useId, useState } from "react";
 import { SERVICIOS } from "@/lib/data";
+import { LANDING_COPY } from "@/lib/visual-kit/hakamo";
 import { MagneticButton } from "./magnetic-button";
 import { Reveal } from "./reveal";
 
@@ -74,10 +75,10 @@ export function ServiceTimeline({ items }: { items: readonly Servicio[] }) {
       <div className="relative z-10 mx-auto max-w-6xl px-4 text-center sm:px-6">
         <p className="text-[11px] uppercase tracking-[0.32em] text-glow">Catálogo</p>
         <h2 className="font-display mx-auto mt-3 max-w-3xl text-3xl leading-snug sm:text-4xl">
-          Cinco soluciones para su operación
+          {LANDING_COPY.offeringsTitle}
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-paper/65">
-          Outsourcing, reclutamiento, gestión documental, nómina y supervisión de obras — con cumplimiento legal dominicano.
+          Outsourcing, reclutamiento, gestión documental, nómina, supervisión de obras y seguridad ocupacional — con cumplimiento legal dominicano.
         </p>
         <p className="service-timeline-hint mt-6">
           Selecciona un servicio para ver el detalle

@@ -93,7 +93,7 @@ export function PostulateHeader() {
           <div className="flex min-w-0 shrink-0 items-center gap-3">
             <Logo name={site.name} inverted={false} className="text-ink" />
             <span className="hidden text-[10px] font-semibold uppercase tracking-[0.28em] text-accent sm:inline">
-              Postúlate
+              Talentos
             </span>
           </div>
 
@@ -102,11 +102,15 @@ export function PostulateHeader() {
             aria-label="Portal de empleo"
           >
             {POSTULATE_NAV.map((link) => {
-              const active = onLanding && isSectionActive(activeHash, link.href);
+              const hash = link.href.split("#")[1];
+              const active = hash
+                ? onLanding && isSectionActive(activeHash, link.href)
+                : pathname === link.href;
+              const href = hash && onLanding ? `#${hash}` : link.href;
               return (
                 <a
                   key={link.href}
-                  href={onLanding ? `#${link.href.split("#")[1]}` : link.href}
+                  href={href}
                   className={`chrome-nav-link chrome-nav-link-paper ${active ? "is-active" : ""}`}
                   onClick={() => setOpen(false)}
                 >
@@ -118,13 +122,13 @@ export function PostulateHeader() {
 
           <div className="hidden shrink-0 items-center justify-end gap-2 lg:flex">
             <Link
-              href="/"
+              href="/empresas"
               className="text-xs font-semibold uppercase tracking-[0.16em] text-muted transition hover:text-accent"
             >
-              Sitio Hakamo
+              Empresas
             </Link>
-            <Link href="/contacto" className={btnPrimary}>
-              Contactar
+            <Link href="/cv#vacantes" className={btnPrimary}>
+              Buscar empleo
             </Link>
           </div>
 
@@ -159,11 +163,15 @@ export function PostulateHeader() {
           <div className="mx-auto flex max-w-lg flex-col gap-8 px-5 py-8">
             <nav className="flex flex-col gap-1.5" aria-label="Portal móvil">
               {POSTULATE_NAV.map((link) => {
-                const active = onLanding && isSectionActive(activeHash, link.href);
+                const hash = link.href.split("#")[1];
+                const active = hash
+                  ? onLanding && isSectionActive(activeHash, link.href)
+                  : pathname === link.href;
+                const href = hash && onLanding ? `#${hash}` : link.href;
                 return (
                   <a
                     key={link.href}
-                    href={onLanding ? `#${link.href.split("#")[1]}` : link.href}
+                    href={href}
                     className={`chrome-mobile-link ${active ? "is-active" : ""}`}
                     onClick={() => setOpen(false)}
                   >
@@ -176,14 +184,14 @@ export function PostulateHeader() {
 
             <div className="flex flex-col gap-3">
               <Link
-                href="/"
+                href="/empresas"
                 className="text-center text-sm font-semibold text-muted transition hover:text-accent"
                 onClick={() => setOpen(false)}
               >
-                Volver al sitio Hakamo
+                Empresas
               </Link>
-              <Link href="/contacto" className={btnPrimary} onClick={() => setOpen(false)}>
-                Contactar
+              <Link href="/cv#vacantes" className={btnPrimary} onClick={() => setOpen(false)}>
+                Buscar empleo
               </Link>
             </div>
           </div>

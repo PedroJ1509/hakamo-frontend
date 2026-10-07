@@ -1,20 +1,24 @@
 import { CLIENTES, COMPANY_INFO, PROCESO_EMPRESAS, SERVICIOS, STATS } from '@/lib/data'
 import type { HourRow, LandingCopy, LandingHeroBackground, NavLink, Offering, SitePublic, Stat, Step, StoryCard } from './types'
 
-export const SITE_NAV: NavLink[] = [
-  { href: '/', label: 'Inicio' },
-  { href: '/nosotros', label: 'Nosotros' },
+export const EMPRESAS_NAV: NavLink[] = [
+  { href: '/empresas', label: 'Inicio' },
   { href: '/servicios', label: 'Servicios' },
   { href: '/proyectos', label: 'Proyectos' },
-  { href: '/empleo', label: 'Cultura' },
-  { href: '/faq', label: 'FAQ' },
+  { href: '/empresas/solicitar', label: 'Solicitar' },
+  { href: '/nosotros', label: 'Nosotros' },
   { href: '/contacto', label: 'Contacto' },
 ]
 
-export const POSTULATE_NAV: NavLink[] = [
-  { href: '/cv#vacantes', label: 'Vacantes' },
-  { href: '/cv#tu-cv', label: 'Tu CV' },
+export const SITE_NAV: NavLink[] = EMPRESAS_NAV
+
+export const TALENTOS_NAV: NavLink[] = [
+  { href: '/cv#vacantes', label: 'Empleos' },
+  { href: '/cv#tu-cv', label: 'Mi CV' },
+  { href: '/empleo', label: 'Cómo es trabajar' },
 ]
+
+export const POSTULATE_NAV: NavLink[] = TALENTOS_NAV
 
 export const SITE_PUBLIC: SitePublic = {
   name: COMPANY_INFO.name,
@@ -26,10 +30,10 @@ export const SITE_PUBLIC: SitePublic = {
   phone: COMPANY_INFO.telefono,
   email: COMPANY_INFO.email,
   address: COMPANY_INFO.ubicacion,
-  ctaHref: '/contacto',
-  ctaLabel: 'Contactar',
+  ctaHref: '/empresas/solicitar',
+  ctaLabel: 'Solicitar personal',
   cvHref: '/cv',
-  cvLabel: 'Postúlate aquí',
+  cvLabel: 'Busco empleo',
 }
 
 export const LANDING_COPY: LandingCopy = {

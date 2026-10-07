@@ -10,9 +10,17 @@ import { Logo } from "./logo";
 import { MagneticButton } from "./magnetic-button";
 import { PostulateCta } from "./postulate-cta";
 
-function isActive(pathname: string, href: string) {
-  if (href === "/") return pathname === "/";
-  return pathname === href || pathname.startsWith(`${href}/`);
+function isActive(pathname: string, href: string, links: NavLink[]) {
+  const path = href.split("#")[0] || "/";
+  if (path === "/") return pathname === "/";
+  if (pathname === path) return true;
+  const childActive = links.some((other) => {
+    const otherPath = other.href.split("#")[0];
+    if (otherPath === path || !otherPath.startsWith(`${path}/`)) return false;
+    return pathname === otherPath || pathname.startsWith(`${otherPath}/`);
+  });
+  if (childActive) return false;
+  return pathname.startsWith(`${path}/`);
 }
 
 export function ChromeHeader({
@@ -110,7 +118,7 @@ export function ChromeHeader({
             aria-label="Principal"
           >
             {links.map((link) => {
-              const active = isActive(pathname, link.href);
+              const active = isActive(pathname, link.href, links);
               return (
                 <Link
                   key={link.href}
@@ -182,7 +190,7 @@ export function ChromeHeader({
           <div className="mx-auto flex max-w-lg flex-col gap-8 px-5 py-8">
             <nav className="flex flex-col gap-1.5" aria-label="Móvil">
               {links.map((link) => {
-                const active = isActive(pathname, link.href);
+                const active = isActive(pathname, link.href, links);
                 return (
                   <Link
                     key={link.href}

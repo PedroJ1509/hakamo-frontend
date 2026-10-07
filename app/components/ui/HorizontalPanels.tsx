@@ -3,16 +3,14 @@
 import { useEffect, useLayoutEffect, useRef, useState, Children, type ReactNode } from 'react'
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion'
 
-const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect
-
 interface HorizontalPanelsProps {
   children: ReactNode
   className?: string
 }
 
 /**
- * Desktop: scroll vertical mueve capítulos en horizontal (1:1, sin muelle).
- * Sin overflow interno: la rueda siempre es de la página.
+ * Desktop: el scroll vertical mueve los capítulos en horizontal.
+ * Al soltar, el capítulo más cercano encaja completo en pantalla.
  * Móvil: capítulos apilados.
  */
 export default function HorizontalPanels({ children, className = '' }: HorizontalPanelsProps) {
@@ -26,7 +24,7 @@ export default function HorizontalPanels({ children, className = '' }: Horizonta
   const count = Math.max(panels.length, 1)
   const distance = panelWidth * Math.max(0, count - 1)
 
-  useIsomorphicLayoutEffect(() => {
+  useLayoutEffect(() => {
     const mq = window.matchMedia('(min-width: 1024px)')
     const update = () => setIsDesktop(mq.matches)
     update()
@@ -34,7 +32,7 @@ export default function HorizontalPanels({ children, className = '' }: Horizonta
     return () => mq.removeEventListener('change', update)
   }, [])
 
-  useIsomorphicLayoutEffect(() => {
+  useLayoutEffect(() => {
     if (prefersReducedMotion || !isDesktop) return
     const sticky = stickyRef.current
     if (!sticky) return
@@ -60,6 +58,55 @@ export default function HorizontalPanels({ children, className = '' }: Horizonta
   })
 
   const x = useTransform(scrollYProgress, [0, 1], [0, -distance])
+
+  useEffect(() => {
+    if (prefersReducedMotion || !isDesktop || count < 2) return
+
+    let lock = false
+    let unlockTimer = 0
+
+    const snap = () => {
+      if (lock) return
+      const el = containerRef.current
+      if (!el) return
+
+      const start = el.getBoundingClientRect().top + window.scrollY
+      const range = el.offsetHeight - window.innerHeight
+      if (range <= 8) return
+
+      const progress = (window.scrollY - start) / range
+      if (progress <= 0 || progress >= 1) return
+
+      const index = Math.round(progress * (count - 1))
+      const target = start + (index / (count - 1)) * range
+      const delta = target - window.scrollY
+      if (Math.abs(delta) < 16) return
+
+      lock = true
+      window.scrollBy({ top: delta, behavior: 'smooth' })
+      window.clearTimeout(unlockTimer)
+      unlockTimer = window.setTimeout(() => {
+        lock = false
+      }, 480)
+    }
+
+    const supportsScrollEnd = 'onscrollend' in window
+    let debounce = 0
+    const onScroll = () => {
+      window.clearTimeout(debounce)
+      debounce = window.setTimeout(snap, 140)
+    }
+
+    if (supportsScrollEnd) window.addEventListener('scrollend', snap)
+    else window.addEventListener('scroll', onScroll, { passive: true })
+
+    return () => {
+      if (supportsScrollEnd) window.removeEventListener('scrollend', snap)
+      else window.removeEventListener('scroll', onScroll)
+      window.clearTimeout(debounce)
+      window.clearTimeout(unlockTimer)
+    }
+  }, [count, isDesktop, prefersReducedMotion])
 
   if (prefersReducedMotion || !isDesktop) {
     return (

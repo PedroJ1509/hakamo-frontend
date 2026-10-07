@@ -201,7 +201,7 @@ export function AboutLanding() {
           <Reveal from="up">
             <p className="text-[11px] uppercase tracking-[0.32em] text-accent">{COBERTURA.titulo}</p>
             <h2 className="font-display mt-3 text-3xl leading-snug text-ink sm:text-4xl">
-              Montecristi y todo el país
+              Todo el territorio nacional
             </h2>
             <p className="mt-4 text-sm leading-6 text-muted">{COBERTURA.texto}</p>
             <div className="mt-8 grid gap-3">
@@ -274,8 +274,8 @@ export function AboutLanding() {
             ))}
           </div>
           <div className="mt-8">
-            <MagneticButton href="/contacto" variant="ink">
-              Hablar con el equipo
+            <MagneticButton href="/empresas/solicitar" variant="ink">
+              Solicitar personal
             </MagneticButton>
           </div>
         </div>

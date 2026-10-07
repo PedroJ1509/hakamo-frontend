@@ -7,17 +7,23 @@ import { btnGhostOnNight, btnGlow, btnPrimary, btnSecondary } from "@/lib/visual
 export function PublicFooter({
   site,
   links,
-  staffHref = "/empleo",
-  staffLabel = "Buscar empleo",
+  staffHref = "/cv",
+  staffLabel = "Busco empleo",
+  ctaHref,
+  ctaLabel,
   tone = "night",
 }: {
   site: SitePublic;
   links: NavLink[];
   staffHref?: string;
   staffLabel?: string;
+  ctaHref?: string;
+  ctaLabel?: string;
   tone?: "night" | "paper";
 }) {
   const paper = tone === "paper";
+  const actionHref = ctaHref ?? site.ctaHref;
+  const actionLabel = ctaLabel ?? site.ctaLabel;
 
   if (paper) {
     return (
@@ -38,8 +44,8 @@ export function PublicFooter({
               <p className="font-display mt-3 max-w-xl text-2xl leading-snug text-ink sm:text-3xl">{site.tagline}</p>
             </div>
             <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row lg:flex-col lg:items-end">
-              <a href={site.ctaHref} className={`${btnPrimary} w-full sm:w-auto`}>
-                {site.ctaLabel}
+              <a href={actionHref} className={`${btnPrimary} w-full sm:w-auto`}>
+                {actionLabel}
               </a>
               {site.address ? (
                 <a
@@ -90,6 +96,9 @@ export function PublicFooter({
               <span>
                 © {new Date().getFullYear()} {site.name}
               </span>
+              <Link href="/privacidad" className="hover:text-accent">
+                Privacidad
+              </Link>
               <Link href={staffHref} className="hover:text-accent">
                 {staffLabel}
               </Link>
@@ -114,8 +123,8 @@ export function PublicFooter({
             <p className="font-display mt-4 max-w-xl text-2xl leading-snug sm:text-3xl">{site.tagline}</p>
           </div>
           <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row lg:flex-col lg:items-end">
-            <a href={site.ctaHref} className={`${btnGlow} w-full sm:w-auto`}>
-              {site.ctaLabel}
+            <a href={actionHref} className={`${btnGlow} w-full sm:w-auto`}>
+              {actionLabel}
             </a>
             {site.address ? (
               <a
@@ -173,6 +182,9 @@ export function PublicFooter({
             <span>
               © {new Date().getFullYear()} {site.name}
             </span>
+            <Link href="/privacidad" className="hover:text-glow">
+              Privacidad
+            </Link>
             <Link href={staffHref} className="hover:text-glow">
               {staffLabel}
             </Link>

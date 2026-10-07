@@ -25,9 +25,7 @@ const DOORS = [
   { href: "/nosotros", kicker: "Nosotros", title: "Quiénes somos" },
   { href: "/servicios", kicker: "Servicios", title: "Seis soluciones" },
   { href: "/proyectos", kicker: "Proyectos", title: "Obras en campo" },
-  { href: "/empleo", kicker: "Cultura", title: "Cómo trabajamos" },
-  { href: "/cv", kicker: "Candidatos", title: "Postúlate aquí" },
-  { href: "/faq", kicker: "FAQ", title: "Preguntas frecuentes" },
+  { href: "/empresas/solicitar", kicker: "Talento", title: "Solicitar personal" },
 ];
 
 export function HomeLanding({
@@ -118,7 +116,7 @@ export function HomeLanding({
             <Reveal from="up" delay={60}>
               <article className="h-full rounded-[1.6rem] border border-ink/10 bg-white p-5">
                 <p className="text-[11px] uppercase tracking-[0.28em] text-accent">{COBERTURA.titulo}</p>
-                <h3 className="font-display mt-2 text-xl text-ink">Montecristi y el territorio nacional</h3>
+                <h3 className="font-display mt-2 text-xl text-ink">Todo el territorio nacional</h3>
                 <p className="mt-2 text-sm leading-6 text-muted">{COBERTURA.texto}</p>
               </article>
             </Reveal>
@@ -155,7 +153,7 @@ export function HomeLanding({
       <Marquee items={offerings.map((item) => item.name)} />
 
       <section className="bg-paper px-4 py-20 sm:px-6 sm:py-24">
-        <div className="mx-auto grid max-w-6xl gap-10 sm:grid-cols-2 md:grid-cols-3">
+        <div className="mx-auto grid max-w-6xl gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {DOORS.map((door, index) => (
             <Reveal key={door.href} delay={index * 60} from="up">
               <a href={door.href} className="group block">

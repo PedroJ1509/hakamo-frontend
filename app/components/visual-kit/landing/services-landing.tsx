@@ -1,12 +1,10 @@
 "use client";
 
-import HorizontalPanels from "@/app/components/ui/HorizontalPanels";
 import {
   COBERTURA,
   COMPROMISO_HSE,
   DOSSIER_CIERRE,
   MARCO_LEGAL,
-  PLANES,
   PROCESO_EMPRESAS,
   SECTORES,
   SERVICIOS,
@@ -24,7 +22,6 @@ import { Reveal } from "../reveal";
 import { ScrollHighlightText } from "../scroll-highlight-text";
 import { ScrollProgress } from "../scroll-progress";
 import { ServiceTimeline } from "../service-timeline";
-import { StagePanel } from "../stage-panel";
 
 const SERVICIOS_LEAD =
   "Soluciones integrales para su operación: outsourcing de personal; reclutamiento especializado; payroll y administración de nómina; cumplimiento laboral y gestión documental; supervisión de proyectos en campo; y seguridad y salud ocupacional. Todo alineado a la normativa laboral dominicana.";
@@ -61,7 +58,7 @@ export function ServicesLanding() {
             <CinematicTitle lines={["Soluciones para cada", "obra y cada equipo"]} />
           </div>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-            <MagneticButton href={site.ctaHref}>Obtener cotización</MagneticButton>
+            <MagneticButton href={site.ctaHref}>Solicitar personal</MagneticButton>
             <MagneticButton href="/contacto" variant="ghost">
               Hablemos
             </MagneticButton>
@@ -96,7 +93,7 @@ export function ServicesLanding() {
             <article className="h-full rounded-[1.6rem] border border-ink/10 bg-white p-6 sm:p-8">
               <p className="text-[11px] uppercase tracking-[0.32em] text-accent">{COBERTURA.titulo}</p>
               <h2 className="font-display mt-3 text-2xl leading-snug text-ink sm:text-3xl">
-                Montecristi y todo el territorio nacional
+                Todo el territorio nacional
               </h2>
               <p className="mt-4 text-sm leading-6 text-muted">{COBERTURA.texto}</p>
             </article>
@@ -168,8 +165,8 @@ export function ServicesLanding() {
         </div>
       </section>
 
-      <HorizontalPanels>
-        <StagePanel tone="night">
+      <section className="bg-night px-4 py-16 text-paper sm:px-6 sm:py-20">
+        <div className="mx-auto max-w-6xl">
           <p className="text-[11px] uppercase tracking-[0.32em] text-glow">Cómo trabajamos</p>
           <h2 className="font-display mt-3 max-w-3xl text-3xl leading-snug sm:text-4xl">
             Un proceso claro, de principio a fin
@@ -186,48 +183,8 @@ export function ServicesLanding() {
               </article>
             ))}
           </div>
-        </StagePanel>
-
-        <StagePanel tone="paper">
-          <p className="text-[11px] uppercase tracking-[0.32em] text-accent">Elige tu plan</p>
-          <h2 className="font-display mt-3 max-w-3xl text-3xl leading-snug text-ink sm:text-4xl">
-            Planes y precios
-          </h2>
-          <p className="mt-3 max-w-xl text-sm leading-6 text-muted">
-            Cumplimiento legal incluido en todos los planes. Cotización a medida según el tamaño y
-            ritmo de tu operación.
-          </p>
-          <div className="plans-compare mt-8">
-            {PLANES.map((plan) => (
-              <article
-                key={plan.nombre}
-                className={`plans-compare-col ${plan.destacado ? "is-featured" : ""}`}
-              >
-                <p className={`plans-compare-badge ${plan.badge ? "" : "is-empty"}`}>
-                  {plan.badge || "·"}
-                </p>
-                <h3 className="plans-compare-title font-display">{plan.nombre}</h3>
-                <p className="plans-compare-price">{plan.precio}</p>
-                <p className="plans-compare-desc">{plan.descripcion}</p>
-                <ul className="plans-compare-features">
-                  {plan.features.map((feature) => (
-                    <li key={feature}>{feature}</li>
-                  ))}
-                </ul>
-                <div className="plans-compare-cta">
-                  <MagneticButton
-                    href={plan.ctaLink}
-                    variant={plan.destacado ? "glow" : "ink"}
-                    size="sm"
-                  >
-                    {plan.cta}
-                  </MagneticButton>
-                </div>
-              </article>
-            ))}
-          </div>
-        </StagePanel>
-      </HorizontalPanels>
+        </div>
+      </section>
 
       <Marquee items={SERVICIOS.map((item) => item.titulo)} />
 

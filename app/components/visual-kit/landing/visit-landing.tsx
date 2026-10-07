@@ -5,7 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { COMPANY_INFO } from "@/lib/data";
 import { SITE_NAV, SITE_PUBLIC } from "@/lib/visual-kit/hakamo";
-import { btnPrimary, btnSecondary } from "@/lib/visual-kit/styles";
+import { btnGhostOnNight, btnGlow } from "@/lib/visual-kit/styles";
+import { Grain } from "../grain";
 import { LandingHeader } from "../chrome-header";
 import { PublicFooter } from "../public-footer";
 import { Reveal } from "../reveal";
@@ -155,7 +156,8 @@ export function VisitLanding() {
 
   if (done) {
     return (
-      <div className="min-h-[100svh] bg-paper text-ink">
+      <div className="visit-night landing min-h-[100svh] bg-night text-paper">
+        <Grain />
         <LandingHeader
           name={site.name}
           links={SITE_NAV}
@@ -163,12 +165,11 @@ export function VisitLanding() {
           ctaLabel="Contactar"
           cvHref={site.cvHref}
           cvLabel={site.cvLabel}
-          tone="paper"
         />
         <section className="mx-auto max-w-lg px-4 py-24 text-center sm:px-6">
-          <p className="text-[11px] uppercase tracking-[0.32em] text-accent">Listo</p>
-          <h1 className="font-display mt-4 text-4xl italic text-ink">Solicitud preparada</h1>
-          <p className="mt-4 text-sm leading-6 text-muted">
+          <p className="text-[11px] uppercase tracking-[0.32em] text-glow">Listo</p>
+          <h1 className="font-display mt-4 text-4xl italic text-paper">Solicitud preparada</h1>
+          <p className="mt-4 text-sm leading-6 text-paper/65">
             Abrimos WhatsApp y tu correo con el resumen. Si alguno no se abrió, usa los botones.
           </p>
           <div className="mt-10 flex flex-wrap justify-center gap-3">
@@ -176,7 +177,7 @@ export function VisitLanding() {
               href={`https://wa.me/18296790671?text=${encodeURIComponent(message)}`}
               target="_blank"
               rel="noreferrer"
-              className={btnPrimary}
+              className={btnGlow}
             >
               Abrir WhatsApp
             </a>
@@ -184,23 +185,24 @@ export function VisitLanding() {
               href={`mailto:${COMPANY_INFO.email}?subject=${encodeURIComponent(
                 `Agendar visita — ${data.nombre}`,
               )}&body=${encodeURIComponent(message)}`}
-              className={btnSecondary}
+              className={btnGhostOnNight}
             >
               Abrir correo
             </a>
           </div>
-          <Link href="/contacto" className="mt-10 inline-block text-sm font-semibold text-accent">
+          <Link href="/contacto" className="mt-10 inline-block text-sm font-semibold text-glow">
             Volver a contacto →
           </Link>
         </section>
-        <PublicFooter site={site} links={SITE_NAV} tone="paper" />
+        <PublicFooter site={site} links={SITE_NAV} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-[100svh] bg-paper text-ink">
+    <div className="visit-night landing min-h-[100svh] bg-night text-paper">
       <ScrollProgress />
+      <Grain />
       <LandingHeader
         name={site.name}
         links={SITE_NAV}
@@ -208,7 +210,6 @@ export function VisitLanding() {
         ctaLabel="Contactar"
         cvHref={site.cvHref}
         cvLabel={site.cvLabel}
-        tone="paper"
       />
 
       <section className="relative overflow-hidden">
@@ -226,34 +227,34 @@ export function VisitLanding() {
             className="absolute inset-0"
             style={{
               background:
-                "linear-gradient(180deg, color-mix(in srgb, var(--paper) 55%, transparent) 0%, color-mix(in srgb, var(--paper) 35%, transparent) 40%, color-mix(in srgb, var(--paper) 92%, white) 100%), radial-gradient(ellipse at 18% 10%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 42%)",
+                "linear-gradient(180deg, color-mix(in srgb, var(--night) 35%, transparent) 0%, color-mix(in srgb, var(--night) 55%, transparent) 42%, var(--night) 100%), radial-gradient(ellipse at 18% 10%, color-mix(in srgb, var(--glow) 16%, transparent), transparent 42%)",
             }}
           />
           <div className="relative z-[1] mx-auto flex min-h-[48svh] max-w-6xl flex-col justify-end px-4 pb-10 pt-28 sm:min-h-[56svh] sm:px-6 sm:pb-14">
-            <p className="text-[11px] font-medium uppercase tracking-[0.42em] text-accent">Visita</p>
-            <h1 className="font-display mt-4 max-w-3xl text-[clamp(2rem,5.5vw,3.6rem)] leading-[1.06] tracking-[-0.03em] italic text-ink">
+            <p className="text-[11px] font-medium uppercase tracking-[0.42em] text-glow">Solicitar</p>
+            <h1 className="font-display mt-4 max-w-3xl text-[clamp(2rem,5.5vw,3.6rem)] leading-[1.06] tracking-[-0.03em] italic text-paper">
               Agendar visita
             </h1>
-            <p className="mt-4 max-w-lg text-sm leading-6 text-muted sm:text-base">
+            <p className="mt-4 max-w-lg text-sm leading-6 text-paper/70 sm:text-base">
               Un flujo corto. Al final enviamos el resumen a WhatsApp y a {COMPANY_INFO.email}.
             </p>
           </div>
         </div>
 
-        <div className="bg-paper px-4 pt-8 sm:px-6">
+        <div className="bg-night px-4 pt-8 sm:px-6">
           <div className="mx-auto max-w-6xl">
             <div className="flex items-center justify-between gap-4">
               <div>
-                <p className="text-sm font-semibold text-ink">{STEPS[step].title}</p>
-                <p className="mt-0.5 text-xs text-muted">{STEPS[step].hint}</p>
+                <p className="text-sm font-semibold text-paper">{STEPS[step].title}</p>
+                <p className="mt-0.5 text-xs text-paper/55">{STEPS[step].hint}</p>
               </div>
-              <p className="text-xs font-medium tabular-nums text-muted">
+              <p className="text-xs font-medium tabular-nums text-paper/55">
                 {step + 1} / {STEPS.length}
               </p>
             </div>
-            <div className="mt-4 h-1 overflow-hidden rounded-full bg-ink/8">
+            <div className="mt-4 h-1 overflow-hidden rounded-full bg-white/10">
               <div
-                className="h-full rounded-full bg-accent transition-all duration-500 ease-out"
+                className="h-full rounded-full bg-glow transition-all duration-500 ease-out"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -263,7 +264,7 @@ export function VisitLanding() {
                   <button
                     type="button"
                     className={`text-[11px] font-medium tracking-wide transition ${
-                      i === step ? "text-accent" : i < step ? "text-ink/55" : "text-muted/70"
+                      i === step ? "text-glow" : i < step ? "text-paper/55" : "text-paper/35"
                     }`}
                     onClick={() => {
                       if (i < step) {
@@ -274,7 +275,7 @@ export function VisitLanding() {
                   >
                     {item.title}
                   </button>
-                  {i < STEPS.length - 1 ? <span className="text-ink/20">·</span> : null}
+                  {i < STEPS.length - 1 ? <span className="text-paper/25">·</span> : null}
                 </span>
               ))}
             </div>
@@ -282,7 +283,7 @@ export function VisitLanding() {
         </div>
       </section>
 
-      <section className="px-4 pb-24 pt-4 sm:px-6">
+      <section className="bg-night px-4 pb-24 pt-4 sm:px-6">
         <div className="mx-auto max-w-6xl">
           <Reveal from="up">
             <div className="visit-form">
@@ -331,8 +332,8 @@ export function VisitLanding() {
               {step === 1 && (
                 <div className="space-y-10">
                   <div>
-                    <p className="text-[11px] uppercase tracking-[0.28em] text-accent">Motivo</p>
-                    <p className="mt-2 text-sm text-muted">¿Por qué quieres agendar?</p>
+                    <p className="text-[11px] uppercase tracking-[0.28em] text-glow">Motivo</p>
+                    <p className="mt-2 text-sm text-paper/65">¿Por qué quieres agendar?</p>
                     <div className="mt-5 grid gap-3 sm:grid-cols-2">
                       {MOTIVOS.map((item) => {
                         const active = data.motivo === item.value;
@@ -352,8 +353,8 @@ export function VisitLanding() {
                   </div>
 
                   <div>
-                    <p className="text-[11px] uppercase tracking-[0.28em] text-accent">Modalidad</p>
-                    <p className="mt-2 text-sm text-muted">¿Cómo prefieres la visita?</p>
+                    <p className="text-[11px] uppercase tracking-[0.28em] text-glow">Modalidad</p>
+                    <p className="mt-2 text-sm text-paper/65">¿Cómo prefieres la visita?</p>
                     <div className="mt-5 grid gap-3">
                       {MODALIDADES.map((item) => {
                         const active = data.modalidad === item.value;
@@ -410,9 +411,9 @@ export function VisitLanding() {
 
               {step === 3 && (
                 <div className="max-w-2xl">
-                  <p className="text-[11px] uppercase tracking-[0.28em] text-accent">Resumen</p>
-                  <h2 className="font-display mt-3 text-3xl italic text-ink">Todo listo para enviar</h2>
-                  <dl className="mt-8 divide-y divide-ink/8 border-y border-ink/8">
+                  <p className="text-[11px] uppercase tracking-[0.28em] text-glow">Resumen</p>
+                  <h2 className="font-display mt-3 text-3xl italic text-paper">Todo listo para enviar</h2>
+                  <dl className="mt-8 divide-y divide-white/10 border-y border-white/10">
                     {[
                       ["Nombre", data.nombre],
                       ["Empresa", data.empresa || "—"],
@@ -425,24 +426,24 @@ export function VisitLanding() {
                       ["Detalle", data.detalle],
                     ].map(([label, value]) => (
                       <div key={label} className="grid gap-1 py-4 sm:grid-cols-[10rem_1fr] sm:gap-6">
-                        <dt className="text-xs uppercase tracking-[0.18em] text-muted">{label}</dt>
-                        <dd className="text-sm leading-6 text-ink">{value}</dd>
+                        <dt className="text-xs uppercase tracking-[0.18em] text-paper/50">{label}</dt>
+                        <dd className="text-sm leading-6 text-paper">{value}</dd>
                       </div>
                     ))}
                   </dl>
-                  <p className="mt-6 text-sm leading-6 text-muted">
+                  <p className="mt-6 text-sm leading-6 text-paper/65">
                     Al confirmar se abre WhatsApp con este texto y tu cliente de correo hacia{" "}
                     {COMPANY_INFO.email}.
                   </p>
                 </div>
               )}
 
-              {error ? <p className="mt-8 text-sm text-red-600">{error}</p> : null}
+              {error ? <p className="mt-8 text-sm text-red-300">{error}</p> : null}
 
-              <div className="mt-12 flex flex-wrap items-center justify-between gap-3 border-t border-ink/8 pt-8">
+              <div className="mt-12 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-8">
                 <button
                   type="button"
-                  className={btnSecondary}
+                  className={btnGhostOnNight}
                   onClick={() => {
                     setError("");
                     setStep((s) => Math.max(0, s - 1));
@@ -452,11 +453,11 @@ export function VisitLanding() {
                   Atrás
                 </button>
                 {step < 3 ? (
-                  <button type="button" className={btnPrimary} onClick={next}>
+                  <button type="button" className={btnGlow} onClick={next}>
                     Continuar
                   </button>
                 ) : (
-                  <button type="button" className={btnPrimary} onClick={submit} disabled={busy}>
+                  <button type="button" className={btnGlow} onClick={submit} disabled={busy}>
                     {busy ? "Preparando…" : "Enviar a WhatsApp y correo"}
                   </button>
                 )}
@@ -466,7 +467,7 @@ export function VisitLanding() {
         </div>
       </section>
 
-      <PublicFooter site={site} links={SITE_NAV} tone="paper" />
+      <PublicFooter site={site} links={SITE_NAV} />
     </div>
   );
 }

@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import BlocksRenderer from "@/app/components/ui/BlocksRenderer";
 import { SITE_NAV, SITE_PUBLIC, LANDING_HERO_BACKGROUNDS } from "@/lib/visual-kit/hakamo";
-import { fieldClass, labelClass } from "@/lib/visual-kit/styles";
+import { btnPrimary, fieldClass, labelClass } from "@/lib/visual-kit/styles";
 import { LandingHeader } from "../chrome-header";
 import { EmptyState } from "../empty-state";
 import { Grain } from "../grain";
@@ -12,6 +13,7 @@ import { LandingHeroSection } from "../landing-hero-section";
 import { MagneticButton } from "../magnetic-button";
 import { PublicFooter } from "../public-footer";
 import { ScrollProgress } from "../scroll-progress";
+import { DEMO_VACANTES } from "@/lib/demo-vacantes";
 import { MODALIDAD_LABEL, TIPO_LABEL } from "./jobs-landing";
 
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
@@ -31,8 +33,8 @@ type BlockNode = {
 interface VacanteData {
   documentId: string;
   titulo: string;
-  descripcion: BlockNode[] | null;
-  requisitos: BlockNode[] | null;
+  descripcion: BlockNode[] | string | null;
+  requisitos: BlockNode[] | string | null;
   ubicacion: string;
   modalidad: string;
   tipo: string;
@@ -60,15 +62,25 @@ export function JobsDetail({ embedded = false }: { embedded?: boolean }) {
   const [enviando, setEnviando] = useState(false);
   const [enviado, setEnviado] = useState(false);
   const [error, setError] = useState("");
+  const [cvFile, setCvFile] = useState<File | null>(null);
 
   useEffect(() => {
+    const demo = DEMO_VACANTES.find((item) => item.documentId === id) as VacanteData | undefined;
+    if (!STRAPI_URL) {
+      setVacante(demo ?? null);
+      setCargando(false);
+      return;
+    }
     fetch(`${STRAPI_URL}/api/vacantes/${id}?populate=*`)
       .then((res) => res.json())
       .then((data) => {
-        setVacante(data.data ?? null);
+        setVacante((data.data as VacanteData | null) ?? demo ?? null);
         setCargando(false);
       })
-      .catch(() => setCargando(false));
+      .catch(() => {
+        setVacante(demo ?? null);
+        setCargando(false);
+      });
   }, [id]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -80,14 +92,30 @@ export function JobsDetail({ embedded = false }: { embedded?: boolean }) {
     if (!vacante) return;
     setEnviando(true);
     setError("");
+    const data = {
+      ...formData,
+      cartaPresentacion: cvFile
+        ? `${formData.cartaPresentacion}\nCV adjunto: ${cvFile.name}`.trim()
+        : formData.cartaPresentacion,
+      vacante: vacante.documentId,
+      estado: "recibida",
+    };
     try {
-      const res = await fetch(`${STRAPI_URL}/api/postulacions`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          data: { ...formData, vacante: vacante.documentId, estado: "recibida" },
-        }),
-      });
+      const res = cvFile
+        ? await fetch(`${STRAPI_URL}/api/postulacions`, {
+            method: "POST",
+            body: (() => {
+              const body = new FormData();
+              body.append("data", JSON.stringify(data));
+              body.append("files.cv", cvFile);
+              return body;
+            })(),
+          })
+        : await fetch(`${STRAPI_URL}/api/postulacions`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ data }),
+          });
       if (!res.ok) throw new Error("Error al enviar la postulación");
       setEnviado(true);
       setFormData(initialForm);
@@ -101,7 +129,7 @@ export function JobsDetail({ embedded = false }: { embedded?: boolean }) {
   const content = (
     <>
       {cargando ? (
-        <section className="flex min-h-[60svh] items-center justify-center bg-night px-4 text-sm text-paper/55">
+        <section className="flex min-h-[60svh] items-center justify-center bg-paper px-4 text-sm text-muted">
           Cargando vacante...
         </section>
       ) : !vacante ? (
@@ -121,15 +149,15 @@ export function JobsDetail({ embedded = false }: { embedded?: boolean }) {
         </section>
       ) : (
         <>
-          <LandingHeroSection background={LANDING_HERO_BACKGROUNDS.jobDetail} compact>
+          <LandingHeroSection background={LANDING_HERO_BACKGROUNDS.jobDetail} tone="paper" compact>
             <div className="landing-hero-inner landing-hero-inner-compact mx-auto max-w-3xl px-4 text-center sm:px-6">
-              <p className="text-[11px] font-medium uppercase tracking-[0.42em] text-glow">
+              <p className="text-[11px] font-medium uppercase tracking-[0.42em] text-accent">
                 {vacante.division?.nombre ?? "Vacante"}
               </p>
-              <h1 className="cinematic-title font-display mt-5 text-[clamp(1.85rem,4.2vw,3.15rem)] leading-[1.08] tracking-[-0.03em]">
+              <h1 className="font-display mt-5 text-[clamp(1.85rem,4.2vw,3.15rem)] leading-[1.08] tracking-[-0.03em] text-ink">
                 {vacante.titulo}
               </h1>
-              <p className="mx-auto mt-6 max-w-lg text-sm leading-6 text-paper/70">
+              <p className="mx-auto mt-6 max-w-lg text-sm leading-6 text-muted">
                 {[
                   vacante.ubicacion,
                   vacante.modalidad ? MODALIDAD_LABEL[vacante.modalidad] : null,
@@ -146,12 +174,14 @@ export function JobsDetail({ embedded = false }: { embedded?: boolean }) {
                   .join(" · ")}
               </p>
               <div className="mt-8">
-                <MagneticButton href="#postular">Postularme</MagneticButton>
+                <a href="#postular" className={btnPrimary}>
+                  Postularme
+                </a>
               </div>
             </div>
           </LandingHeroSection>
 
-          <section className="bg-paper px-4 py-20 sm:px-6 sm:py-24">
+          <section className="bg-paper px-4 pb-28 pt-20 sm:px-6 sm:py-24">
             <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[1.15fr_0.85fr]">
               <div className="space-y-10">
                 {vacante.descripcion ? (
@@ -159,7 +189,11 @@ export function JobsDetail({ embedded = false }: { embedded?: boolean }) {
                     <p className="text-[11px] uppercase tracking-[0.32em] text-accent">El puesto</p>
                     <h2 className="font-display mt-3 text-3xl leading-snug text-ink">Descripción</h2>
                     <div className="mt-6 max-w-xl space-y-4 text-sm leading-6 text-muted">
-                      <BlocksRenderer content={vacante.descripcion} />
+                      {typeof vacante.descripcion === "string" ? (
+                        <p>{vacante.descripcion}</p>
+                      ) : (
+                        <BlocksRenderer content={vacante.descripcion} />
+                      )}
                     </div>
                   </div>
                 ) : null}
@@ -168,7 +202,11 @@ export function JobsDetail({ embedded = false }: { embedded?: boolean }) {
                     <p className="text-[11px] uppercase tracking-[0.32em] text-accent">Perfil</p>
                     <h2 className="font-display mt-3 text-3xl leading-snug text-ink">Requisitos</h2>
                     <div className="mt-6 max-w-xl space-y-4 text-sm leading-6 text-muted">
-                      <BlocksRenderer content={vacante.requisitos} />
+                      {typeof vacante.requisitos === "string" ? (
+                        <p>{vacante.requisitos}</p>
+                      ) : (
+                        <BlocksRenderer content={vacante.requisitos} />
+                      )}
                     </div>
                   </div>
                 ) : null}
@@ -237,18 +275,25 @@ export function JobsDetail({ embedded = false }: { embedded?: boolean }) {
                           className={fieldClass}
                         />
                       </div>
-                      <p className="rounded-2xl border border-accent/20 bg-accent/5 p-4 text-sm leading-6 text-muted">
-                        Luego de enviar, manda tu CV en PDF al WhatsApp{" "}
-                        <a
-                          href="https://wa.me/18296790671"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="font-semibold text-accent"
-                        >
-                          829-679-0671
-                        </a>{" "}
-                        indicando el puesto.
-                      </p>
+                      <div>
+                        <label className={labelClass} htmlFor="cv">
+                          CV (PDF o Word)
+                        </label>
+                        <input
+                          id="cv"
+                          type="file"
+                          accept=".pdf,.doc,.docx,application/pdf"
+                          className={`${fieldClass} file:mr-3 file:rounded-full file:border-0 file:bg-accent/10 file:px-3 file:py-1 file:text-sm file:font-semibold file:text-accent`}
+                          onChange={(event) => setCvFile(event.target.files?.[0] ?? null)}
+                        />
+                        <p className="mt-2 text-sm text-muted">
+                          Si aún no tienes CV,{" "}
+                          <Link href="/cv#tu-cv" className="font-semibold text-accent">
+                            créalo aquí
+                          </Link>
+                          .
+                        </p>
+                      </div>
                       <div>
                         <label className={labelClass} htmlFor="cartaPresentacion">
                           Carta de presentación
@@ -277,6 +322,11 @@ export function JobsDetail({ embedded = false }: { embedded?: boolean }) {
               </div>
             </div>
           </section>
+          <div className="fixed inset-x-0 bottom-0 z-40 border-t border-ink/10 bg-white p-3 sm:hidden">
+            <a href="#postular" className={`${btnPrimary} w-full`}>
+              Postularme
+            </a>
+          </div>
         </>
       )}
     </>

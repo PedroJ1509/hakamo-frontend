@@ -54,7 +54,7 @@ export const HISTORIA = [
     ano: 'Hoy',
     titulo: 'Presencia nacional',
     texto:
-      'Operamos con presencia activa en proyectos en Montecristi y en todo el territorio nacional, adaptándonos a cada obra y entorno constructivo.',
+      'Operamos con presencia activa en proyectos en todo el territorio nacional, adaptándonos a cada obra y entorno constructivo.',
   },
 ]
 
@@ -171,9 +171,8 @@ export const COMPROMISO_HSE = {
 export const COBERTURA = {
   titulo: 'Cobertura',
   texto:
-    'Operamos con presencia activa en proyectos en Montecristi y en todo el territorio nacional.',
+    'Operamos con presencia activa en proyectos en todo el territorio nacional.',
   puntos: [
-    { titulo: 'Montecristi', texto: 'Presencia activa en proyectos de la zona, incluyendo operaciones de energía e infraestructura.' },
     { titulo: 'Territorio nacional', texto: 'Nos adaptamos a los desafíos de cada obra y entorno constructivo, en cualquier punto del país.' },
   ],
 }
@@ -492,7 +491,7 @@ export const FAQ = [
   {
     pregunta: '¿En qué zonas operan?',
     respuesta:
-      'Operamos con presencia activa en proyectos en Montecristi y en todo el territorio nacional. Nos adaptamos a los desafíos de cada obra y entorno constructivo, asegurando la satisfacción y confianza de nuestros clientes.',
+      'Operamos con presencia activa en proyectos en todo el territorio nacional. Nos adaptamos a los desafíos de cada obra y entorno constructivo, asegurando la satisfacción y confianza de nuestros clientes.',
   },
   {
     pregunta: '¿Cuánto tarda el reclutamiento?',

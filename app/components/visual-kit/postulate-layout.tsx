@@ -1,6 +1,6 @@
 "use client";
 
-import { POSTULATE_NAV, SITE_NAV, SITE_PUBLIC } from "@/lib/visual-kit/hakamo";
+import { POSTULATE_NAV, SITE_PUBLIC } from "@/lib/visual-kit/hakamo";
 import { PostulateHeader } from "./postulate-header";
 import { PublicFooter } from "./public-footer";
 import { ScrollProgress } from "./scroll-progress";
@@ -23,7 +23,15 @@ export function PostulateLayout({ children }: { children: React.ReactNode }) {
 
       <div id="contenido">{children}</div>
 
-      <PublicFooter site={site} links={[...POSTULATE_NAV, ...SITE_NAV]} tone="paper" />
+      <PublicFooter
+        site={site}
+        links={POSTULATE_NAV}
+        tone="paper"
+        ctaHref="/cv#vacantes"
+        ctaLabel="Buscar empleo"
+        staffHref="/empresas"
+        staffLabel="Empresas"
+      />
     </div>
   );
 }

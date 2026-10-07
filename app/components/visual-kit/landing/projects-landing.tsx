@@ -263,14 +263,14 @@ export function ProjectsLanding() {
             Armamos el equipo, la nómina y el acompañamiento en campo desde el día uno.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-            <MagneticButton href="/contacto" variant="ink">
-              Contactar
+            <MagneticButton href="/empresas/solicitar" variant="ink">
+              Solicitar personal
             </MagneticButton>
             <a
               href="/cv"
               className="inline-flex items-center justify-center rounded-full border border-ink/15 px-5 py-3 text-sm font-semibold text-ink transition hover:border-accent hover:text-accent"
             >
-              Postúlate aquí
+              Busco empleo
             </a>
           </div>
         </div>
