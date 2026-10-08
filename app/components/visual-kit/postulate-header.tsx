@@ -4,19 +4,25 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { POSTULATE_NAV, SITE_PUBLIC } from "@/lib/visual-kit/hakamo";
-import { btnPrimary } from "@/lib/visual-kit/styles";
 import { Logo } from "./logo";
+
+const SECTIONS = ["categorias", "como", "tu-cv"];
 
 function sectionFromHash() {
   if (typeof window === "undefined") return "";
   return window.location.hash.replace("#", "");
 }
 
-function isSectionActive(hash: string, href: string) {
-  const target = href.split("#")[1] ?? "";
-  if (!target) return false;
-  if (!hash) return target === "vacantes";
-  return hash === target;
+function isActive(pathname: string, hash: string, href: string) {
+  const targetHash = href.split("#")[1] ?? "";
+  const path = href.split("#")[0] || "/";
+
+  if (targetHash) return pathname === "/empleos" && hash === targetHash;
+  if (path === "/empleos") return pathname === "/empleos" && !hash;
+  if (path === "/empleos/vacantes") {
+    return pathname === path || pathname.startsWith(`${path}/`);
+  }
+  return pathname === path || pathname.startsWith(`${path}/`);
 }
 
 export function PostulateHeader() {
@@ -48,15 +54,24 @@ export function PostulateHeader() {
     syncHash();
     window.addEventListener("hashchange", syncHash);
 
-    const sections = ["vacantes", "tu-cv"].map((id) => document.getElementById(id)).filter(Boolean);
+    const sections = SECTIONS.map((id) => document.getElementById(id)).filter(Boolean);
+    const ratios = new Map<string, number>();
     const observer = new IntersectionObserver(
       (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visible?.target?.id) setActiveHash(visible.target.id);
+        for (const entry of entries) {
+          ratios.set(entry.target.id, entry.isIntersecting ? entry.intersectionRatio : 0);
+        }
+        let best = "";
+        let bestRatio = 0;
+        for (const [id, ratio] of ratios) {
+          if (ratio > bestRatio) {
+            best = id;
+            bestRatio = ratio;
+          }
+        }
+        setActiveHash(best);
       },
-      { rootMargin: "-30% 0px -50% 0px", threshold: [0.15, 0.4] },
+      { rootMargin: "-20% 0px -45% 0px", threshold: [0, 0.15, 0.4, 0.6] },
     );
     sections.forEach((el) => observer.observe(el!));
 
@@ -82,16 +97,16 @@ export function PostulateHeader() {
   }, []);
 
   const barClass = [
-    "chrome-header inset-x-0 top-0 sticky transition-[background-color,box-shadow,border-color] duration-300",
-    open || scrolled ? "chrome-header-solid-paper" : "chrome-header-clear",
+    "chrome-header chrome-header-paper inset-x-0 top-0 sticky",
+    scrolled && !open ? "is-compact" : "",
   ].join(" ");
 
   return (
     <>
       <header className={barClass}>
-        <div className="chrome-header-inner mx-auto flex h-full w-full max-w-7xl items-center justify-between gap-2 px-3 sm:gap-3 sm:px-5 xl:px-6">
+        <div className="chrome-header-inner mx-auto flex items-center justify-between gap-2 px-3 sm:gap-3 sm:px-5 xl:px-6">
           <div className="flex min-w-0 shrink-0 items-center gap-3">
-            <Logo name={site.name} inverted={false} className="text-ink" />
+            <Logo name={site.name} href="/empleos" inverted={false} className="text-ink" />
             <span className="hidden text-[10px] font-semibold uppercase tracking-[0.28em] text-accent sm:inline">
               Talentos
             </span>
@@ -103,17 +118,13 @@ export function PostulateHeader() {
           >
             {POSTULATE_NAV.map((link) => {
               const hash = link.href.split("#")[1];
-              const path = link.href.split("#")[0];
-              const active = hash
-                ? onLanding && isSectionActive(activeHash, link.href)
-                : path === "/empleos"
-                  ? pathname === "/empleos"
-                  : pathname === path || pathname.startsWith(`${path}/`);
+              const active = isActive(pathname, onLanding ? activeHash : "", link.href);
               const href = hash && onLanding ? `#${hash}` : link.href;
               return (
                 <a
                   key={link.href}
                   href={href}
+                  aria-current={active ? "page" : undefined}
                   className={`chrome-nav-link chrome-nav-link-paper ${active ? "is-active" : ""}`}
                   onClick={() => setOpen(false)}
                 >
@@ -123,15 +134,12 @@ export function PostulateHeader() {
             })}
           </nav>
 
-          <div className="hidden shrink-0 items-center justify-end gap-2 lg:flex">
+          <div className="hidden shrink-0 items-center justify-end lg:flex">
             <Link
               href="/empresas"
               className="text-xs font-semibold uppercase tracking-[0.16em] text-muted transition hover:text-accent"
             >
               Empresas
-            </Link>
-            <Link href="/empleos/vacantes" className={btnPrimary}>
-              Buscar empleo
             </Link>
           </div>
 
@@ -167,17 +175,13 @@ export function PostulateHeader() {
             <nav className="flex flex-col gap-1.5" aria-label="Portal móvil">
               {POSTULATE_NAV.map((link) => {
                 const hash = link.href.split("#")[1];
-                const path = link.href.split("#")[0];
-                const active = hash
-                  ? onLanding && isSectionActive(activeHash, link.href)
-                  : path === "/empleos"
-                    ? pathname === "/empleos"
-                    : pathname === path || pathname.startsWith(`${path}/`);
+                const active = isActive(pathname, onLanding ? activeHash : "", link.href);
                 const href = hash && onLanding ? `#${hash}` : link.href;
                 return (
                   <a
                     key={link.href}
                     href={href}
+                    aria-current={active ? "page" : undefined}
                     className={`chrome-mobile-link ${active ? "is-active" : ""}`}
                     onClick={() => setOpen(false)}
                   >
@@ -188,18 +192,13 @@ export function PostulateHeader() {
               })}
             </nav>
 
-            <div className="flex flex-col gap-3">
-              <Link
-                href="/empresas"
-                className="text-center text-sm font-semibold text-muted transition hover:text-accent"
-                onClick={() => setOpen(false)}
-              >
-                Empresas
-              </Link>
-              <Link href="/empleos/vacantes" className={btnPrimary} onClick={() => setOpen(false)}>
-                Buscar empleo
-              </Link>
-            </div>
+            <Link
+              href="/empresas"
+              className="text-center text-sm font-semibold text-muted transition hover:text-accent"
+              onClick={() => setOpen(false)}
+            >
+              Empresas
+            </Link>
           </div>
         </div>
       ) : null}

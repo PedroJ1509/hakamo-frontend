@@ -36,12 +36,12 @@ export function PublicFooter({
               "radial-gradient(ellipse at 12% 100%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 42%), radial-gradient(ellipse at 90% 0%, color-mix(in srgb, var(--glow) 12%, transparent), transparent 40%)",
           }}
         />
-        <div className="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
+        <div className="chrome-frame relative py-16 sm:py-20">
           <div className="grid gap-10 lg:grid-cols-[1.35fr_auto] lg:items-end">
             <div>
               <Logo name={site.name} className="text-ink" />
               <p className="mt-8 text-[11px] uppercase tracking-[0.32em] text-accent">{site.name}</p>
-              <p className="font-display mt-3 max-w-xl text-2xl leading-snug text-ink sm:text-3xl">{site.tagline}</p>
+              <p className="mt-3 max-w-xl font-[family-name:var(--font-space-grotesk)] text-2xl font-extrabold leading-snug tracking-[-0.03em] text-ink sm:text-3xl">{site.tagline}</p>
             </div>
             <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row lg:flex-col lg:items-end">
               <a href={actionHref} className={`${btnPrimary} w-full sm:w-auto`}>
@@ -118,7 +118,7 @@ export function PublicFooter({
         <div className="absolute -left-24 bottom-0 h-80 w-80 rounded-full bg-accent/25 blur-3xl" />
         <div className="absolute -right-16 top-0 h-64 w-64 rounded-full bg-glow/14 blur-3xl" />
       </div>
-      <div className="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
+      <div className="chrome-frame relative py-16 sm:py-24">
         <div className="grid gap-10 lg:grid-cols-[1.35fr_auto] lg:items-end">
           <div>
             <Logo name={site.name} inverted className="text-paper" />

@@ -5,15 +5,17 @@ export function Logo({
   name,
   compact = false,
   inverted = false,
+  href = '/',
   className = 'text-ink',
 }: {
   name: string
   compact?: boolean
   inverted?: boolean
+  href?: string
   className?: string
 }) {
   return (
-    <Link href="/" className={`flex items-center gap-2.5 ${className}`}>
+    <Link href={href} className={`flex items-center gap-2.5 ${className}`}>
       <Image
         src="/logo-azul.png"
         alt={name}

@@ -14,9 +14,11 @@ export const SITE_NAV: NavLink[] = EMPRESAS_NAV
 
 export const TALENTOS_NAV: NavLink[] = [
   { href: '/empleos', label: 'Empleos' },
+  { href: '/empleos#categorias', label: 'Áreas' },
   { href: '/empleos/vacantes', label: 'Vacantes' },
-  { href: '/empleos#tu-cv', label: 'Mi perfil' },
-  { href: '/empleo', label: 'Cómo es trabajar' },
+  { href: '/empleos#como', label: 'Postularte' },
+  { href: '/empleos#tu-cv', label: 'Tu CV' },
+  { href: '/empleo', label: 'Cultura' },
 ]
 
 export const POSTULATE_NAV: NavLink[] = TALENTOS_NAV

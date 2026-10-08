@@ -49,7 +49,6 @@ export function ChromeHeader({
   const [open, setOpen] = useState(false);
   const night = tone === "night";
   const showCv = Boolean(cvHref && cvLabel);
-  const solid = placement === "sticky" || open || scrolled;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16);
@@ -78,13 +77,10 @@ export function ChromeHeader({
   }, []);
 
   const barClass = [
-    "chrome-header inset-x-0 top-0 transition-[background-color,box-shadow,border-color] duration-300",
+    "chrome-header inset-x-0 top-0",
     placement === "fixed" ? "fixed" : "sticky",
-    solid
-      ? night
-        ? "chrome-header-solid-night"
-        : "chrome-header-solid-paper"
-      : "chrome-header-clear",
+    night ? "chrome-header-night" : "chrome-header-paper",
+    scrolled && !open ? "is-compact" : "",
   ].join(" ");
 
   const siteCtaClass = night ? btnGlow : btnPrimary;
@@ -106,7 +102,7 @@ export function ChromeHeader({
   return (
     <>
       <header className={barClass}>
-        <div className="chrome-header-inner mx-auto flex h-full w-full max-w-7xl items-center justify-between gap-2 px-3 sm:gap-3 sm:px-5 xl:px-6">
+        <div className="chrome-header-inner mx-auto flex items-center justify-between gap-2 px-3 sm:gap-3 sm:px-5 xl:px-6">
           <div className="flex shrink-0 items-center gap-3">
             <Logo name={name} inverted={night} className={night ? "text-paper" : "text-ink"} />
           </div>

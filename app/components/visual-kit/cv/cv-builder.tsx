@@ -16,7 +16,11 @@ import {
   type CvEducation,
   type CvExperience,
 } from "@/lib/cv/types";
-import { btnPrimary, btnSecondary } from "@/lib/visual-kit/styles";
+const display = "font-[family-name:var(--font-space-grotesk)] font-extrabold tracking-[-0.03em]";
+const btn =
+  "inline-flex items-center justify-center rounded-xl bg-[#1F5FD6] px-6 py-3.5 text-[16px] font-semibold text-white transition hover:bg-[#1747A8] disabled:cursor-not-allowed disabled:opacity-60";
+const btnGhost =
+  "inline-flex items-center justify-center rounded-xl border-2 border-[#D5DDEC] bg-white px-6 py-3.5 text-[16px] font-semibold text-[#0A2342] transition hover:border-[#1F5FD6] disabled:cursor-not-allowed disabled:opacity-60";
 
 const STEPS = [
   { title: "Tus datos", hint: "Quién eres" },
@@ -134,19 +138,19 @@ export function CvBuilder() {
   if (sent) {
     return (
       <div className="mx-auto max-w-xl py-8 text-center">
-        <p className="text-[11px] uppercase tracking-[0.32em] text-accent">Listo</p>
-        <h3 className="font-display mt-3 text-3xl italic text-ink">CV enviado a Hakamo</h3>
-        <p className="mx-auto mt-4 max-w-md text-sm leading-6 text-muted">
+        <p className="text-sm font-semibold text-[#1F5FD6]">Listo</p>
+        <h3 className={`${display} mt-3 text-3xl`}>CV enviado a Hakamo</h3>
+        <p className="mx-auto mt-4 max-w-md leading-relaxed text-[#33466A]">
           Recibimos tu perfil. Te contactaremos cuando haya una oportunidad que encaje contigo.
           También puedes descargar tu PDF.
         </p>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-          <button type="button" className={btnPrimary} disabled={busy !== null} onClick={handleDownload}>
+          <button type="button" className={btn} disabled={busy !== null} onClick={handleDownload}>
             {busy === "pdf" ? "Generando…" : "Descargar PDF"}
           </button>
           <button
             type="button"
-            className={btnSecondary}
+            className={btnGhost}
             onClick={() => {
               setSent(false);
               setData(initialCvData());
@@ -161,20 +165,20 @@ export function CvBuilder() {
   }
 
   return (
-    <div className="visit-form mx-auto">
+    <div className="empleos-form visit-form mx-auto">
       <div className="mb-10">
         <div className="flex items-center justify-between gap-4">
           <div>
-            <p className="text-sm font-semibold text-ink">{STEPS[step].title}</p>
-            <p className="mt-0.5 text-xs text-muted">{STEPS[step].hint}</p>
+            <p className={`${display} text-xl`}>{STEPS[step].title}</p>
+            <p className="mt-0.5 text-sm text-[#4A5C7C]">{STEPS[step].hint}</p>
           </div>
-          <p className="text-xs font-medium tabular-nums text-muted">
+          <p className="text-sm font-semibold tabular-nums text-[#4A5C7C]">
             {step + 1} / {STEPS.length}
           </p>
         </div>
-        <div className="mt-4 h-1 overflow-hidden rounded-full bg-ink/8">
+        <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-[#D5DDEC]">
           <div
-            className="h-full rounded-full bg-accent transition-all duration-500 ease-out"
+            className="h-full rounded-full bg-[#1F5FD6] transition-all duration-500 ease-out"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -239,10 +243,10 @@ export function CvBuilder() {
                   <button
                     key={area}
                     type="button"
-                    className={`rounded-full border px-3.5 py-2 text-sm transition ${
+                    className={`rounded-full border-2 px-4 py-2 text-sm font-semibold transition ${
                       active
-                        ? "border-accent bg-accent text-paper"
-                        : "border-ink/12 bg-transparent text-ink hover:border-accent/50"
+                        ? "border-[#1F5FD6] bg-[#1F5FD6] text-white"
+                        : "border-[#D5DDEC] bg-white text-[#0A2342] hover:border-[#1F5FD6]"
                     }`}
                     onClick={() => patch({ areaInteres: area })}
                   >
@@ -258,15 +262,15 @@ export function CvBuilder() {
       {step === 1 && (
         <div className="space-y-12">
           {data.experiencia.map((exp, i) => (
-            <div key={i} className="border-t border-ink/8 pt-8 first:border-t-0 first:pt-0">
+            <div key={i} className="border-t border-[#D5DDEC] pt-8 first:border-t-0 first:pt-0">
               <div className="mb-6 flex items-center justify-between gap-3">
-                <p className="text-[11px] uppercase tracking-[0.28em] text-accent">
+                <p className="text-sm font-semibold text-[#1F5FD6]">
                   Experiencia {i + 1}
                 </p>
                 {data.experiencia.length > 1 ? (
                   <button
                     type="button"
-                    className="text-xs font-semibold text-muted hover:text-ink"
+                    className="text-sm font-semibold text-[#4A5C7C] hover:text-[#0A2342]"
                     onClick={() =>
                       setData((d) => ({
                         ...d,
@@ -317,7 +321,7 @@ export function CvBuilder() {
           ))}
           <button
             type="button"
-            className="text-sm font-semibold text-accent"
+            className="text-sm font-semibold text-[#1F5FD6]"
             onClick={() =>
               setData((d) => ({ ...d, experiencia: [...d.experiencia, emptyExperience()] }))
             }
@@ -330,13 +334,13 @@ export function CvBuilder() {
       {step === 2 && (
         <div className="space-y-12">
           {data.estudios.map((ed, i) => (
-            <div key={i} className="border-t border-ink/8 pt-8 first:border-t-0 first:pt-0">
+            <div key={i} className="border-t border-[#D5DDEC] pt-8 first:border-t-0 first:pt-0">
               <div className="mb-6 flex items-center justify-between gap-3">
-                <p className="text-[11px] uppercase tracking-[0.28em] text-accent">Estudio {i + 1}</p>
+                <p className="text-sm font-semibold text-[#1F5FD6]">Estudio {i + 1}</p>
                 {data.estudios.length > 1 ? (
                   <button
                     type="button"
-                    className="text-xs font-semibold text-muted hover:text-ink"
+                    className="text-sm font-semibold text-[#4A5C7C] hover:text-[#0A2342]"
                     onClick={() =>
                       setData((d) => ({
                         ...d,
@@ -378,7 +382,7 @@ export function CvBuilder() {
           ))}
           <button
             type="button"
-            className="text-sm font-semibold text-accent"
+            className="text-sm font-semibold text-[#1F5FD6]"
             onClick={() =>
               setData((d) => ({ ...d, estudios: [...d.estudios, emptyEducation()] }))
             }
@@ -402,12 +406,12 @@ export function CvBuilder() {
 
       {step === 4 && (
         <div className="max-w-2xl">
-          <p className="text-[11px] uppercase tracking-[0.28em] text-accent">Resumen</p>
-          <h3 className="font-display mt-3 text-3xl italic text-ink">
+          <p className="text-sm font-semibold text-[#1F5FD6]">Resumen</p>
+          <h3 className={`${display} mt-3 text-3xl`}>
             {data.nombre} {data.apellido}
           </h3>
-          <p className="mt-2 text-sm text-muted">{data.cargoObjetivo}</p>
-          <dl className="mt-8 divide-y divide-ink/8 border-y border-ink/8">
+          <p className="mt-2 text-[#33466A]">{data.cargoObjetivo}</p>
+          <dl className="mt-8 divide-y divide-[#D5DDEC] border-y border-[#D5DDEC]">
             {[
               ["Teléfono", data.telefono],
               ["Correo", data.email],
@@ -420,17 +424,17 @@ export function CvBuilder() {
               ["Habilidades", data.habilidades],
             ].map(([label, value]) => (
               <div key={label} className="grid gap-1 py-4 sm:grid-cols-[9rem_1fr] sm:gap-6">
-                <dt className="text-xs uppercase tracking-[0.18em] text-muted">{label}</dt>
-                <dd className="text-sm leading-6 text-ink">{value}</dd>
+                <dt className="text-sm font-semibold text-[#4A5C7C]">{label}</dt>
+                <dd className="text-sm leading-6 text-[#0A2342]">{value}</dd>
               </div>
             ))}
           </dl>
-          <p className="mt-6 text-sm leading-6 text-muted">
+          <p className="mt-6 text-sm leading-6 text-[#33466A]">
             Primero enviamos tu CV a Hakamo. Después podrás descargar el PDF.
           </p>
           <button
             type="button"
-            className={`${btnPrimary} mt-8`}
+            className={`${btn} mt-8`}
             disabled={busy !== null}
             onClick={handleSend}
           >
@@ -441,12 +445,12 @@ export function CvBuilder() {
 
       {error ? <p className="mt-8 text-sm text-red-600">{error}</p> : null}
 
-      <div className="mt-12 flex flex-wrap items-center justify-between gap-3 border-t border-ink/8 pt-8">
-        <button type="button" className={btnSecondary} onClick={back} disabled={step === 0 || busy !== null}>
+      <div className="mt-12 flex flex-wrap items-center justify-between gap-3 border-t border-[#D5DDEC] pt-8">
+        <button type="button" className={btnGhost} onClick={back} disabled={step === 0 || busy !== null}>
           Atrás
         </button>
         {step < 4 ? (
-          <button type="button" className={btnPrimary} onClick={next}>
+          <button type="button" className={btn} onClick={next}>
             Continuar
           </button>
         ) : null}

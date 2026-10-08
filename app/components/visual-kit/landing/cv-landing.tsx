@@ -1,13 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { Division, Vacante } from "@/types";
 import { COMPANY_INFO } from "@/lib/data";
-import { resolveVacanteImage, type VacanteCard } from "@/lib/demo-vacantes";
-import { btnPrimary, btnSecondary } from "@/lib/visual-kit/styles";
+import type { VacanteCard } from "@/lib/demo-vacantes";
 import { CvBuilder } from "../cv/cv-builder";
 import { CvUpload } from "../cv/cv-upload";
 import { EmptyState } from "../empty-state";
@@ -17,48 +15,37 @@ import { MODALIDAD_LABEL } from "./jobs-landing";
 type Mode = "builder" | "upload" | null;
 
 const STEPS = [
-  { n: "01", title: "Revisa vacantes", hint: "O deja tu perfil abierto" },
-  { n: "02", title: "Arma o sube tu CV", hint: "Te guiamos paso a paso" },
-  { n: "03", title: "Te contactamos", hint: "Si hay un puesto para ti" },
+  { n: "01", title: "Elige un área", hint: "O busca por puesto y ciudad.", href: "#categorias" },
+  { n: "02", title: "Abre el puesto", hint: "Postúlate desde la vacante.", href: "/empleos/vacantes" },
+  { n: "03", title: "O deja tu CV", hint: "Si aún no hay match, te avisamos.", href: "#tu-cv" },
 ];
 
 const BENEFITS = ["Gratis", "Vacantes reales", "Te ayudamos con el CV", "Te avisamos"];
+
+const TAG: Record<string, string> = {
+  construccion: "bg-[#E6EEFC] text-[#1747A8]",
+  energia: "bg-[#FFEFD9] text-[#7A3A00]",
+  "salud-higiene": "bg-[#DDF3E8] text-[#12623D]",
+  administracion: "bg-[#F3E8FF] text-[#6B21A8]",
+};
+
+const TILTS = ["sm:-rotate-2", "sm:translate-x-7 sm:rotate-1", "sm:-rotate-1"];
+
+const display = "font-[family-name:var(--font-space-grotesk)] font-extrabold tracking-[-0.03em]";
+const wide = "chrome-frame mx-auto w-full";
 
 function isCerrada(vacante: Vacante) {
   return vacante.estado === "cerrada";
 }
 
-function CategoryIcon({ slug }: { slug: string }) {
-  const common = "h-6 w-6 text-accent";
-  if (slug === "energia") {
-    return (
-      <svg viewBox="0 0 24 24" className={common} fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden>
-        <path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z" strokeLinejoin="round" />
-      </svg>
-    );
-  }
-  if (slug === "salud-higiene") {
-    return (
-      <svg viewBox="0 0 24 24" className={common} fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden>
-        <path d="M12 21s-7-4.4-7-10a4 4 0 0 1 7-2 4 4 0 0 1 7 2c0 5.6-7 10-7 10Z" />
-      </svg>
-    );
-  }
-  if (slug === "administracion") {
-    return (
-      <svg viewBox="0 0 24 24" className={common} fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden>
-        <path d="M8 7V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1" />
-        <rect x="3" y="7" width="18" height="13" rx="2" />
-        <path d="M3 12h18" />
-      </svg>
-    );
-  }
-  return (
-    <svg viewBox="0 0 24 24" className={common} fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden>
-      <path d="M4 20h16M6 20V10l6-4 6 4v10" />
-      <path d="M10 20v-5h4v5" />
-    </svg>
-  );
+function tagClass(slug?: string) {
+  return TAG[slug ?? ""] ?? "bg-[#E6EEFC] text-[#1747A8]";
+}
+
+function placeLine(vacante: VacanteCard) {
+  return [vacante.ubicacion, vacante.modalidad ? MODALIDAD_LABEL[vacante.modalidad] : null]
+    .filter(Boolean)
+    .join(" · ");
 }
 
 export function CvLanding({
@@ -72,29 +59,28 @@ export function CvLanding({
   const [mode, setMode] = useState<Mode>(null);
   const [query, setQuery] = useState("");
 
-  const destacadas = useMemo(
-    () => vacantes.filter((item) => !isCerrada(item)).slice(0, 3),
+  const abiertasLista = useMemo(
+    () => vacantes.filter((item) => !isCerrada(item)),
     [vacantes],
   );
+  const destacadas = abiertasLista.slice(0, 3);
+  const siguientes = abiertasLista.slice(3, 6);
 
   const categories = useMemo(() => {
     return divisiones
       .map((div) => ({
         slug: div.slug,
         nombre: div.nombre,
-        count: vacantes.filter((item) => item.division?.slug === div.slug).length,
+        count: vacantes.filter((item) => item.division?.slug === div.slug && !isCerrada(item)).length,
       }))
       .filter((item) => item.count > 0)
       .sort((a, b) => b.count - a.count || a.nombre.localeCompare(b.nombre, "es"));
   }, [divisiones, vacantes]);
 
-  const abiertas = vacantes.filter((item) => !isCerrada(item)).length;
+  const abiertas = abiertasLista.length;
 
   const choose = (next: Mode) => {
-    setMode(next);
-    requestAnimationFrame(() => {
-      document.getElementById("formulario")?.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
+    setMode((current) => (current === next ? null : next));
   };
 
   const searchJobs = (event: React.FormEvent) => {
@@ -104,290 +90,236 @@ export function CvLanding({
   };
 
   return (
-    <>
-      {/* Hero */}
-      <section className="relative min-h-[56svh] overflow-hidden sm:min-h-[62svh]">
-        <div className="absolute inset-0" aria-hidden>
-          <Image
-            src="/visual-kit/heroes/cv-seeker.jpg"
-            alt=""
-            fill
-            priority
-            className="object-cover object-[62%_22%] sm:object-[70%_18%]"
-            sizes="100vw"
-          />
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(100deg, color-mix(in srgb, var(--paper) 94%, white) 0%, color-mix(in srgb, var(--paper) 82%, white) 36%, color-mix(in srgb, var(--paper) 18%, transparent) 62%, transparent 100%)",
-            }}
-          />
-        </div>
-
-        <div className="relative mx-auto flex min-h-[56svh] max-w-6xl flex-col justify-end px-4 pb-10 pt-24 sm:min-h-[62svh] sm:justify-center sm:px-6 sm:pb-12 sm:pt-28">
-          <div className="max-w-xl text-left">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.36em] text-accent">
-              Postúlate en Hakamo
+    <div className="bg-[#F5F7FB] text-[#0A2342]">
+      <section className={`${wide} grid items-center gap-10 py-8 sm:py-12 lg:grid-cols-2 lg:gap-16 lg:py-16`}>
+        <Reveal from="left" className="min-w-0">
+          {abiertas > 0 ? (
+            <p className="inline-block rounded-full bg-[#FFE3C7] px-3.5 py-2 text-[15px] font-semibold text-[#7A3A00]">
+              {abiertas} vacante{abiertas === 1 ? "" : "s"} abierta{abiertas === 1 ? "" : "s"}
             </p>
-            <h1 className="font-display mt-4 text-[clamp(2.2rem,5.5vw,3.8rem)] leading-[1.05] tracking-[-0.03em] text-ink">
-              Encuentra tu próxima
-              <span className="mt-1 block italic text-accent">oportunidad</span>
-            </h1>
-            <p className="mt-5 max-w-md text-sm leading-6 text-muted sm:text-base">
-              Revisa vacantes o deja tu CV. Todo en un solo lugar, gratis.
-            </p>
-
-            <form
-              onSubmit={searchJobs}
-              className="mt-8 flex w-full max-w-xl flex-col gap-2 rounded-[1.4rem] border border-ink/10 bg-white/95 p-2 shadow-[0_18px_50px_color-mix(in_srgb,var(--ink)_10%,transparent)] backdrop-blur-sm sm:flex-row sm:items-center sm:rounded-full sm:p-1.5"
+          ) : null}
+          <h1 className={`${display} mt-5 max-w-[14ch] text-[clamp(3rem,4.6vw,5.4rem)] leading-[0.98]`}>
+            Tu próxima oportunidad empieza aquí.
+          </h1>
+          <p className="mt-4 max-w-xl text-lg leading-relaxed text-[#33466A] sm:text-xl">
+            Busca un puesto o deja tu CV. Si hay match, te contactamos.
+          </p>
+          <form
+            onSubmit={searchJobs}
+            className="mt-8 flex w-full flex-col gap-2 rounded-2xl bg-white p-2 shadow-[0_8px_30px_rgba(10,35,66,0.1)] sm:flex-row sm:items-center"
+          >
+            <label className="sr-only" htmlFor="buscar-empleo">
+              Buscar empleo
+            </label>
+            <input
+              id="buscar-empleo"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Puesto, área o ciudad"
+              className="min-h-12 w-full flex-1 bg-transparent px-3.5 text-[17px] text-[#0A2342] outline-none placeholder:text-[#4A5C7C]"
+            />
+            <button
+              type="submit"
+              className="rounded-xl bg-[#1F5FD6] px-6 py-3.5 text-[17px] font-semibold text-white"
             >
-              <label className="sr-only" htmlFor="buscar-empleo">
-                Buscar empleo
-              </label>
-              <input
-                id="buscar-empleo"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Cargo, área o palabra clave…"
-                className="w-full flex-1 rounded-full border-0 bg-transparent px-4 py-3 text-sm text-ink outline-none placeholder:text-muted"
-              />
-              <button type="submit" className={`${btnPrimary} w-full sm:w-auto sm:shrink-0`}>
-                Buscar
-              </button>
-            </form>
+              Buscar
+            </button>
+          </form>
+          <a href="#tu-cv" className="mt-5 inline-block font-semibold text-[#1F5FD6] underline">
+            ¿No ves tu puesto? Deja tu CV →
+          </a>
+        </Reveal>
 
-            <div className="mt-5 flex flex-wrap items-center gap-3">
-              <a href="/empleos/vacantes" className={btnSecondary}>
-                Ver vacantes
-              </a>
-              <a href="#tu-cv" className="text-sm font-semibold text-accent">
-                Dejar mi CV →
-              </a>
-            </div>
-
-            {abiertas > 0 ? (
-              <p className="mt-6 text-[11px] uppercase tracking-[0.28em] text-accent">
-                {abiertas} vacante{abiertas === 1 ? "" : "s"} abierta{abiertas === 1 ? "" : "s"}
-              </p>
-            ) : null}
+        {destacadas.length > 0 ? (
+          <Reveal from="right" className="min-w-0">
+          <div className="flex min-h-[320px] w-full flex-col justify-center gap-4 rounded-[2rem] bg-[#1F5FD6] p-6 sm:min-h-[460px] sm:p-10 lg:p-12">
+            {destacadas.map((vacante, index) => (
+              <Link
+                key={vacante.documentId}
+                href={`/empleos/vacantes/${vacante.documentId}`}
+                className={`empleos-float rounded-[1.15rem] bg-white px-5 py-5 text-[#0A2342] shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg ${TILTS[index] ?? ""} ${index > 0 ? "hidden sm:block" : ""}`}
+                style={{ animationDelay: `${index * 0.35}s` }}
+              >
+                <p className="text-sm font-semibold text-[#1F5FD6]">{vacante.division?.nombre}</p>
+                <p className={`${display} mt-1 text-[1.35rem] leading-tight`}>{vacante.titulo}</p>
+                <p className="mt-1 text-[15px] text-[#4A5C7C]">{placeLine(vacante)}</p>
+              </Link>
+            ))}
           </div>
-        </div>
+          </Reveal>
+        ) : null}
       </section>
 
-      {/* Beneficios */}
-      <section className="border-y border-ink/8 bg-white px-4 py-5 sm:px-6">
-        <ul className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-6 gap-y-2 sm:justify-between">
+      <section className="empleos-tape" aria-label="Qué incluye postularte">
+        <ul className="sr-only">
           {BENEFITS.map((item) => (
-            <li key={item} className="flex items-center gap-2 text-sm font-medium text-ink">
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-accent" aria-hidden />
-              {item}
-            </li>
+            <li key={item}>{item}</li>
           ))}
         </ul>
-      </section>
-
-      <section id="categorias" className="scroll-mt-[var(--header-h)] bg-soft px-4 py-10 text-ink sm:px-6 sm:py-12">
-        <div className="mx-auto max-w-6xl">
-          <h2 className="font-display text-center text-3xl text-ink sm:text-4xl">Explora por categoría</h2>
-          <p className="mt-2 text-center text-sm text-muted">Encuentra oportunidades en tu área</p>
-          <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            {categories.map((category) => (
-                <Link
-                  key={category.slug}
-                  href={`/empleos/vacantes?categoria=${category.slug}`}
-                  className="rounded-2xl border border-ink/8 bg-white px-3 py-5 text-center shadow-sm transition hover:border-accent"
-                >
-                  <span className="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-soft">
-                    <CategoryIcon slug={category.slug} />
-                  </span>
-                  <p className="mt-3 text-xs font-semibold uppercase tracking-[0.08em] text-ink">
-                    {category.nombre}
-                  </p>
-                  <p className="mt-1 text-xs text-muted">
-                    {category.count} vacante{category.count === 1 ? "" : "s"}
-                  </p>
-                </Link>
-              ))}
-          </div>
+        <div className="empleos-tape-track" aria-hidden>
+          {Array.from({ length: 12 }, (_, copy) =>
+            BENEFITS.map((item) => (
+              <span key={`${copy}-${item}`} className="empleos-tape-item">
+                <span className="text-[#7EB0FF]">✓</span>
+                {item}
+              </span>
+            )),
+          )}
         </div>
       </section>
 
-      <section id="vacantes" className="scroll-mt-[var(--header-h)] border-t border-ink/8 bg-soft px-4 py-10 text-ink sm:px-6 sm:py-12">
-        <div className="mx-auto max-w-6xl">
-          <p className="text-center text-[11px] uppercase tracking-[0.32em] text-accent">Vacantes</p>
-          <h2 className="font-display mt-3 text-center text-3xl leading-snug text-ink sm:text-4xl">
-            Oportunidades abiertas
-          </h2>
-          <p className="mx-auto mt-3 max-w-lg text-center text-sm text-muted">
-            Tres puestos para empezar. El listado completo, con filtros, está en Vacantes.
-          </p>
-
-          {destacadas.length === 0 ? (
-            <div className="mt-10">
-              <EmptyState
-                kicker="Vacantes"
-                title="Ahora no hay puestos abiertos"
-                text="Deja tu perfil y te avisamos cuando haya uno para ti."
-              />
-            </div>
-          ) : (
-            <div className="mt-6 grid gap-4 md:grid-cols-3">
-              {destacadas.map((vacante, index) => (
-                <Link
-                  key={vacante.documentId}
-                  href={`/empleos/vacantes/${vacante.documentId}`}
-                  className="flex flex-col overflow-hidden rounded-2xl border border-ink/8 bg-white shadow-sm transition hover:border-accent"
-                >
-                  <div className="relative h-32">
-                    <Image
-                      src={resolveVacanteImage(vacante, index)}
-                      alt=""
-                      fill
-                      className="object-cover"
-                      sizes="(min-width: 768px) 33vw, 100vw"
-                    />
-                  </div>
-                  <div className="flex flex-1 flex-col p-5">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-accent">
-                      {vacante.division?.nombre}
-                    </p>
-                    <h3 className="font-display mt-2 text-xl text-ink">{vacante.titulo}</h3>
-                    <p className="mt-2 text-sm text-muted">
-                      {[vacante.ubicacion, vacante.modalidad ? MODALIDAD_LABEL[vacante.modalidad] : null]
-                        .filter(Boolean)
-                        .join(" · ")}
-                    </p>
-                    <span className="mt-4 text-sm font-semibold text-accent">Ver puesto →</span>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          )}
-
-          <div className="mt-8 text-center">
-            <Link href="/empleos/vacantes" className={btnPrimary}>
-              Ver todas las vacantes
+      <section id="categorias" className={`scroll-mt-[var(--header-h)] ${wide} pb-4 pt-16 sm:pt-20`}>
+        <h2 className={`${display} text-4xl`}>Elige tu área</h2>
+        <p className="mb-7 mt-2 text-[#33466A]">Si ninguna de arriba es la tuya, entra por categoría.</p>
+        {categories.length === 0 ? (
+          <EmptyState
+            kicker="Vacantes"
+            title="Ahora no hay puestos abiertos"
+            text="Deja tu perfil y te avisamos cuando haya uno para ti."
+          />
+        ) : (
+          <div className="flex flex-wrap gap-3">
+            {categories.map((category) => (
+              <Link
+                key={category.slug}
+                href={`/empleos/vacantes?categoria=${category.slug}`}
+                className="rounded-full border-2 border-[#D5DDEC] bg-white px-6 py-3.5 font-semibold transition duration-300 hover:-translate-y-0.5 hover:border-[#1F5FD6]"
+              >
+                {category.nombre}
+                <span className="ml-2 text-[#4A5C7C]">{category.count}</span>
+              </Link>
+            ))}
+            <Link href="/empleos/vacantes" className="rounded-full bg-[#0A2342] px-6 py-4 font-semibold text-white">
+              Ver todas →
             </Link>
           </div>
-        </div>
+        )}
       </section>
 
-      <section className="bg-white px-4 py-10 text-ink sm:px-6 sm:py-12">
-        <div className="mx-auto max-w-6xl">
-          <p className="text-center text-[11px] uppercase tracking-[0.32em] text-accent">El proceso</p>
-          <h2 className="font-display mt-3 text-center text-3xl text-ink sm:text-4xl">Cómo postularte</h2>
-          <ol className="mt-6 grid gap-3 md:grid-cols-3">
-            {STEPS.map((step) => (
-              <li key={step.n} className="rounded-2xl bg-soft px-5 py-5">
-                <p className="text-[11px] font-semibold tracking-[0.18em] text-accent">{step.n}</p>
-                <h3 className="font-display mt-2 text-lg text-ink sm:text-xl">{step.title}</h3>
-                <p className="mt-1 text-sm text-muted">{step.hint}</p>
-              </li>
+      {siguientes.length > 0 ? (
+        <section id="vacantes" className={`scroll-mt-[var(--header-h)] ${wide} py-12`}>
+          <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
+            <h2 className={`${display} text-4xl`}>Más oportunidades</h2>
+            <Link href="/empleos/vacantes" className="font-semibold text-[#1F5FD6] underline">
+              Ver todas las vacantes →
+            </Link>
+          </div>
+          <div className="grid gap-5 md:grid-cols-3">
+            {siguientes.map((vacante, index) => (
+              <Reveal key={vacante.documentId} delay={index * 90}>
+                <Link
+                  href={`/empleos/vacantes/${vacante.documentId}`}
+                  className="flex h-full flex-col gap-3.5 rounded-3xl bg-white p-7 shadow-[0_2px_0_#D5DDEC] transition duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(10,35,66,0.08)]"
+                >
+                  <span className={`w-fit rounded-full px-3 py-1.5 text-sm font-semibold ${tagClass(vacante.division?.slug)}`}>
+                    {vacante.division?.nombre}
+                  </span>
+                  <h3 className={`${display} text-[1.6rem] leading-tight`}>{vacante.titulo}</h3>
+                  <p className="text-[#4A5C7C]">{placeLine(vacante)}</p>
+                  <span className="mt-4 font-semibold text-[#1F5FD6]">Ver puesto →</span>
+                </Link>
+              </Reveal>
             ))}
-          </ol>
-        </div>
+          </div>
+        </section>
+      ) : null}
+
+      <section id="como" className={`scroll-mt-[var(--header-h)] ${wide} py-12`}>
+        <h2 className={`${display} mb-8 text-4xl`}>Cómo postularte</h2>
+        <ol className="grid gap-5 md:grid-cols-3">
+          {STEPS.map((step) => (
+            <li key={step.n}>
+              <Link
+                href={step.href}
+                className="block h-full border-t-4 border-[#1F5FD6] pt-5 transition duration-300 hover:-translate-y-0.5"
+              >
+                <p className={`${display} text-5xl leading-none text-[#1F5FD6]`}>{step.n}</p>
+                <h3 className={`${display} mt-3 text-2xl`}>{step.title}</h3>
+                <p className="mt-1.5 text-[#33466A]">{step.hint}</p>
+              </Link>
+            </li>
+          ))}
+        </ol>
       </section>
 
-      {/* Tu CV */}
-      <section id="tu-cv" className="scroll-mt-[var(--header-h)] border-t border-ink/8 bg-soft px-4 py-10 sm:px-6 sm:py-12">
-        <div className="mx-auto max-w-6xl">
-          <div className="mx-auto max-w-xl text-center">
-            <p className="text-[11px] uppercase tracking-[0.32em] text-accent">Tu perfil</p>
-            <h2 className="font-display mt-3 text-3xl text-ink sm:text-4xl">Deja tu perfil</h2>
-            <p className="mt-3 text-sm text-muted">
-              Crea tu CV con nosotros o súbelo. Quedas en nuestra base y te avisamos. También puedes enviarlo a{" "}
-              <a href={`mailto:${COMPANY_INFO.emailReclutamiento}`} className="font-semibold text-accent">
+      <section id="tu-cv" className={`scroll-mt-[var(--header-h)] ${wide} py-10 pb-16 sm:pb-20`}>
+        <div className="flex flex-wrap gap-10 rounded-[2rem] bg-[#0A2342] p-8 text-white sm:p-14">
+          <div className="min-w-[min(100%,20rem)] flex-1">
+            <h2 className={`${display} text-4xl sm:text-[2.75rem]`}>Deja tu perfil</h2>
+            <p className="mt-3 max-w-md leading-relaxed text-[#C8D4EA]">
+              Quedas en nuestra base y te avisamos. También puedes escribir a{" "}
+              <a href={`mailto:${COMPANY_INFO.emailReclutamiento}`} className="font-semibold text-white underline">
                 {COMPANY_INFO.emailReclutamiento}
               </a>
               .
             </p>
+            <a
+              href={COMPANY_INFO.social.whatsapp}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-5 inline-block rounded-xl bg-[#25D366] px-5 py-3.5 font-semibold text-[#06311A]"
+            >
+              ¿Dudas? WhatsApp {COMPANY_INFO.telefono}
+            </a>
           </div>
-
-          <div className="mt-8 grid gap-3 md:grid-cols-2">
+          <div className="grid min-w-[min(100%,24rem)] flex-1 gap-4">
             <button
               type="button"
               id="crear"
               onClick={() => choose("builder")}
-              className={`group flex items-center justify-between gap-4 rounded-[1.35rem] border bg-white px-6 py-5 text-left transition ${
-                mode === "builder"
-                  ? "border-accent ring-2 ring-accent/25"
-                  : "border-ink/8 hover:border-accent/40"
+              className={`flex items-center justify-between rounded-[1.25rem] bg-[#1F5FD6] px-7 py-6 text-left text-white ${
+                mode === "builder" ? "ring-2 ring-white" : ""
               }`}
             >
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-accent">
-                  Sin CV
-                </p>
-                <h3 className="font-display mt-1 text-xl text-ink sm:text-2xl">Crear mi CV</h3>
-              </div>
-              <span className="text-accent" aria-hidden>
+              <span>
+                <span className="block text-sm opacity-85">Sin CV</span>
+                <span className={`${display} text-[1.6rem]`}>Crear mi CV</span>
+              </span>
+              <span className="text-3xl" aria-hidden>
                 →
               </span>
             </button>
-
             <button
               type="button"
               id="subir"
               onClick={() => choose("upload")}
-              className={`group flex items-center justify-between gap-4 rounded-[1.35rem] border bg-white px-6 py-5 text-left transition ${
-                mode === "upload"
-                  ? "border-accent ring-2 ring-accent/25"
-                  : "border-ink/8 hover:border-accent/40"
+              className={`flex items-center justify-between rounded-[1.25rem] bg-white px-7 py-6 text-left text-[#0A2342] ${
+                mode === "upload" ? "ring-2 ring-[#1F5FD6]" : ""
               }`}
             >
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-accent">
-                  Ya tengo CV
-                </p>
-                <h3 className="font-display mt-1 text-xl text-ink sm:text-2xl">Subir archivo</h3>
-              </div>
-              <span className="text-accent" aria-hidden>
+              <span>
+                <span className="block text-sm text-[#4A5C7C]">Ya tengo CV</span>
+                <span className={`${display} text-[1.6rem]`}>Subir archivo</span>
+              </span>
+              <span className="text-3xl" aria-hidden>
                 →
               </span>
             </button>
           </div>
         </div>
-      </section>
 
-      {mode ? (
-      <section id="formulario" className="scroll-mt-[var(--header-h)] bg-paper px-4 pb-20 pt-2 sm:px-6 sm:pb-24">
-        <div className="mx-auto max-w-3xl">
-          {mode === "builder" && (
-            <Reveal from="up">
-              <div className="mb-10">
-                <p className="text-[11px] uppercase tracking-[0.32em] text-accent">Constructor</p>
-                <h2 className="font-display mt-2 text-3xl italic text-ink">Vamos a armar tu CV juntos</h2>
-              </div>
-              <CvBuilder />
-            </Reveal>
-          )}
-
-          {mode === "upload" && (
-            <Reveal from="up">
-              <div className="mb-10">
-                <p className="text-[11px] uppercase tracking-[0.32em] text-accent">Subir archivo</p>
-                <h2 className="font-display mt-2 text-3xl italic text-ink">
-                  Carga tu CV y déjanos tus datos
-                </h2>
-              </div>
-              <CvUpload />
-            </Reveal>
-          )}
-        </div>
+        {mode ? (
+          <div id="formulario" className="mt-6 rounded-[2rem] bg-white p-6 text-[#0A2342] shadow-[0_2px_0_#D5DDEC] sm:p-10">
+            {mode === "builder" ? (
+              <>
+                <div className="mb-10">
+                  <p className="text-sm font-semibold text-[#1F5FD6]">Constructor</p>
+                  <h2 className={`${display} mt-2 text-4xl`}>Vamos a armar tu CV juntos</h2>
+                </div>
+                <CvBuilder />
+              </>
+            ) : (
+              <>
+                <div className="mb-10">
+                  <p className="text-sm font-semibold text-[#1F5FD6]">Subir archivo</p>
+                  <h2 className={`${display} mt-2 text-4xl`}>Carga tu CV y déjanos tus datos</h2>
+                </div>
+                <CvUpload />
+              </>
+            )}
+          </div>
+        ) : null}
       </section>
-      ) : null}
-
-      <section className="border-t border-ink/8 bg-white px-4 py-10 sm:px-6">
-        <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-          <p className="text-sm text-muted">
-            ¿Dudas? WhatsApp <span className="font-semibold text-ink">{COMPANY_INFO.telefono}</span>
-          </p>
-          <a href={COMPANY_INFO.social.whatsapp} target="_blank" rel="noreferrer" className={btnPrimary}>
-            WhatsApp
-          </a>
-        </div>
-      </section>
-    </>
+    </div>
   );
 }

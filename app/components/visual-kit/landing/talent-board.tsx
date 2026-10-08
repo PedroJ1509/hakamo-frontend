@@ -1,7 +1,9 @@
+"use client";
+
+import { useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
 import type { Division, Vacante } from "@/types";
 import type { VacanteCard } from "@/lib/demo-vacantes";
-import { btnPrimary } from "@/lib/visual-kit/styles";
 import { EmptyState } from "../empty-state";
 import { MODALIDAD_LABEL, TIPO_LABEL } from "./jobs-landing";
 
@@ -29,6 +31,20 @@ const DISPONIBILIDAD_OPTIONS: { value: DisponibilidadFilter; label: string }[] =
   { value: "cerrada", label: "No disponibles" },
 ];
 
+const PAGE_SIZES = [3, 6, 9] as const;
+const WINDOW = 5;
+
+const TAG: Record<string, string> = {
+  construccion: "bg-[#E6EEFC] text-[#1747A8]",
+  energia: "bg-[#FFEFD9] text-[#7A3A00]",
+  "salud-higiene": "bg-[#DDF3E8] text-[#12623D]",
+  administracion: "bg-[#F3E8FF] text-[#6B21A8]",
+};
+
+function tagClass(slug?: string) {
+  return TAG[slug ?? ""] ?? "bg-[#E6EEFC] text-[#1747A8]";
+}
+
 function formatFecha(value: string) {
   const [year, month, day] = value.slice(0, 10).split("-").map(Number);
   if (!year || !month || !day) return null;
@@ -53,11 +69,11 @@ function FilterRadios<T extends string>({
   onChange: (next: T) => void;
 }) {
   return (
-    <fieldset className="border-t border-ink/8 pt-4">
-      <legend className="text-sm font-semibold text-ink">{legend}</legend>
+    <fieldset className="border-t border-[#D5DDEC] pt-4">
+      <legend className="text-sm font-semibold text-[#0A2342]">{legend}</legend>
       <div className="mt-3 space-y-2">
         {options.map((option) => (
-          <label key={option.value || "any"} className="flex cursor-pointer items-center gap-2 text-sm text-ink/80">
+          <label key={option.value || "any"} className="flex cursor-pointer items-center gap-2 text-sm text-[#33466A]">
             <input
               type="radio"
               name={name}
@@ -109,11 +125,38 @@ export function TalentBoard({
   onClear: () => void;
 }) {
   const active = divisiones.find((item) => item.slug === activeSlug);
+  const [pageSize, setPageSize] = useState<number | null>(6);
+  const listRef = useRef<HTMLUListElement>(null);
+  const visible = pageSize == null ? items : items.slice(0, pageSize);
+  const inScroll = pageSize == null && items.length > WINDOW;
+
+  useLayoutEffect(() => {
+    const ul = listRef.current;
+    if (!ul) return;
+
+    const fit = () => {
+      if (!inScroll) {
+        ul.style.maxHeight = "";
+        return;
+      }
+      const last = ul.querySelectorAll(":scope > li")[WINDOW - 1] as HTMLElement | undefined;
+      if (!last) {
+        ul.style.maxHeight = "";
+        return;
+      }
+      const height = last.getBoundingClientRect().bottom - ul.getBoundingClientRect().top;
+      ul.style.maxHeight = `${Math.ceil(height)}px`;
+    };
+
+    fit();
+    window.addEventListener("resize", fit);
+    return () => window.removeEventListener("resize", fit);
+  }, [inScroll, items]);
 
   return (
     <div className="mt-8">
       <form
-        className="flex flex-col gap-2 sm:flex-row"
+        className="flex max-w-3xl flex-col gap-2 rounded-2xl bg-white p-2 shadow-[0_8px_30px_rgba(10,35,66,0.1)] sm:flex-row sm:items-center"
         onSubmit={(event) => event.preventDefault()}
       >
         <label className="sr-only" htmlFor="buscar-categoria">
@@ -124,22 +167,22 @@ export function TalentBoard({
           type="search"
           value={query}
           onChange={(event) => onQuery(event.target.value)}
-          placeholder="Cargo o palabra clave…"
-          className="w-full rounded-full border border-ink/10 bg-white px-4 py-3 text-sm text-ink outline-none focus:border-accent"
+          placeholder="Puesto, área o ciudad"
+          className="min-h-12 w-full flex-1 bg-transparent px-3.5 text-[17px] text-[#0A2342] outline-none placeholder:text-[#4A5C7C]"
         />
-        <button type="submit" className={`${btnPrimary} shrink-0`}>
+        <button type="submit" className="rounded-xl bg-[#1F5FD6] px-6 py-3.5 text-[17px] font-semibold text-white">
           Buscar
         </button>
       </form>
 
-      <div className="mt-6 grid items-start gap-6 lg:grid-cols-[16rem_minmax(0,1fr)]">
-        <aside className="rounded-2xl border border-ink/8 bg-paper p-4">
+      <div className="mt-8 grid items-start gap-6 lg:grid-cols-[18rem_minmax(0,1fr)]">
+        <aside className="rounded-3xl bg-white p-5 shadow-[0_2px_0_#D5DDEC]">
           <div className="mb-3 flex items-center justify-between gap-3">
-            <p className="text-sm font-semibold text-ink">Filtros</p>
+            <p className="text-sm font-semibold text-[#0A2342]">Filtros</p>
             <button
               type="button"
               onClick={onClear}
-              className="text-xs font-semibold text-accent underline-offset-2 hover:underline"
+              className="text-xs font-semibold text-[#1F5FD6] underline-offset-2 hover:underline"
             >
               Limpiar
             </button>
@@ -156,12 +199,12 @@ export function TalentBoard({
             onChange={onCategory}
           />
 
-          <fieldset className="border-t border-ink/8 pt-4">
-            <legend className="text-sm font-semibold text-ink">Localización</legend>
+          <fieldset className="border-t border-[#D5DDEC] pt-4">
+            <legend className="text-sm font-semibold text-[#0A2342]">Localización</legend>
             <select
               value={localizacion}
               onChange={(event) => onLocalizacion(event.target.value)}
-              className="mt-3 w-full rounded-xl border border-ink/10 bg-white px-3 py-2 text-sm text-ink outline-none focus:border-accent"
+              className="mt-3 w-full rounded-xl border border-[#D5DDEC] bg-[#F5F7FB] px-3 py-2 text-sm text-[#0A2342] outline-none focus:border-[#1F5FD6]"
             >
               <option value="">Todas</option>
               {locations.map((loc) => (
@@ -196,8 +239,9 @@ export function TalentBoard({
         </aside>
 
         <div>
-          <p className="text-sm text-muted">
-            {items.length} resultado{items.length === 1 ? "" : "s"}
+          <p className="text-sm font-semibold text-[#33466A]">
+            {visible.length === items.length ? items.length : `${visible.length} de ${items.length}`} resultado
+            {items.length === 1 ? "" : "s"}
             {active ? ` en ${active.nombre}` : ""}
           </p>
 
@@ -210,50 +254,51 @@ export function TalentBoard({
               />
             </div>
           ) : (
-            <ul className="mt-4 space-y-3">
-              {items.map((vacante) => {
+            <ul
+              ref={listRef}
+              className={`mt-4 space-y-4 ${inScroll ? "empleos-scroll" : ""}`}
+            >
+              {visible.map((vacante, index) => {
                 const cerrada = vacante.estado === "cerrada";
                 const fecha = formatFecha(vacante.fechaPublicacion);
                 return (
-                  <li key={vacante.documentId}>
+                  <li
+                    key={vacante.documentId}
+                    className="empleos-rise"
+                    style={{ animationDelay: `${Math.min(index, 8) * 60}ms` }}
+                  >
                     <Link
                       href={`/empleos/vacantes/${vacante.documentId}`}
-                      className="flex items-start gap-4 rounded-2xl border border-ink/10 bg-white p-4 transition hover:border-accent/40"
+                      className="flex items-start gap-4 rounded-3xl bg-white p-5 shadow-[0_2px_0_#D5DDEC] transition duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(10,35,66,0.08)] sm:p-6"
                     >
-                      <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-accent/10 text-xs font-semibold tracking-wide text-accent">
-                        HK
-                      </span>
                       <div className="min-w-0 flex-1">
-                        <h3 className="text-sm font-semibold uppercase tracking-wide text-ink">
+                        {vacante.division?.nombre ? (
+                          <span className={`inline-block rounded-full px-3 py-1 text-sm font-semibold ${tagClass(vacante.division.slug)}`}>
+                            {vacante.division.nombre}
+                          </span>
+                        ) : null}
+                        <h3 className="font-[family-name:var(--font-space-grotesk)] mt-3 text-2xl font-extrabold leading-tight tracking-[-0.03em] text-[#0A2342]">
                           {vacante.titulo}
                         </h3>
-                        <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted">
-                          Hakamo
+                        <p className="mt-2 text-[#4A5C7C]">
+                          {[vacante.ubicacion, vacante.modalidad ? MODALIDAD_LABEL[vacante.modalidad] : null]
+                            .filter(Boolean)
+                            .join(" · ")}
                         </p>
-                        <div className="mt-2 flex flex-wrap gap-1.5">
-                          <span className="rounded-full bg-accent/10 px-2 py-0.5 text-[11px] font-medium text-accent">
+                        <div className="mt-3 flex flex-wrap gap-1.5">
+                          <span className="rounded-full bg-[#F5F7FB] px-2.5 py-1 text-xs font-semibold text-[#33466A]">
                             {TIPO_LABEL[vacante.tipo] ?? vacante.tipo}
                           </span>
-                          {vacante.division?.nombre ? (
-                            <span className="rounded-full bg-ink/5 px-2 py-0.5 text-[11px] font-medium text-ink/70">
-                              {vacante.division.nombre}
-                            </span>
-                          ) : null}
-                          {vacante.modalidad ? (
-                            <span className="rounded-full bg-ink/5 px-2 py-0.5 text-[11px] font-medium text-ink/70">
-                              {MODALIDAD_LABEL[vacante.modalidad] ?? vacante.modalidad}
-                            </span>
-                          ) : null}
                           {cerrada ? (
-                            <span className="rounded-full bg-night px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-paper">
+                            <span className="rounded-full bg-[#0A2342] px-2.5 py-1 text-xs font-semibold text-white">
                               No disponible
                             </span>
                           ) : null}
                         </div>
                       </div>
-                      <div className="hidden shrink-0 text-right text-sm text-muted sm:block">
-                        <p>{vacante.ubicacion}</p>
-                        {fecha ? <p className="mt-1 text-xs">{fecha}</p> : null}
+                      <div className="hidden shrink-0 text-right text-sm text-[#4A5C7C] sm:block">
+                        {fecha ? <p>{fecha}</p> : null}
+                        <p className="mt-3 font-semibold text-[#1F5FD6]">Ver puesto →</p>
                       </div>
                     </Link>
                   </li>
@@ -261,6 +306,40 @@ export function TalentBoard({
               })}
             </ul>
           )}
+
+          {items.length > 0 ? (
+            <div className="mt-6 flex flex-wrap items-center gap-2">
+              <p className="mr-1 text-sm font-semibold text-[#33466A]">Mostrar</p>
+              {PAGE_SIZES.map((size) => (
+                <button
+                  key={size}
+                  type="button"
+                  onClick={() => setPageSize(size)}
+                  className={`rounded-full border-2 px-4 py-2 text-sm font-semibold transition ${
+                    pageSize === size
+                      ? "border-[#1F5FD6] bg-[#1F5FD6] text-white"
+                      : "border-[#D5DDEC] bg-white text-[#0A2342] hover:border-[#1F5FD6]"
+                  }`}
+                >
+                  {size}
+                </button>
+              ))}
+              <button
+                type="button"
+                onClick={() => setPageSize(null)}
+                className={`rounded-full border-2 px-4 py-2 text-sm font-semibold transition ${
+                  pageSize == null
+                    ? "border-[#0A2342] bg-[#0A2342] text-white"
+                    : "border-[#D5DDEC] bg-white text-[#0A2342] hover:border-[#1F5FD6]"
+                }`}
+              >
+                Todas
+              </button>
+              <p className="ml-2 text-sm text-[#4A5C7C]">
+                {visible.length} de {items.length}
+              </p>
+            </div>
+          ) : null}
         </div>
       </div>
     </div>

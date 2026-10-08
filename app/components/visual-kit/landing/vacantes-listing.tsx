@@ -64,13 +64,13 @@ export function VacantesListing({
   };
 
   return (
-    <section className="bg-paper px-4 py-16 text-ink sm:px-6 sm:py-20">
-      <div className="mx-auto max-w-6xl">
-        <p className="text-center text-[11px] uppercase tracking-[0.32em] text-accent">Vacantes</p>
-        <h1 className="font-display mt-3 text-center text-3xl text-ink sm:text-4xl">
+    <section className="chrome-frame bg-[#F5F7FB] py-10 text-[#0A2342] sm:py-14">
+      <div className="mx-auto w-full">
+        <p className="text-sm font-semibold text-[#1F5FD6]">Vacantes</p>
+        <h1 className="font-[family-name:var(--font-space-grotesk)] mt-3 max-w-[16ch] text-[clamp(2.6rem,4.5vw,4.5rem)] font-extrabold leading-[1.02] tracking-[-0.03em]">
           {activeName ?? "Todas las vacantes"}
         </h1>
-        <p className="mx-auto mt-3 max-w-lg text-center text-sm text-muted">
+        <p className="mt-3 max-w-xl text-lg text-[#33466A]">
           Filtra por puesto, ciudad, contrato o disponibilidad.
         </p>
         <TalentBoard

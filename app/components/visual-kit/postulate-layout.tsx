@@ -9,7 +9,7 @@ export function PostulateLayout({ children }: { children: React.ReactNode }) {
   const site = SITE_PUBLIC;
 
   return (
-    <div className="min-h-[100svh] bg-paper text-ink">
+    <div className="empleos-type min-h-[100svh] bg-paper text-ink">
       <ScrollProgress />
 
       <a

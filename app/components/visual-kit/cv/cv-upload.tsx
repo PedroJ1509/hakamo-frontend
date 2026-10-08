@@ -3,7 +3,11 @@
 import { useRef, useState } from "react";
 import { AREAS_EMPLEO } from "@/lib/data";
 import { submitCvUpload } from "@/lib/cv/submit-candidato";
-import { btnPrimary, btnSecondary } from "@/lib/visual-kit/styles";
+const display = "font-[family-name:var(--font-space-grotesk)] font-extrabold tracking-[-0.03em]";
+const btn =
+  "inline-flex items-center justify-center rounded-xl bg-[#1F5FD6] px-6 py-3.5 text-[16px] font-semibold text-white transition hover:bg-[#1747A8] disabled:cursor-not-allowed disabled:opacity-60";
+const btnGhost =
+  "inline-flex items-center justify-center rounded-xl border-2 border-[#D5DDEC] bg-white px-6 py-3.5 text-[16px] font-semibold text-[#0A2342] transition hover:border-[#1F5FD6] disabled:cursor-not-allowed disabled:opacity-60";
 
 const MAX_BYTES = 5 * 1024 * 1024;
 const ACCEPT =
@@ -74,14 +78,14 @@ export function CvUpload() {
   if (sent) {
     return (
       <div className="mx-auto max-w-xl py-8 text-center">
-        <p className="text-[11px] uppercase tracking-[0.32em] text-accent">Listo</p>
-        <h3 className="font-display mt-3 text-3xl italic text-ink">CV recibido</h3>
-        <p className="mx-auto mt-4 max-w-md text-sm leading-6 text-muted">
+        <p className="text-sm font-semibold text-[#1F5FD6]">Listo</p>
+        <h3 className={`${display} mt-3 text-3xl`}>CV recibido</h3>
+        <p className="mx-auto mt-4 max-w-md leading-relaxed text-[#33466A]">
           Gracias. Tu archivo quedó registrado con Hakamo. Te contactaremos si hay un match.
         </p>
         <button
           type="button"
-          className={`${btnSecondary} mt-10`}
+          className={`${btnGhost} mt-10`}
           onClick={() => {
             setSent(false);
             setNombre("");
@@ -99,7 +103,7 @@ export function CvUpload() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="visit-form mx-auto space-y-10">
+    <form onSubmit={handleSubmit} className="empleos-form visit-form mx-auto space-y-10">
       <div className="grid gap-x-10 gap-y-8 sm:grid-cols-2">
         <LineField label="Nombre">
           <input
@@ -149,10 +153,10 @@ export function CvUpload() {
               <button
                 key={area}
                 type="button"
-                className={`rounded-full border px-3.5 py-2 text-sm transition ${
+                className={`rounded-full border-2 px-4 py-2 text-sm font-semibold transition ${
                   active
-                    ? "border-accent bg-accent text-paper"
-                    : "border-ink/12 bg-transparent text-ink hover:border-accent/50"
+                    ? "border-[#1F5FD6] bg-[#1F5FD6] text-white"
+                    : "border-[#D5DDEC] bg-white text-[#0A2342] hover:border-[#1F5FD6]"
                 }`}
                 onClick={() => setAreaInteres(area)}
               >
@@ -175,12 +179,12 @@ export function CvUpload() {
         <button
           type="button"
           onClick={() => fileRef.current?.click()}
-          className="mt-4 flex w-full flex-col items-center justify-center rounded-[1.4rem] border border-dashed border-ink/20 bg-transparent px-6 py-10 text-center transition hover:border-accent/50"
+          className="mt-4 flex w-full flex-col items-center justify-center rounded-[1.4rem] border-2 border-dashed border-[#D5DDEC] bg-[#F5F7FB] px-6 py-10 text-center transition hover:border-[#1F5FD6]"
         >
-          <p className="text-sm font-semibold text-ink">
+          <p className="text-sm font-semibold text-[#0A2342]">
             {file ? file.name : "Toca para elegir tu archivo"}
           </p>
-          <p className="mt-2 text-xs text-muted">
+          <p className="mt-2 text-sm text-[#4A5C7C]">
             {file
               ? `${Math.round(file.size / 1024)} KB · Cambiar archivo`
               : "PDF o Word · máximo 5 MB"}
@@ -190,8 +194,8 @@ export function CvUpload() {
 
       {error ? <p className="text-sm text-red-600">{error}</p> : null}
 
-      <div className="border-t border-ink/8 pt-8">
-        <button type="submit" className={btnPrimary} disabled={busy}>
+      <div className="border-t border-[#D5DDEC] pt-8">
+        <button type="submit" className={btn} disabled={busy}>
           {busy ? "Enviando…" : "Enviar a Hakamo"}
         </button>
       </div>
