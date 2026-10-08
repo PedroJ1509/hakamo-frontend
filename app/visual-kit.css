@@ -749,9 +749,43 @@ body {
   }
 }
 
+.gate-lines {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 55px,
+    rgba(255, 255, 255, 0.09) 56px
+  );
+  background-size: 100% 112px;
+  animation: gate-lines 22s linear infinite;
+}
+
+.gate-in {
+  animation: gate-in 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes gate-lines {
+  to {
+    background-position-y: 112px;
+  }
+}
+
+@keyframes gate-in {
+  from {
+    opacity: 0;
+    translate: 0 18px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .empleos-float,
-  .empleos-rise {
+  .empleos-rise,
+  .gate-lines,
+  .gate-in {
     animation: none;
   }
 
