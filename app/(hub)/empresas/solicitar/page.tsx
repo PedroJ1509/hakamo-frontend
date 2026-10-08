@@ -4,7 +4,7 @@ import { VisitLanding } from "@/app/components/visual-kit/landing/visit-landing"
 export const metadata: Metadata = {
   title: "Solicitar — Hakamo",
   description:
-    "Agenda una visita con Hakamo. Cuéntanos el motivo y te contactamos por WhatsApp y correo.",
+    "Solicita personal, una reunión o un mensaje. El formulario cambia según lo que necesitas.",
 };
 
 export default function SolicitarPage() {

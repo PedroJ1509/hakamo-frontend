@@ -9,7 +9,6 @@ import { Grain } from "../grain";
 import { LandingHeader } from "../chrome-header";
 import { LandingHeroSection } from "../landing-hero-section";
 import { MagneticButton } from "../magnetic-button";
-import { Marquee } from "../marquee";
 import { PublicFooter } from "../public-footer";
 import { ScrollProgress } from "../scroll-progress";
 
@@ -113,8 +112,8 @@ export function ProjectsLanding() {
       <LandingHeader
         name={site.name}
         links={SITE_NAV}
-        ctaHref="/contacto"
-        ctaLabel="Contactar"
+        ctaHref="/empresas/solicitar"
+        ctaLabel="Solicitar personal"
         cvHref={site.cvHref}
         cvLabel={site.cvLabel}
       />
@@ -252,8 +251,6 @@ export function ProjectsLanding() {
         ) : null}
 
       </section>
-
-      <Marquee items={["Grupo Cafra", "Energía 2000", "Lindsayca Group", "TSK Dominicana", "Grupo Ramos"]} />
 
       <section className="bg-paper px-4 py-20 text-ink sm:px-6 sm:py-24">
         <div className="mx-auto max-w-3xl text-center">

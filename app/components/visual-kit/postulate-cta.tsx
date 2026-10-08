@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { btnGhostOnNight, btnSecondary } from "@/lib/visual-kit/styles";
+import { btnGlow, btnSecondary } from "@/lib/visual-kit/styles";
 
 export function PostulateCta({
   href,
@@ -23,7 +23,7 @@ export function PostulateCta({
   const router = useRouter();
   const [launching, setLaunching] = useState(false);
 
-  const base = tone === "night" ? btnGhostOnNight : btnSecondary;
+  const base = tone === "night" ? btnGlow : btnSecondary;
   const sizeClass = size === "sm" ? "!px-4 !py-2 text-xs sm:text-sm" : "";
 
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {

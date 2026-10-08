@@ -1285,6 +1285,64 @@ body {
   color-scheme: dark;
 }
 
+.visit-hero {
+  align-items: stretch;
+  justify-content: flex-end;
+  padding-bottom: 5.5rem;
+}
+
+.visit-hero .visit-choice {
+  min-height: 7.25rem;
+  justify-content: flex-end;
+  border-color: color-mix(in srgb, white 22%, transparent);
+  background: color-mix(in srgb, #0e2744 62%, transparent);
+  backdrop-filter: blur(14px);
+  padding: 1.15rem 1.25rem 1.2rem;
+}
+
+.visit-hero .visit-choice:hover {
+  background: color-mix(in srgb, #0e2744 48%, transparent);
+}
+
+.visit-hero .visit-choice.is-active {
+  border-color: color-mix(in srgb, var(--glow) 80%, transparent);
+  background: color-mix(in srgb, var(--glow) 22%, #0e2744);
+}
+
+.visit-hero .visit-choice-index {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  color: var(--glow);
+}
+
+.visit-hero .visit-choice-title {
+  font-family: var(--font-display), serif;
+  font-size: 1.7rem;
+  font-style: italic;
+  font-weight: 450;
+  letter-spacing: -0.03em;
+}
+
+@media (max-width: 639px) {
+  .visit-hero {
+    padding-bottom: 6.25rem;
+  }
+
+  .visit-hero .visit-choice {
+    min-height: 0;
+    padding: 0.95rem 1.05rem;
+  }
+
+  .visit-hero .visit-choice-title {
+    font-size: 1.45rem;
+  }
+}
+
+#solicitud {
+  scroll-margin-top: calc(var(--header-h) + 0.75rem);
+}
+
 .visit-night .visit-choice {
   border-color: color-mix(in srgb, white 12%, transparent);
   background: color-mix(in srgb, white 5%, transparent);
@@ -1298,6 +1356,22 @@ body {
 .visit-night .visit-choice.is-active {
   border-color: color-mix(in srgb, var(--glow) 70%, transparent);
   background: color-mix(in srgb, var(--glow) 12%, transparent);
+  box-shadow: none;
+}
+
+.visit-night .visit-hero .visit-choice {
+  border-color: color-mix(in srgb, white 22%, transparent);
+  background: color-mix(in srgb, #0e2744 62%, transparent);
+}
+
+.visit-night .visit-hero .visit-choice:hover {
+  border-color: color-mix(in srgb, var(--glow) 55%, transparent);
+  background: color-mix(in srgb, #0e2744 42%, transparent);
+}
+
+.visit-night .visit-hero .visit-choice.is-active {
+  border-color: color-mix(in srgb, var(--glow) 80%, transparent);
+  background: color-mix(in srgb, var(--glow) 22%, #0e2744);
   box-shadow: none;
 }
 

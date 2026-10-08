@@ -34,6 +34,20 @@ const CHANNELS = [
     detail: "Cotizaciones y atención empresarial",
     external: false,
   },
+  {
+    href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(COMPANY_INFO.ubicacion)}`,
+    kicker: "Dirección",
+    title: COMPANY_INFO.ubicacion,
+    detail: "Oficina de Hakamo",
+    external: true,
+  },
+  {
+    href: COMPANY_INFO.social.instagram,
+    kicker: "Redes",
+    title: "Instagram @hakamord",
+    detail: "LinkedIn · Hakamo",
+    external: true,
+  },
 ];
 
 export function ContactLanding() {

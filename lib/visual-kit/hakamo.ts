@@ -2,12 +2,12 @@ import { CLIENTES, COMPANY_INFO, PROCESO_EMPRESAS, SERVICIOS, STATS } from '@/li
 import type { HourRow, LandingCopy, LandingHeroBackground, NavLink, Offering, SitePublic, Stat, Step, StoryCard } from './types'
 
 export const EMPRESAS_NAV: NavLink[] = [
-  { href: '/empresas', label: 'Inicio' },
+  { href: '/empresas', label: 'Empresas' },
+  { href: '/nosotros', label: 'Nosotros' },
   { href: '/servicios', label: 'Servicios' },
   { href: '/proyectos', label: 'Proyectos' },
-  { href: '/empresas/solicitar', label: 'Solicitar' },
-  { href: '/nosotros', label: 'Nosotros' },
   { href: '/contacto', label: 'Contacto' },
+  { href: '/empresas/solicitar', label: 'Solicitar' },
 ]
 
 export const SITE_NAV: NavLink[] = EMPRESAS_NAV

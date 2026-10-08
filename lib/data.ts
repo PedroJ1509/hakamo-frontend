@@ -16,7 +16,6 @@ export const COMPANY_INFO = {
     linkedin: 'https://www.linkedin.com/company/hakamo',
     whatsapp: 'https://wa.me/18296790671',
     email: 'mailto:gestionhumanahakamo@gmail.com',
-    mtrbio: 'https://t.mtrbio.com/hakamord',
   },
 }
 
@@ -50,12 +49,6 @@ export const HISTORIA = [
     texto:
       'Nacemos como outsourcing ante la necesidad del mercado de suplir personal especializado para el desarrollo de los proyectos de energía de Manzanillo.',
   },
-  {
-    ano: 'Hoy',
-    titulo: 'Presencia nacional',
-    texto:
-      'Operamos con presencia activa en proyectos en todo el territorio nacional, adaptándonos a cada obra y entorno constructivo.',
-  },
 ]
 
 export const CLIENTES = [
@@ -73,7 +66,7 @@ export const SERVICIOS = [
     descripcion:
       'Personal técnico y operativo cualificado, listo para el terreno. Suministro y administración integral del talento para obras y plantas industriales, con alineación cultural y seguridad en campo desde el primer día.',
     detalle:
-      'Reclutamos, contratamos y gestionamos personal para proyectos de construcción, mantenimiento, Salud e Higiene y seguridad industrial y eléctrica. Asumimos el suministro y la administración integral del talento en obra: contratación, inducción, alineación cultural y seguridad en campo desde el primer día. Su equipo directivo mantiene el foco en el proyecto; nosotros sostenemos la operación diaria del personal técnico y operativo.',
+      'Reclutamos, contratamos y gestionamos personal para proyectos de construcción, mantenimiento, Salud e Higiene y seguridad industrial y eléctrica. Su equipo directivo mantiene el foco en el proyecto; nosotros sostenemos la operación diaria del personal técnico y operativo.',
     icono: '👥',
     tags: ['Construcción', 'Mantenimiento', 'HSE e industrial'],
   },
@@ -83,7 +76,7 @@ export const SERVICIOS = [
     descripcion:
       'Atracción y selección de perfiles clave — técnicos, operativos y administrativos — conectando a las empresas con el talento ideal para operar con eficiencia y confianza.',
     detalle:
-      'Identificamos talento alineado a los valores y necesidades de cada cliente, con procesos ágiles y transparentes. Diseñamos el proceso de atracción según el perfil y el ritmo de su proyecto. Evaluamos competencias, referencias y ajuste al puesto para conectar a su empresa con el talento ideal — de operarios de campo a roles técnicos y administrativos — con eficiencia y confianza.',
+      'Identificamos talento alineado a los valores y necesidades de cada cliente, con procesos ágiles y transparentes. Diseñamos el proceso de atracción según el perfil y el ritmo de su proyecto. Evaluamos competencias, referencias y ajuste al puesto.',
     icono: '🎯',
     tags: ['Perfiles técnicos', 'Operativos', 'Administrativos'],
   },
@@ -93,7 +86,7 @@ export const SERVICIOS = [
     descripcion:
       'Cálculo preciso de nómina y pagos sin retrasos, con control de costos laborales y esquemas salariales competitivos.',
     detalle:
-      'Administramos el cálculo, procesamiento y pago de nómina, garantizando puntualidad, confidencialidad y cumplimiento con la normativa laboral vigente. Procesamos salarios, deducciones y esquemas competitivos con puntualidad. Usted obtiene reportería clara de costos laborales; su personal recibe pagos correctos y a tiempo, sin fricciones administrativas que distraigan la operación.',
+      'Administramos el cálculo, procesamiento y pago de nómina, garantizando puntualidad, confidencialidad y cumplimiento con la normativa laboral vigente. Usted obtiene reportería clara de costos laborales; su personal recibe pagos correctos y a tiempo, sin fricciones administrativas que distraigan la operación.',
     icono: '💰',
     tags: ['Payroll', 'Confidencialidad', 'Pagos puntuales'],
   },
@@ -103,7 +96,7 @@ export const SERVICIOS = [
     descripcion:
       'Formalización de contratos, reportería laboral y gestión de TSS, planillas DGT3 y ARS/AFP, para mantener su empresa alineada a la ley y con estabilidad jurídica en cada obra o proyecto.',
     detalle:
-      'Nos encargamos de contratos, TSS, afiliaciones a ARS/AFP, reingresos, desvinculaciones y reportes. Centralizamos la documentación laboral de su operación: contratos formalizados, cotizaciones TSS, afiliaciones ARS/AFP, altas, bajas y reportería clara para la directiva y los organismos reguladores. El cumplimiento queda trazable, al día y fuera de su carga administrativa.',
+      'Nos encargamos de contratos, TSS, afiliaciones a ARS/AFP, reingresos, desvinculaciones y reportes. El cumplimiento queda trazable, al día y fuera de su carga administrativa.',
     icono: '📁',
     tags: ['Contratos', 'TSS', 'DGT3', 'ARS / AFP'],
   },
@@ -113,7 +106,7 @@ export const SERVICIOS = [
     descripcion:
       'Acompañamiento en cada fase del proyecto: coordinación de equipos, supervisión de operaciones y control de cumplimiento, de la planificación a la ejecución.',
     detalle:
-      'Apoyamos en la planificación, seguimiento y control de obras, con enfoque en seguridad, calidad y eficiencia. Acompañamos la planificación, el seguimiento y el control de obra con criterio técnico. Coordinamos equipos, reportamos avance y cuidamos seguridad, calidad y eficiencia para que cada proyecto avance con continuidad y resultados medibles.',
+      'Apoyamos en la planificación, seguimiento y control de obras, con enfoque en seguridad, calidad y eficiencia. Coordinamos equipos, reportamos avance y cuidamos seguridad, calidad y eficiencia para que cada proyecto avance con continuidad y resultados medibles.',
     icono: '🏗️',
     tags: ['Planificación', 'Control de obra', 'Calidad'],
   },
@@ -121,11 +114,10 @@ export const SERVICIOS = [
     slug: 'seguridad-salud-ocupacional',
     titulo: 'Seguridad y salud ocupacional',
     descripcion:
-      'Supervisión del cumplimiento de los estándares de seguridad y la normativa vigente (ej. Resolución 09-2026: botiquines y planes de primeros auxilios), con herramientas de vanguardia en prevención y gestión de riesgos laborales.',
-    detalle:
-      'Contamos con personal capacitado en normativas locales e internacionales de Higiene, Seguridad y Medio Ambiente (HSE), garantizando entornos laborales seguros y conformes con la ley. Supervisamos el cumplimiento de los estándares de seguridad y la normativa vigente — incluida la Resolución 09-2026 sobre botiquines y planes de primeros auxilios — con herramientas de vanguardia en prevención y gestión de riesgos laborales.',
+      'Supervisión del cumplimiento de los estándares de seguridad y la normativa vigente, con herramientas de vanguardia en prevención y gestión de riesgos laborales.',
+    detalle: '',
     icono: '🦺',
-    tags: ['HSE', 'Resolución 09-2026', 'Prevención'],
+    tags: ['HSE', 'Prevención'],
   },
 ]
 
@@ -448,7 +440,7 @@ export const ACTIVIDADES_COLABORADORES = [
   {
     titulo: 'Empleado seguro',
     texto:
-      'Priorizamos entornos laborales seguros y conformes con la normativa vigente en cada proyecto. Nos comprometemos a cumplir rigurosamente la normativa vigente en cada proyecto, garantizando seguridad y confianza en nuestras operaciones.',
+      'Priorizamos entornos laborales seguros y conformes con la normativa vigente en cada proyecto.',
   },
   {
     titulo: 'Compartir in site',
@@ -480,18 +472,15 @@ export const EQUIPO = [
 export const FAQ = [
   {
     pregunta: '¿Qué servicios ofrece Hakamo?',
-    respuesta:
-      'Ofrecemos outsourcing de personal; reclutamiento especializado; payroll y administración de nómina; cumplimiento laboral y gestión documental (contratos, TSS, planillas DGT3 y ARS/AFP); supervisión de proyectos en campo; y seguridad y salud ocupacional (incluida la Resolución 09-2026 sobre botiquines y planes de primeros auxilios).',
+    respuesta: 'Seis soluciones de personal, nómina, cumplimiento, supervisión y seguridad. El detalle está en Servicios.',
   },
   {
     pregunta: '¿Garantizan cumplimiento legal?',
-    respuesta:
-      'Sí. Operamos alineados a la normativa laboral dominicana: TSS, planillas DGT3, ARS/AFP y contratos formalizados al día. Asumimos contratos, afiliaciones, reingresos, desvinculaciones y reportes. Contamos con personal capacitado en normativas locales e internacionales de Higiene, Seguridad y Medio Ambiente (HSE).',
+    respuesta: 'Sí. Contratos, TSS, DGT3 y AFP/ARS están en el marco legal de Servicios.',
   },
   {
     pregunta: '¿En qué zonas operan?',
-    respuesta:
-      'Operamos con presencia activa en proyectos en todo el territorio nacional. Nos adaptamos a los desafíos de cada obra y entorno constructivo, asegurando la satisfacción y confianza de nuestros clientes.',
+    respuesta: 'En todo el territorio nacional. El detalle está en Proyectos, en Cobertura nacional.',
   },
   {
     pregunta: '¿Cuánto tarda el reclutamiento?',
@@ -510,8 +499,7 @@ export const FAQ = [
   },
   {
     pregunta: '¿Cómo los contacto?',
-    respuesta:
-      'WhatsApp / cotizaciones: 829-679-0671. Teléfono: 829-679-6842. Correo: gestionhumanahakamo@gmail.com. Para postularte: info@hakamo.com.do. Redes: Instagram @hakamord y LinkedIn Hakamo. Web: https://hakamo.com.do. Enlace: t.mtrbio.com/hakamord.',
+    respuesta: 'Por los canales de Contacto: WhatsApp, teléfono, correo, dirección y redes.',
   },
 ]
 

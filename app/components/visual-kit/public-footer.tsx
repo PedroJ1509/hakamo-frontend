@@ -2,7 +2,7 @@ import Link from "next/link";
 import { COMPANY_INFO } from "@/lib/data";
 import { Logo } from "./logo";
 import type { NavLink, SitePublic } from "@/lib/visual-kit/types";
-import { btnGhostOnNight, btnGlow, btnPrimary, btnSecondary } from "@/lib/visual-kit/styles";
+import { btnPrimary } from "@/lib/visual-kit/styles";
 
 export function PublicFooter({
   site,
@@ -37,76 +37,21 @@ export function PublicFooter({
           }}
         />
         <div className="chrome-frame relative py-16 sm:py-20">
-          <div className="grid gap-10 lg:grid-cols-[1.35fr_auto] lg:items-end">
-            <div>
-              <Logo name={site.name} className="text-ink" />
-              <p className="mt-8 text-[11px] uppercase tracking-[0.32em] text-accent">{site.name}</p>
-              <p className="mt-3 max-w-xl font-[family-name:var(--font-space-grotesk)] text-2xl font-extrabold leading-snug tracking-[-0.03em] text-ink sm:text-3xl">{site.tagline}</p>
-            </div>
-            <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row lg:flex-col lg:items-end">
-              <a href={actionHref} className={`${btnPrimary} w-full sm:w-auto`}>
-                {actionLabel}
-              </a>
-              {site.address ? (
-                <a
-                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(site.address)}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className={`${btnSecondary} w-full sm:w-auto`}
-                >
-                  Cómo llegar
-                </a>
-              ) : null}
-            </div>
+          <div className="flex flex-wrap items-end justify-between gap-6">
+            <Logo name={site.name} className="text-ink" />
+            <a href={actionHref} className={`${btnPrimary} w-full sm:w-auto`}>
+              {actionLabel}
+            </a>
           </div>
+          <FooterFacts paper />
 
-          <dl className="mt-14 grid gap-8 border-t border-ink/8 pt-10 sm:grid-cols-2 lg:grid-cols-4">
-            {site.address ? (
-              <div>
-                <dt className="text-[11px] uppercase tracking-[0.28em] text-accent">Dirección</dt>
-                <dd className="mt-3 text-sm leading-6 text-muted">{site.address}</dd>
-              </div>
-            ) : null}
-            <div>
-              <dt className="text-[11px] uppercase tracking-[0.28em] text-accent">WhatsApp</dt>
-              <dd className="mt-3 text-sm text-muted">{COMPANY_INFO.telefono}</dd>
-              <dd className="mt-1 text-sm text-muted">{COMPANY_INFO.telefonoAlt}</dd>
-            </div>
-            <div>
-              <dt className="text-[11px] uppercase tracking-[0.28em] text-accent">Correo</dt>
-              <dd className="mt-3 text-sm text-muted">
-                <a href={`mailto:${COMPANY_INFO.emailReclutamiento}`} className="hover:text-accent">
-                  {COMPANY_INFO.emailReclutamiento}
-                </a>
-              </dd>
-            </div>
-            <div>
-              <dt className="text-[11px] uppercase tracking-[0.28em] text-accent">Redes</dt>
-              <dd className="mt-3 text-sm text-muted">Instagram @hakamord</dd>
-              <dd className="mt-1 text-sm text-muted">LinkedIn · Hakamo</dd>
-            </div>
-          </dl>
-
-          <div className="mt-10 flex flex-col gap-4 border-t border-ink/8 pt-6 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
-            <nav className="flex flex-wrap gap-x-6 gap-y-2">
-              {links.map((link) => (
-                <a key={link.href} href={link.href} className="hover:text-accent">
-                  {link.label}
-                </a>
-              ))}
-            </nav>
-            <div className="flex items-center gap-5">
-              <span>
-                © {new Date().getFullYear()} {site.name}
-              </span>
-              <Link href="/privacidad" className="hover:text-accent">
-                Privacidad
-              </Link>
-              <Link href={staffHref} className="hover:text-accent">
-                {staffLabel}
-              </Link>
-            </div>
-          </div>
+          <FooterBar
+            links={links}
+            siteName={site.name}
+            staffHref={staffHref}
+            staffLabel={staffLabel}
+            paper
+          />
         </div>
       </footer>
     );
@@ -119,84 +64,126 @@ export function PublicFooter({
         <div className="absolute -right-16 top-0 h-64 w-64 rounded-full bg-glow/14 blur-3xl" />
       </div>
       <div className="chrome-frame relative py-16 sm:py-24">
-        <div className="grid gap-10 lg:grid-cols-[1.35fr_auto] lg:items-end">
-          <div>
-            <Logo name={site.name} inverted className="text-paper" />
-            <p className="mt-10 text-[11px] uppercase tracking-[0.32em] text-glow">{site.name}</p>
-            <p className="font-display mt-4 max-w-xl text-2xl leading-snug sm:text-3xl">{site.tagline}</p>
-          </div>
-          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row lg:flex-col lg:items-end">
-            <a href={actionHref} className={`${btnGlow} w-full sm:w-auto`}>
-              {actionLabel}
-            </a>
-            {site.address ? (
-              <a
-                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(site.address)}`}
-                target="_blank"
-                rel="noreferrer"
-                className={`${btnGhostOnNight} w-full sm:w-auto`}
-              >
-                Cómo llegar
-              </a>
-            ) : null}
-          </div>
+        <div>
+          <Logo name={site.name} inverted className="text-paper" />
+          <p className="mt-6 max-w-sm text-sm leading-6 text-paper/60">
+            Personal, nómina y cumplimiento para obras y plantas.
+          </p>
         </div>
+        <FooterFacts />
 
-        <dl className="mt-16 grid gap-8 border-t border-white/10 pt-10 sm:grid-cols-2 lg:grid-cols-4">
-          {site.address ? (
-            <div>
-              <dt className="text-[11px] uppercase tracking-[0.28em] text-glow">Dirección</dt>
-              <dd className="mt-3 text-sm leading-6 text-paper/65">{site.address}</dd>
-            </div>
-          ) : null}
-          <div>
-            <dt className="text-[11px] uppercase tracking-[0.28em] text-glow">WhatsApp</dt>
-            <dd className="mt-3 text-sm text-paper/65">{COMPANY_INFO.telefono}</dd>
-            <dd className="mt-1 text-sm text-paper/65">{COMPANY_INFO.telefonoAlt}</dd>
-          </div>
-          {site.email ? (
-            <div>
-              <dt className="text-[11px] uppercase tracking-[0.28em] text-glow">Correo</dt>
-              <dd className="mt-3 text-sm text-paper/65">
-                <a href={`mailto:${COMPANY_INFO.email}`} className="hover:text-glow">
-                  {COMPANY_INFO.email}
-                </a>
-              </dd>
-            </div>
-          ) : null}
-          <div>
-            <dt className="text-[11px] uppercase tracking-[0.28em] text-glow">Redes</dt>
-            <dd className="mt-3 text-sm text-paper/65">Instagram @hakamord</dd>
-            <dd className="mt-1 text-sm text-paper/65">LinkedIn · Hakamo</dd>
-            <dd className="mt-1 text-sm text-paper/65">
-              <a href={COMPANY_INFO.social.mtrbio} className="hover:text-glow" target="_blank" rel="noreferrer">
-                t.mtrbio.com/hakamord
-              </a>
-            </dd>
-          </div>
-        </dl>
-
-        <div className="mt-12 flex flex-col gap-4 border-t border-white/10 pt-6 text-sm text-paper/45 sm:flex-row sm:items-center sm:justify-between">
-          <nav className="flex flex-wrap gap-x-6 gap-y-2">
-            {links.map((link) => (
-              <a key={link.href} href={link.href} className="hover:text-glow">
-                {link.label}
-              </a>
-            ))}
-          </nav>
-          <div className="flex items-center gap-5">
-            <span>
-              © {new Date().getFullYear()} {site.name}
-            </span>
-            <Link href="/privacidad" className="hover:text-glow">
-              Privacidad
-            </Link>
-            <Link href={staffHref} className="hover:text-glow">
-              {staffLabel}
-            </Link>
-          </div>
-        </div>
+        <FooterBar
+          links={links}
+          siteName={site.name}
+          staffHref={staffHref}
+          staffLabel={staffLabel}
+        />
       </div>
     </footer>
+  );
+}
+
+function FooterFacts({ paper = false }: { paper?: boolean }) {
+  const label = paper
+    ? "text-[11px] font-medium uppercase tracking-[0.22em] text-accent"
+    : "text-[11px] font-medium uppercase tracking-[0.22em] text-glow";
+  const value = paper ? "text-sm leading-6 text-ink" : "text-sm leading-6 text-paper";
+  const hover = paper ? "hover:text-accent" : "hover:text-glow";
+  const email = paper ? COMPANY_INFO.emailReclutamiento : COMPANY_INFO.email;
+  const phones = paper
+    ? [{ href: COMPANY_INFO.social.whatsapp, text: COMPANY_INFO.telefono, external: true }]
+    : [
+        { href: COMPANY_INFO.social.whatsapp, text: COMPANY_INFO.telefono, external: true },
+        {
+          href: `tel:+1${COMPANY_INFO.telefonoAlt.replace(/-/g, "")}`,
+          text: COMPANY_INFO.telefonoAlt,
+          external: false,
+        },
+      ];
+
+  return (
+    <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+      <div>
+        <p className={label}>Dirección</p>
+        <p className={`mt-3 ${value}`}>{COMPANY_INFO.ubicacion}</p>
+      </div>
+      <div>
+        <p className={label}>WhatsApp</p>
+        <ul className={`mt-3 space-y-1 ${value}`}>
+          {phones.map((phone) => (
+            <li key={phone.text}>
+              <a
+                href={phone.href}
+                {...(phone.external ? { target: "_blank", rel: "noreferrer" } : {})}
+                className={hover}
+              >
+                {phone.text}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <p className={label}>Correo</p>
+        <a href={`mailto:${email}`} className={`mt-3 block break-all ${value} ${hover}`}>
+          {email}
+        </a>
+      </div>
+      <div>
+        <p className={label}>Redes</p>
+        <ul className={`mt-3 space-y-1 ${value}`}>
+          <li>
+            <a href={COMPANY_INFO.social.instagram} target="_blank" rel="noreferrer" className={hover}>
+              Instagram @hakamord
+            </a>
+          </li>
+          <li>
+            <a href={COMPANY_INFO.social.linkedin} target="_blank" rel="noreferrer" className={hover}>
+              LinkedIn · Hakamo
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+function FooterBar({
+  links,
+  siteName,
+  staffHref,
+  staffLabel,
+  paper = false,
+}: {
+  links: NavLink[];
+  siteName: string;
+  staffHref: string;
+  staffLabel: string;
+  paper?: boolean;
+}) {
+  const line = paper ? "border-ink/8 text-muted" : "border-white/10 text-paper/45";
+  const hover = paper ? "hover:text-accent" : "hover:text-glow";
+
+  return (
+    <div className={`mt-12 flex flex-col gap-4 border-t pt-6 text-sm sm:flex-row sm:items-center sm:justify-between ${line}`}>
+      <nav className="flex flex-wrap gap-x-6 gap-y-2">
+        {links.map((link) => (
+          <a key={link.href} href={link.href} className={hover}>
+            {link.label}
+          </a>
+        ))}
+      </nav>
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+        <span>
+          © {new Date().getFullYear()} {siteName}
+        </span>
+        <Link href="/privacidad" className={hover}>
+          Privacidad
+        </Link>
+        <Link href={staffHref} className={hover}>
+          {staffLabel}
+        </Link>
+      </div>
+    </div>
   );
 }

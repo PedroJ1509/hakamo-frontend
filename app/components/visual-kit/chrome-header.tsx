@@ -5,9 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { COMPANY_INFO } from "@/lib/data";
 import type { NavLink } from "@/lib/visual-kit/types";
-import { btnGlow, btnPrimary } from "@/lib/visual-kit/styles";
 import { Logo } from "./logo";
-import { MagneticButton } from "./magnetic-button";
 import { PostulateCta } from "./postulate-cta";
 
 function isActive(pathname: string, href: string, links: NavLink[]) {
@@ -26,9 +24,6 @@ function isActive(pathname: string, href: string, links: NavLink[]) {
 export function ChromeHeader({
   name,
   links,
-  ctaHref,
-  ctaLabel,
-  ctaExternal = false,
   cvHref,
   cvLabel,
   placement,
@@ -83,18 +78,6 @@ export function ChromeHeader({
     scrolled && !open ? "is-compact" : "",
   ].join(" ");
 
-  const siteCtaClass = night ? btnGlow : btnPrimary;
-
-  const siteCta = ctaExternal ? (
-    <a href={ctaHref} target="_blank" rel="noreferrer" className={siteCtaClass} onClick={() => setOpen(false)}>
-      {ctaLabel}
-    </a>
-  ) : (
-    <Link href={ctaHref} className={siteCtaClass} onClick={() => setOpen(false)}>
-      {ctaLabel}
-    </Link>
-  );
-
   const cvCta = showCv ? (
     <PostulateCta href={cvHref!} label={cvLabel!} tone={tone} onNavigate={() => setOpen(false)} />
   ) : null;
@@ -129,23 +112,15 @@ export function ChromeHeader({
             })}
           </nav>
 
-          <div className="hidden shrink-0 items-center justify-end gap-2 lg:flex">
-            {placement === "fixed" ? (
-              <>
-                {showCv ? (
-                  <PostulateCta href={cvHref!} label={cvLabel!} tone={tone} size="sm" />
-                ) : null}
-                <MagneticButton href={ctaHref} size="sm" external={ctaExternal}>
-                  {ctaLabel}
-                </MagneticButton>
-              </>
-            ) : (
-              <>
-                {cvCta}
-                {siteCta}
-              </>
-            )}
-          </div>
+          {showCv ? (
+            <div className="hidden shrink-0 items-center justify-end gap-2 lg:flex">
+              {placement === "fixed" ? (
+                <PostulateCta href={cvHref!} label={cvLabel!} tone={tone} size="sm" />
+              ) : (
+                cvCta
+              )}
+            </div>
+          ) : null}
 
           <button
             type="button"
@@ -216,28 +191,20 @@ export function ChromeHeader({
               </a>
             </div>
 
-            <div className="flex flex-col gap-3">
-              {placement === "fixed" ? (
-                <>
-                  {showCv ? (
-                    <PostulateCta
-                      href={cvHref!}
-                      label={cvLabel!}
-                      tone={tone}
-                      onNavigate={() => setOpen(false)}
-                    />
-                  ) : null}
-                  <MagneticButton href={ctaHref} external={ctaExternal}>
-                    {ctaLabel}
-                  </MagneticButton>
-                </>
-              ) : (
-                <>
-                  {cvCta}
-                  {siteCta}
-                </>
-              )}
-            </div>
+            {showCv ? (
+              <div className="flex flex-col gap-3">
+                {placement === "fixed" ? (
+                  <PostulateCta
+                    href={cvHref!}
+                    label={cvLabel!}
+                    tone={tone}
+                    onNavigate={() => setOpen(false)}
+                  />
+                ) : (
+                  cvCta
+                )}
+              </div>
+            ) : null}
           </div>
         </div>
       ) : null}

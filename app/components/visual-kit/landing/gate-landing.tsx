@@ -6,7 +6,8 @@ import { Logo } from "../logo";
 
 const PROOF = [
   { valor: "10+", etiqueta: "años en construcción" },
-  { valor: "2019", etiqueta: "empresa constituida" },
+  { valor: "2019", etiqueta: "constitución como empresa" },
+  { valor: "2021", etiqueta: "nacimiento del outsourcing" },
   { valor: "100%", etiqueta: "cumplimiento normativo" },
 ];
 
@@ -102,7 +103,7 @@ export function GateLanding() {
           </Link>
         </div>
 
-        <ul className="mt-9 grid w-full max-w-2xl grid-cols-3 gap-4">
+        <ul className="mt-9 grid w-full max-w-3xl grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-4">
           {PROOF.map((item, index) => (
             <li key={item.etiqueta} className="gate-in" style={{ animationDelay: `${620 + index * 90}ms` }}>
               <p className="font-display text-[1.85rem] leading-none tracking-[-0.03em] text-white sm:text-[2.4rem]">

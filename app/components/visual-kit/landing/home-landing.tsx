@@ -11,7 +11,6 @@ import { LandingHeroSection } from "../landing-hero-section";
 import { LandingScrollExpand } from "../landing-scroll-expand";
 import { PublicFooter } from "../public-footer";
 import { StatsCounter } from "../stats-counter";
-import { QUIENES_SOMOS } from "@/lib/data";
 import type { LandingCopy, NavLink, Offering, SitePublic, Stat } from "@/lib/visual-kit/types";
 import { LANDING_HERO_BACKGROUNDS } from "@/lib/visual-kit/hakamo";
 
@@ -25,7 +24,8 @@ const DOORS = [
   { href: "/nosotros", kicker: "Nosotros", title: "Quiénes somos" },
   { href: "/servicios", kicker: "Servicios", title: "Seis soluciones" },
   { href: "/proyectos", kicker: "Proyectos", title: "Obras en campo" },
-  { href: "/empresas/solicitar", kicker: "Talento", title: "Solicitar personal" },
+  { href: "/contacto", kicker: "Contacto", title: "Hablemos" },
+  { href: "/empresas/solicitar", kicker: "Solicitar", title: "Solicitar personal" },
 ];
 
 export function HomeLanding({
@@ -93,26 +93,12 @@ export function HomeLanding({
         </div>
       </section>
 
-      <section id="contenido" className="bg-paper px-4 pb-8 sm:px-6">
-        <div className="mx-auto max-w-6xl">
-          <Reveal from="up">
-            <p className="text-[11px] uppercase tracking-[0.32em] text-accent">{QUIENES_SOMOS.titulo}</p>
-            <h2 className="font-display mt-3 max-w-xl text-3xl leading-snug text-ink sm:text-4xl">
-              Su aliado estratégico en gestión humana
-            </h2>
-            <div className="mt-6">
-              <MagneticButton href="/nosotros" variant="ink">
-                Conocer Hakamo
-              </MagneticButton>
-            </div>
-          </Reveal>
-        </div>
-      </section>
+      <div id="contenido" />
 
       <Marquee items={offerings.map((item) => item.name)} />
 
       <section className="bg-paper px-4 py-20 sm:px-6 sm:py-24">
-        <div className="mx-auto grid max-w-6xl gap-10 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mx-auto grid max-w-6xl gap-10 sm:grid-cols-2 lg:grid-cols-5">
           {DOORS.map((door, index) => (
             <Reveal key={door.href} delay={index * 60} from="up">
               <a href={door.href} className="group block">

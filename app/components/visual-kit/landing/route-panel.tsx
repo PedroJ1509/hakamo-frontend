@@ -387,7 +387,7 @@ export function RoutePanel() {
             Abrir ruta en Google Maps
           </a>
           <Link href="/empresas/solicitar" className={btnGhostOnNight}>
-            Agendar visita
+            Solicitar personal
           </Link>
         </div>
       </div>
