@@ -11,7 +11,7 @@ import { LandingHeroSection } from "../landing-hero-section";
 import { LandingScrollExpand } from "../landing-scroll-expand";
 import { PublicFooter } from "../public-footer";
 import { StatsCounter } from "../stats-counter";
-import { COBERTURA, COMPROMISO_HSE, PILARES, QUIENES_SOMOS } from "@/lib/data";
+import { QUIENES_SOMOS } from "@/lib/data";
 import type { LandingCopy, NavLink, Offering, SitePublic, Stat } from "@/lib/visual-kit/types";
 import { LANDING_HERO_BACKGROUNDS } from "@/lib/visual-kit/hakamo";
 
@@ -84,12 +84,7 @@ export function HomeLanding({
       </LandingHeroSection>
 
       <LandingScrollExpand title="Talento" alt="Equipo de profesionales de gestión humana">
-        <h2>Impulsamos talentos, fortalecemos empresas</h2>
-        <p>
-          Soluciones integrales para la gestión empresarial, de la planificación a la ejecución.
-          Outsourcing · Reclutamiento · Payroll · Supervisión de proyectos. Especializados en obras de
-          construcción, plantas industriales y proyectos de gran escala.
-        </p>
+        <p>Soluciones integrales para la gestión empresarial, de la planificación a la ejecución.</p>
       </LandingScrollExpand>
 
       <section className="bg-paper px-4 py-20 sm:px-6 sm:py-28">
@@ -99,54 +94,18 @@ export function HomeLanding({
       </section>
 
       <section id="contenido" className="bg-paper px-4 pb-8 sm:px-6">
-        <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-2">
+        <div className="mx-auto max-w-6xl">
           <Reveal from="up">
             <p className="text-[11px] uppercase tracking-[0.32em] text-accent">{QUIENES_SOMOS.titulo}</p>
-            <h2 className="font-display mt-3 text-3xl leading-snug text-ink sm:text-4xl">
+            <h2 className="font-display mt-3 max-w-xl text-3xl leading-snug text-ink sm:text-4xl">
               Su aliado estratégico en gestión humana
             </h2>
-            <p className="mt-4 text-sm leading-6 text-muted">{QUIENES_SOMOS.lead}</p>
             <div className="mt-6">
               <MagneticButton href="/nosotros" variant="ink">
                 Conocer Hakamo
               </MagneticButton>
             </div>
           </Reveal>
-          <div className="grid gap-3">
-            <Reveal from="up" delay={60}>
-              <article className="h-full rounded-[1.6rem] border border-ink/10 bg-white p-5">
-                <p className="text-[11px] uppercase tracking-[0.28em] text-accent">{COBERTURA.titulo}</p>
-                <h3 className="font-display mt-2 text-xl text-ink">Todo el territorio nacional</h3>
-                <p className="mt-2 text-sm leading-6 text-muted">{COBERTURA.texto}</p>
-              </article>
-            </Reveal>
-            <Reveal from="up" delay={120}>
-              <article className="h-full rounded-[1.6rem] border border-ink/10 bg-white p-5">
-                <p className="text-[11px] uppercase tracking-[0.28em] text-accent">HSE</p>
-                <h3 className="font-display mt-2 text-xl text-ink">{COMPROMISO_HSE.titulo}</h3>
-                <p className="mt-2 text-sm leading-6 text-muted">{COMPROMISO_HSE.texto}</p>
-              </article>
-            </Reveal>
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-night px-4 py-16 text-paper sm:px-6 sm:py-20">
-        <div className="mx-auto max-w-6xl">
-          <p className="text-[11px] uppercase tracking-[0.32em] text-glow">Cuatro pilares</p>
-          <h2 className="font-display mt-3 max-w-3xl text-3xl leading-snug sm:text-4xl">
-            Cumplimiento, transparencia, terreno y seguridad
-          </h2>
-          <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {PILARES.map((pilar, index) => (
-              <Reveal key={pilar.titulo} delay={index * 50} from="up">
-                <article className="h-full rounded-[1.6rem] border border-white/10 bg-white/5 p-5">
-                  <h3 className="font-display text-lg">{pilar.titulo}</h3>
-                  <p className="mt-2 text-sm leading-5 text-paper/65">{pilar.descripcion}</p>
-                </article>
-              </Reveal>
-            ))}
-          </div>
         </div>
       </section>
 
