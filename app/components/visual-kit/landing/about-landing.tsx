@@ -51,14 +51,14 @@ export function AboutLanding() {
 
       <LandingHeroSection background={LANDING_HERO_BACKGROUNDS.about}>
         <div className="landing-hero-inner mx-auto max-w-3xl px-4 text-center sm:px-6">
-          <p className="text-[11px] font-medium uppercase tracking-[0.42em] text-glow">{QUIENES_SOMOS.titulo}</p>
-          <div className="mt-5">
+          <p className="visit-rise text-[11px] font-medium uppercase tracking-[0.42em] text-glow">{QUIENES_SOMOS.titulo}</p>
+          <div className="visit-rise mt-5" style={{ animationDelay: "90ms" }}>
             <CinematicTitle lines={["Outsourcing de gestión humana", "para el sector construcción"]} />
           </div>
-          <p className="mt-6 max-w-2xl text-sm leading-6 text-paper/70 sm:text-base">
+          <p className="visit-rise mt-6 max-w-2xl text-sm leading-6 text-paper/70 sm:text-base" style={{ animationDelay: "180ms" }}>
             {QUIENES_SOMOS.lead}
           </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+          <div className="visit-rise mt-8 flex flex-wrap items-center justify-center gap-4" style={{ animationDelay: "280ms" }}>
             <MagneticButton href="/servicios">Ver servicios</MagneticButton>
             <MagneticButton href="/contacto" variant="ghost">
               Hablemos
@@ -70,17 +70,24 @@ export function AboutLanding() {
       <div id="contenido">
         <section className="bg-paper px-4 py-20 text-ink sm:px-6 sm:py-28">
           <div className="mx-auto max-w-6xl">
-            <p className="text-[11px] uppercase tracking-[0.32em] text-accent">Nuestra trayectoria</p>
-            <h2 className="font-display mt-3 max-w-3xl text-3xl leading-snug sm:text-5xl">
-              De la obra al talento que la sostiene
-            </h2>
+            <Reveal from="up">
+              <p className="text-[11px] uppercase tracking-[0.32em] text-accent">Nuestra trayectoria</p>
+              <h2 className="font-display mt-3 max-w-3xl text-3xl leading-snug sm:text-5xl">
+                De la obra al talento que la sostiene
+              </h2>
+            </Reveal>
             <div className="mt-14 grid lg:grid-cols-2">
-              {HISTORIA.map((item) => (
-                <article key={item.ano} className="border-t border-ink/15 py-8 lg:px-8 lg:first:pl-0 lg:last:pr-0">
+              {HISTORIA.map((item, index) => (
+                <Reveal
+                  key={item.ano}
+                  from="up"
+                  delay={index * 80}
+                  className="border-t border-ink/15 py-8 lg:px-8 lg:first:pl-0 lg:last:pr-0"
+                >
                   <p className="font-display text-4xl leading-none text-accent">{item.ano}</p>
                   <h3 className="font-display mt-5 text-2xl leading-snug">{item.titulo}</h3>
                   <p className="mt-3 max-w-md text-sm leading-6 text-muted">{item.texto}</p>
-                </article>
+                </Reveal>
               ))}
             </div>
           </div>
@@ -88,21 +95,23 @@ export function AboutLanding() {
 
         <section className="bg-night px-4 py-20 text-paper sm:px-6 sm:py-28">
           <div className="mx-auto max-w-6xl">
-            <p className="text-[11px] uppercase tracking-[0.32em] text-glow">Lo que nos mueve</p>
-            <h2 className="font-display mt-3 text-3xl leading-snug sm:text-5xl">Misión y visión</h2>
+            <Reveal from="up">
+              <p className="text-[11px] uppercase tracking-[0.32em] text-glow">Lo que nos mueve</p>
+              <h2 className="font-display mt-3 text-3xl leading-snug sm:text-5xl">Misión y visión</h2>
+            </Reveal>
             <div className="mt-14 grid lg:grid-cols-2">
-              <article className="border-t border-glow/50 py-8 lg:pr-12">
+              <Reveal from="left" className="border-t border-glow/50 py-8 lg:pr-12">
                 <h3 className="font-display text-2xl leading-snug">{MISION_VISION.mision.titulo}</h3>
                 <p className="mt-4 max-w-md text-sm leading-6 text-paper/70">{MISION_VISION.mision.texto}</p>
-              </article>
-              <article className="border-t border-glow/50 py-8 lg:pl-12">
+              </Reveal>
+              <Reveal from="right" delay={80} className="border-t border-glow/50 py-8 lg:pl-12">
                 <h3 className="font-display text-2xl leading-snug">{MISION_VISION.vision.titulo}</h3>
                 <p className="mt-4 max-w-md text-sm leading-6 text-paper/70">{MISION_VISION.vision.texto}</p>
-              </article>
+              </Reveal>
             </div>
 
             <div className="mt-16 grid gap-10 border-t border-white/10 pt-16 lg:grid-cols-[minmax(16rem,0.7fr)_minmax(0,1.3fr)] lg:gap-16">
-              <div>
+              <Reveal from="left">
                 <p className="text-[11px] uppercase tracking-[0.32em] text-glow">Nuestros valores</p>
                 <h2 className="font-display mt-3 text-3xl leading-snug sm:text-4xl">
                   Los principios que nos definen
@@ -110,17 +119,23 @@ export function AboutLanding() {
                 <p className="mt-4 max-w-sm text-sm leading-6 text-paper/65">
                   Siete principios que guían cada contrato, cada obra y cada relación con colaboradores y clientes.
                 </p>
-              </div>
+              </Reveal>
               <ol className="divide-y divide-white/10 border-y border-white/10">
                 {VALORES.map((valor, index) => (
-                  <li key={valor.titulo} className="grid grid-cols-[3.25rem_minmax(0,1fr)] gap-4 py-5 sm:grid-cols-[4rem_minmax(0,1fr)]">
-                    <span className="font-display text-xl leading-none text-glow" aria-hidden>
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <div>
-                      <h3 className="font-display text-xl leading-snug">{valor.titulo}</h3>
-                      <p className="mt-2 text-sm leading-6 text-paper/65">{valor.descripcion}</p>
-                    </div>
+                  <li key={valor.titulo}>
+                    <Reveal
+                      from="up"
+                      delay={index * 50}
+                      className="grid grid-cols-[3.25rem_minmax(0,1fr)] gap-4 py-5 sm:grid-cols-[4rem_minmax(0,1fr)]"
+                    >
+                      <span className="font-display text-xl leading-none text-glow" aria-hidden>
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <div>
+                        <h3 className="font-display text-xl leading-snug">{valor.titulo}</h3>
+                        <p className="mt-2 text-sm leading-6 text-paper/65">{valor.descripcion}</p>
+                      </div>
+                    </Reveal>
                   </li>
                 ))}
               </ol>
@@ -130,22 +145,29 @@ export function AboutLanding() {
 
         <section className="bg-paper px-4 py-20 text-ink sm:px-6 sm:py-28">
           <div className="mx-auto max-w-6xl">
-            <p className="text-[11px] uppercase tracking-[0.32em] text-accent">Dossier · Pilares</p>
-            <div className="mt-3 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-              <h2 className="font-display max-w-xl text-3xl leading-snug sm:text-5xl">
-                Su aliado estratégico en gestión humana
-              </h2>
-              <p className="max-w-sm text-sm leading-6 text-muted">{QUIENES_SOMOS.resultado}</p>
-            </div>
+            <Reveal from="up">
+              <p className="text-[11px] uppercase tracking-[0.32em] text-accent">Dossier · Pilares</p>
+              <div className="mt-3 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+                <h2 className="font-display max-w-xl text-3xl leading-snug sm:text-5xl">
+                  Su aliado estratégico en gestión humana
+                </h2>
+                <p className="max-w-sm text-sm leading-6 text-muted">{QUIENES_SOMOS.resultado}</p>
+              </div>
+            </Reveal>
             <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4">
               {PILARES.map((pilar, index) => (
-                <article key={pilar.titulo} className="border-t border-ink/15 py-7 sm:px-6 sm:first:pl-0">
+                <Reveal
+                  key={pilar.titulo}
+                  from="up"
+                  delay={index * 70}
+                  className="border-t border-ink/15 py-7 sm:px-6 sm:first:pl-0"
+                >
                   <p className="font-display text-3xl leading-none text-accent">
                     {String(index + 1).padStart(2, "0")}
                   </p>
                   <h3 className="font-display mt-5 text-xl leading-snug">{pilar.titulo}</h3>
                   <p className="mt-3 text-sm leading-6 text-muted">{pilar.descripcion}</p>
-                </article>
+                </Reveal>
               ))}
             </div>
           </div>
@@ -226,30 +248,37 @@ export function AboutLanding() {
 
         <section className="bg-paper px-4 py-20 text-ink sm:px-6 sm:py-28">
           <div className="mx-auto max-w-6xl">
-            <p className="text-[11px] uppercase tracking-[0.32em] text-accent">Confianza comprobada</p>
-            <div className="mt-3 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-              <h2 className="font-display max-w-xl text-3xl leading-snug sm:text-5xl">
-                Empresas que han confiado en Hakamo
-              </h2>
-              <p className="max-w-sm text-sm leading-6 text-muted">
-                Operaciones de construcción, energía, ingeniería y retail nos confían la gestión de su
-                personal. Cada proyecto sostiene su propio equipo, con la misma exigencia.
-              </p>
-            </div>
+            <Reveal from="up">
+              <p className="text-[11px] uppercase tracking-[0.32em] text-accent">Confianza comprobada</p>
+              <div className="mt-3 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+                <h2 className="font-display max-w-xl text-3xl leading-snug sm:text-5xl">
+                  Empresas que han confiado en Hakamo
+                </h2>
+                <p className="max-w-sm text-sm leading-6 text-muted">
+                  Operaciones de construcción, energía, ingeniería y retail nos confían la gestión de su
+                  personal. Cada proyecto sostiene su propio equipo, con la misma exigencia.
+                </p>
+              </div>
+            </Reveal>
             <div className="mt-14 divide-y divide-ink/10 border-y border-ink/10">
               {CLIENTES.map((cliente, index) => (
-                <article key={cliente.nombre} className="grid gap-2 py-6 sm:grid-cols-[4rem_minmax(0,1fr)_auto] sm:items-baseline sm:gap-6">
+                <Reveal
+                  key={cliente.nombre}
+                  from="up"
+                  delay={index * 40}
+                  className="grid gap-2 py-6 sm:grid-cols-[4rem_minmax(0,1fr)_auto] sm:items-baseline sm:gap-6"
+                >
                   <span className="font-display text-xl text-accent">{String(index + 1).padStart(2, "0")}</span>
                   <h3 className="font-display text-2xl leading-snug">{cliente.nombre}</h3>
                   <p className="text-sm text-muted">{cliente.sector}</p>
-                </article>
+                </Reveal>
               ))}
             </div>
-            <div className="mt-12">
+            <Reveal from="up" className="mt-12">
               <MagneticButton href="/empresas/solicitar" variant="ink">
                 Solicitar personal
               </MagneticButton>
-            </div>
+            </Reveal>
           </div>
         </section>
       </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Link from "next/link";
 import { COMPANY_INFO } from "@/lib/data";
 import { SITE_NAV, SITE_PUBLIC } from "@/lib/visual-kit/hakamo";
@@ -123,8 +124,11 @@ function buildMessage(intent: Intent, data: FormState) {
   return lines.join("\n");
 }
 
+const STEP_EASE = [0.22, 1, 0.36, 1] as const;
+
 export function VisitLanding() {
   const site = SITE_PUBLIC;
+  const reduceMotion = useReducedMotion();
   const [intent, setIntent] = useState<Intent | null>(null);
   const [step, setStep] = useState(0);
   const [data, setData] = useState<FormState>(initial);
@@ -250,14 +254,14 @@ export function VisitLanding() {
         />
         <section className="flex min-h-[100svh] w-full items-center justify-center px-4 pb-16 pt-[calc(var(--header-h)+1.5rem)] sm:px-6">
           <div className="w-full text-center">
-          <p className="text-[11px] uppercase tracking-[0.32em] text-glow">Listo</p>
-          <h1 className="font-display mt-4 text-[clamp(2.4rem,5vw,4.25rem)] italic leading-[1.05] text-paper">
+          <p className="visit-rise text-[11px] uppercase tracking-[0.32em] text-glow">Listo</p>
+          <h1 className="visit-rise font-display mt-4 text-[clamp(2.4rem,5vw,4.25rem)] italic leading-[1.05] text-paper" style={{ animationDelay: "90ms" }}>
             Solicitud preparada
           </h1>
-          <p className="mx-auto mt-6 max-w-3xl text-base leading-7 text-paper/65 sm:text-lg">
+          <p className="visit-rise mx-auto mt-6 max-w-3xl text-base leading-7 text-paper/65 sm:text-lg" style={{ animationDelay: "180ms" }}>
             Abrimos WhatsApp y tu correo con el resumen. Si alguno no se abrió, usa los botones.
           </p>
-          <div className="mt-10 flex flex-wrap justify-center gap-3">
+          <div className="visit-rise mt-10 flex flex-wrap justify-center gap-3" style={{ animationDelay: "280ms" }}>
             <a
               href={`https://wa.me/18296790671?text=${encodeURIComponent(message)}`}
               target="_blank"
@@ -307,21 +311,25 @@ export function VisitLanding() {
         }}
       >
         <div className="landing-hero-inner visit-hero mx-auto w-full max-w-6xl px-4 sm:px-6">
-          <p className="text-[11px] font-medium uppercase tracking-[0.42em] text-glow">Solicitar</p>
-          <h1 className="font-display mt-4 max-w-xl text-[clamp(2.6rem,6vw,4.6rem)] leading-[0.98] tracking-[-0.035em] text-paper">
+          <p className="visit-rise text-[11px] font-medium uppercase tracking-[0.42em] text-glow">Solicitar</p>
+          <h1
+            className="visit-rise font-display mt-4 max-w-xl text-[clamp(2.6rem,6vw,4.6rem)] leading-[0.98] tracking-[-0.035em] text-paper"
+            style={{ animationDelay: "90ms" }}
+          >
             Qué necesitas
           </h1>
-          <p className="mt-4 max-w-md text-sm leading-6 text-paper/75 sm:text-base">
+          <p className="visit-rise mt-4 max-w-md text-sm leading-6 text-paper/75 sm:text-base" style={{ animationDelay: "170ms" }}>
             Personal para la obra, una reunión o un mensaje.
           </p>
           <div className="mt-8 grid gap-3 sm:grid-cols-3">
-            {INTENTS.map((item) => {
+            {INTENTS.map((item, index) => {
               const active = intent === item.id;
               return (
                 <button
                   key={item.id}
                   type="button"
-                  className={`visit-choice ${active ? "is-active" : ""}`}
+                  className={`visit-choice visit-rise ${active ? "is-active" : ""}`}
+                  style={{ animationDelay: `${260 + index * 90}ms` }}
                   onClick={() => chooseIntent(item.id)}
                 >
                   <span className="visit-choice-index">{item.index}</span>
@@ -335,45 +343,41 @@ export function VisitLanding() {
       </LandingHeroSection>
 
       {intent && current ? (
-        <>
+        <div className="visit-panel">
           <section id="solicitud" ref={formAnchor} className="bg-night">
             <div className="bg-night px-4 pt-8 sm:px-6">
               <div className="mx-auto max-w-6xl">
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <p className="text-sm font-semibold text-paper">{current.title}</p>
-                    <p className="mt-0.5 text-xs text-paper/55">{current.hint}</p>
-                  </div>
-                  <p className="text-xs font-medium tabular-nums text-paper/55">
-                    {step + 1} / {steps.length}
-                  </p>
-                </div>
-                <div className="mt-4 h-1 overflow-hidden rounded-full bg-white/10">
+                <div className="h-1 overflow-hidden rounded-full bg-white/10">
                   <div
                     className="h-full rounded-full bg-glow transition-all duration-500 ease-out"
                     style={{ width: `${progress}%` }}
                   />
                 </div>
-                <div className="mt-3 hidden items-center gap-1 sm:flex">
-                  {steps.map((item, i) => (
-                    <span key={item.id} className="inline-flex items-center gap-1">
-                      <button
-                        type="button"
-                        className={`text-[11px] font-medium tracking-wide transition ${
-                          i === step ? "text-glow" : i < step ? "text-paper/55" : "text-paper/35"
-                        }`}
-                        onClick={() => {
-                          if (i < step) {
-                            setError("");
-                            setStep(i);
-                          }
-                        }}
-                      >
-                        {item.title}
-                      </button>
-                      {i < steps.length - 1 ? <span className="text-paper/25">·</span> : null}
-                    </span>
-                  ))}
+                <div className="mt-3 flex items-center justify-between gap-4">
+                  <div className="hidden items-center gap-1 sm:flex">
+                    {steps.map((item, i) => (
+                      <span key={item.id} className="inline-flex items-center gap-1">
+                        <button
+                          type="button"
+                          className={`text-[11px] font-medium tracking-wide transition ${
+                            i === step ? "text-glow" : i < step ? "text-paper/55" : "text-paper/35"
+                          }`}
+                          onClick={() => {
+                            if (i < step) {
+                              setError("");
+                              setStep(i);
+                            }
+                          }}
+                        >
+                          {item.title}
+                        </button>
+                        {i < steps.length - 1 ? <span className="text-paper/25">·</span> : null}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="ml-auto text-xs font-medium tabular-nums text-paper/55">
+                    {step + 1} / {steps.length}
+                  </p>
                 </div>
               </div>
             </div>
@@ -383,8 +387,19 @@ export function VisitLanding() {
             <div className="mx-auto max-w-6xl">
               <Reveal from="up">
                 <div className="visit-form">
+                  <AnimatePresence mode="wait" initial={false}>
+                  <motion.div
+                    key={`${intent}-${current.id}`}
+                    initial={reduceMotion ? false : { opacity: 0, y: 18 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={reduceMotion ? undefined : { opacity: 0, y: -12 }}
+                    transition={{ duration: reduceMotion ? 0 : 0.42, ease: STEP_EASE }}
+                  >
+                  <p className="text-sm font-semibold text-paper">{current.title}</p>
+                  <p className="mt-0.5 text-xs text-paper/55">{current.hint}</p>
+                  <div className="mt-8">
                   {current.id === "datos" && (
-                    <div className="grid gap-x-10 gap-y-8 sm:grid-cols-2">
+                    <div className="visit-stagger grid gap-x-10 gap-y-8 sm:grid-cols-2">
                       <LineField label="Nombre completo" wide>
                         <input
                           className="visit-input"
@@ -429,7 +444,7 @@ export function VisitLanding() {
                     <div>
                       <p className="text-[11px] uppercase tracking-[0.28em] text-glow">Personal</p>
                       <p className="mt-2 text-sm text-paper/65">¿Qué tipo de personal necesitas?</p>
-                      <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                      <div className="visit-stagger mt-5 grid gap-3 sm:grid-cols-2">
                         {PERSONAL.map((item) => {
                           const active = data.motivo === item.value;
                           return (
@@ -453,7 +468,7 @@ export function VisitLanding() {
                       <div>
                         <p className="text-[11px] uppercase tracking-[0.28em] text-glow">Modalidad</p>
                         <p className="mt-2 text-sm text-paper/65">¿Cómo prefieres la reunión?</p>
-                        <div className="mt-5 grid gap-3">
+                        <div className="visit-stagger mt-5 grid gap-3">
                           {MODALIDADES.map((item) => {
                             const active = data.modalidad === item.value;
                             return (
@@ -515,7 +530,7 @@ export function VisitLanding() {
                     <div className="max-w-2xl">
                       <p className="text-[11px] uppercase tracking-[0.28em] text-glow">Resumen</p>
                       <h2 className="font-display mt-3 text-3xl italic text-paper">Todo listo para enviar</h2>
-                      <dl className="mt-8 divide-y divide-white/10 border-y border-white/10">
+                      <dl className="visit-stagger mt-8 divide-y divide-white/10 border-y border-white/10">
                         {summaryRows(intent, data).map(([label, value]) => (
                           <div key={label} className="grid gap-1 py-4 sm:grid-cols-[10rem_1fr] sm:gap-6">
                             <dt className="text-xs uppercase tracking-[0.18em] text-paper/50">{label}</dt>
@@ -529,7 +544,14 @@ export function VisitLanding() {
                     </div>
                   )}
 
-                  {error ? <p className="mt-8 text-sm text-red-300">{error}</p> : null}
+                  {error ? (
+                    <p key={error} className="visit-error mt-8 text-sm text-red-300">
+                      {error}
+                    </p>
+                  ) : null}
+                  </div>
+                  </motion.div>
+                  </AnimatePresence>
 
                   <div className="mt-12 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-8">
                     <button
@@ -557,7 +579,7 @@ export function VisitLanding() {
               </Reveal>
             </div>
           </section>
-        </>
+        </div>
       ) : (
         <div className="bg-night pb-24" />
       )}

@@ -15,13 +15,15 @@ export function ServiceTimeline({ items }: { items: readonly Servicio[] }) {
     <section className="service-timeline" id="catalogo">
       <div className="lamp-glow" aria-hidden />
       <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6">
-        <p className="text-center text-[11px] uppercase tracking-[0.32em] text-glow">Catálogo</p>
-        <h2 className="font-display mx-auto mt-3 max-w-3xl text-center text-3xl leading-snug sm:text-4xl">
-          {LANDING_COPY.offeringsTitle}
-        </h2>
-        <div className="mt-6 flex justify-center">
-          <p className="service-timeline-hint">Selecciona un servicio para ver el detalle</p>
-        </div>
+        <Reveal from="up" className="text-center">
+          <p className="text-[11px] uppercase tracking-[0.32em] text-glow">Catálogo</p>
+          <h2 className="font-display mx-auto mt-3 max-w-3xl text-3xl leading-snug sm:text-4xl">
+            {LANDING_COPY.offeringsTitle}
+          </h2>
+          <div className="mt-6 flex justify-center">
+            <p className="service-timeline-hint">Selecciona un servicio para ver el detalle</p>
+          </div>
+        </Reveal>
 
         <div className="mt-14 divide-y divide-white/10 border-y border-white/10 text-left">
           {items.map((item, index) => (
@@ -35,9 +37,9 @@ export function ServiceTimeline({ items }: { items: readonly Servicio[] }) {
           ))}
         </div>
 
-        <div className="mt-16 text-center">
+        <Reveal from="up" className="mt-16 text-center">
           <MagneticButton href="/contacto">¿Necesitas algo a medida?</MagneticButton>
-        </div>
+        </Reveal>
       </div>
     </section>
   );
@@ -67,7 +69,7 @@ function ServiceRow({
           <p className="mt-3 text-xs leading-5 text-paper/45">{item.tags.join(" · ")}</p>
           {item.detalle ? (
             <div id={panelId} hidden={!open}>
-              <p className="mt-4 max-w-2xl border-t border-white/10 pt-4 text-sm leading-6 text-paper/85">
+              <p className="service-detail-in mt-4 max-w-2xl border-t border-white/10 pt-4 text-sm leading-6 text-paper/85">
                 {item.detalle}
               </p>
             </div>
