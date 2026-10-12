@@ -108,6 +108,7 @@ En Next.js 16, `params` y `searchParams` de las páginas llegan como `Promise` y
 | `/privacidad` | `app/(hub)/privacidad/page.tsx` | página propia | Texto legal |
 | `/agendar-visita` | redirect permanente | — | `/empresas/solicitar` |
 | `/como-llegar` | redirect permanente | — | `/contacto#ruta` |
+| cualquiera inexistente | `app/not-found.tsx` | página propia | Foto de home, bloque centrado en el viewport y dos tarjetas: empresas y empleos |
 
 Navegación de empresas, en `EMPRESAS_NAV` / `SITE_NAV`: Empresas, Nosotros, Servicios, Proyectos, Contacto, Solicitar. El acceso a empleos es el enlace secundario «Busco empleo».
 
@@ -116,7 +117,7 @@ Navegación de empresas, en `EMPRESAS_NAV` / `SITE_NAV`: Empresas, Nosotros, Ser
 | URL | Comportamiento |
 | --- | --- |
 | `/empleos` | `CvLanding` con vacantes y divisiones de `loadVacantes()` |
-| `/empleos/vacantes` | `VacantesListing`. Filtros `categoria` y `q` |
+| `/empleos/vacantes` | `VacantesListing` → `TalentBoard`. Búsqueda, área, ciudad, contrato, modalidad y paginación. Query `categoria` y `q` |
 | `/empleos/vacantes/[id]` | `JobsDetail` |
 | `/empleo` | `EmploymentLanding`, cultura del colaborador |
 | `/empleos/[id]` | Redirect a `/empleos/vacantes/[id]` |
@@ -192,7 +193,19 @@ Al confirmar:
 
 ### Vacantes
 
-`loadVacantes()` corre en el servidor de `/empleos` y `/empleos/vacantes`. El listado filtra por categoría y texto. El detalle está en `jobs-detail.tsx` y vuelve a mirar `NEXT_PUBLIC_STRAPI_URL` para la ficha.
+`loadVacantes()` corre en el servidor de `/empleos` y `/empleos/vacantes`. El detalle está en `jobs-detail.tsx` y vuelve a mirar `NEXT_PUBLIC_STRAPI_URL` para la ficha.
+
+El listado (`TalentBoard`) parte de las vacantes abiertas. «Ver cerradas» las incluye.
+
+| Control | Comportamiento |
+| --- | --- |
+| Búsqueda | En vivo, por puesto o ciudad. También entran descripción, división y salario |
+| Área | Un desplegable. Si hay más de ocho áreas, el panel incluye «Buscar área» y la lista hace scroll |
+| Ciudad, contrato, modalidad | `<select>` nativos. En teléfono quedan detrás de «Filtrar por ciudad o contrato» |
+| Paginación | Anterior, números y Siguiente. Siempre visible si hay resultados; en una sola página los extremos van deshabilitados |
+| Por página | 10 (defecto), 20, 30 o Todas |
+
+Al cambiar un filtro o el tamaño de página se vuelve a la página 1. `?categoria=` y `?q=` siguen siendo el estado inicial.
 
 ### CV
 
@@ -226,6 +239,17 @@ Tipografía:
 
 `app/visual-kit.css` concentra lo que Tailwind no expresa bien: heroes, grano, botones magnéticos, timeline de servicios, formulario de visita y animaciones. `lib/visual-kit/styles.ts` exporta combinaciones de botón (`btnGlow`, `btnGhostOnNight`).
 
+### Diseño adaptable
+
+Las páginas públicas (puerta, empresas, solicitar, proyectos, servicios, nosotros, contacto, empleos, vacantes, detalle, cultura, FAQ, privacidad, blog y equipo) no generan scroll horizontal entre 320 y 1024 px. Las grillas pasan a una columna en teléfono.
+
+| Barra | Hasta | Desde |
+| --- | --- | --- |
+| Empresas, `chrome-header.tsx` | Menú hamburguesa | 1024 px (`lg`): enlaces en la barra. El ancho de la píldora sigue en `min(80rem, …)` |
+| Empleos, `postulate-header.tsx` | Logo y menú | 768 px (`md`): enlaces y «Empresas». La etiqueta «Talentos» entra en 1280 px (`xl`). La píldora usa `.chrome-header-fit` y coincide con la columna de contenido de 72rem |
+
+El botón de menú global se oculta desde 1024 px (`.chrome-menu-btn`). En empleos una regla más específica lo oculta desde 768 px. No bajar el corte global: la barra de empresas todavía esconde sus enlaces hasta `lg`.
+
 Fotos de hero en `public/visual-kit/heroes/`. Logos en `public/logo-azul.png` y `public/hakamo-logo-blanco.png`. Logos de clientes en `public/clientes/`.
 
 ## Animaciones
@@ -254,7 +278,8 @@ El catálogo de servicios ya revelaba cada fila antes de esta pasada. Solicitar,
 
 | Componente | Rol |
 | --- | --- |
-| `LandingHeader` / `chrome-header` | Barra de las landings, con menú en móvil |
+| `LandingHeader` / `chrome-header` | Barra de empresas. Enlaces desde 1024 px; antes, menú |
+| `PostulateHeader` | Barra de empleos. Enlaces desde 768 px; «Talentos» desde 1280 px |
 | `LandingHeroSection` | Foto a sangre, velo y viñeta. El children es el texto |
 | `CinematicTitle` | Título en dos líneas. La segunda usa color `glow` |
 | `MagneticButton` | CTA con seguimiento leve del cursor |
@@ -311,4 +336,5 @@ Si el `POST` falla, solicitar igual abre WhatsApp y correo. El CV registra el in
 - `/blog` depende por completo de Strapi.
 - `/proyectos` es estático (`demo-proyectos.ts`), aunque `lib/api.ts` ya sepa pedir `/api/proyectos`.
 - Las vacantes reales solo aparecen si Strapi responde con al menos seis. Con menos, se sustituye la lista por la demo.
+- En tablet la barra de empresas sigue en menú hasta 1024 px. La de empleos muestra enlaces desde 768 px.
 - `app/components/ui` y páginas como el blog conviven con el visual kit. El sitio que se navega desde `/` es el kit.

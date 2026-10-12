@@ -63,7 +63,7 @@ La puerta de entrada es `/`. Desde ahí se entra a empresas o a empleos.
 | Ruta | Página |
 | --- | --- |
 | `/empleos` | Vacantes y constructor o carga de CV |
-| `/empleos/vacantes` | Listado filtrable (`?categoria=` y `?q=`) |
+| `/empleos/vacantes` | Listado con búsqueda, área, ciudad, contrato y modalidad. Paginación de 10, 20, 30 o todas. `?categoria=` y `?q=` |
 | `/empleos/vacantes/[id]` | Detalle de una vacante |
 | `/empleo` | Cultura y cómo es trabajar en Hakamo |
 | `/empleos/[id]` | Redirige al detalle en `/empleos/vacantes/[id]` |
@@ -106,6 +106,17 @@ types/            tipos de Strapi
 ```
 
 El alias `@/` apunta a la raíz del proyecto.
+
+## Diseño adaptable
+
+Las landings públicas se leen de 320 px en adelante sin scroll horizontal. En teléfono el contenido se apila y la navegación pasa a un menú.
+
+| Barra | Teléfono | Desde |
+| --- | --- | --- |
+| Empresas (`LandingHeader`) | Logo y menú | 1024 px: enlaces en la barra |
+| Empleos (`PostulateHeader`) | Logo y menú | 768 px: enlaces y «Empresas». «Talentos» solo desde 1280 px |
+
+Una ruta inexistente muestra `app/not-found.tsx`: foto a sangre, el bloque centrado y dos salidas (empresas y empleos).
 
 ## Animaciones
 

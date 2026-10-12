@@ -72,6 +72,23 @@ body {
   }
 }
 
+.chrome-header-fit {
+  width: min(72rem, calc(100% - 2rem));
+  max-width: 72rem;
+}
+
+@media (min-width: 640px) {
+  .chrome-header-fit {
+    width: min(72rem, calc(100% - 3rem));
+  }
+}
+
+@media (min-width: 75rem) {
+  .chrome-header-fit {
+    width: 72rem;
+  }
+}
+
 .chrome-frame {
   width: 100%;
   max-width: 72rem;
@@ -113,6 +130,17 @@ body {
 .chrome-header-paper.is-compact .chrome-header-inner {
   background: #fff;
   box-shadow: 0 12px 40px rgba(10, 35, 66, 0.12);
+}
+
+.chrome-header.is-compact .chrome-header-fit {
+  width: min(72rem, calc(100% - 3rem));
+  max-width: 72rem;
+}
+
+@media (min-width: 75rem) {
+  .chrome-header.is-compact .chrome-header-fit {
+    width: 72rem;
+  }
 }
 
 .chrome-header-night.is-compact .chrome-header-inner {
@@ -251,6 +279,18 @@ body {
   border-radius: 999px;
   border: 1px solid color-mix(in srgb, currentColor 16%, transparent);
   background: color-mix(in srgb, currentColor 5%, transparent);
+}
+
+@media (min-width: 768px) {
+  .postulate-header .chrome-menu-btn {
+    display: none;
+  }
+
+  .postulate-header .chrome-nav-tray {
+    gap: 0.7rem;
+    margin-inline: 0.35rem;
+    overflow: hidden;
+  }
 }
 
 @media (min-width: 1024px) {
@@ -762,6 +802,43 @@ body {
 
 .gate-in {
   animation: gate-in 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.gate-main {
+  justify-content: safe center;
+}
+
+@media (max-height: 520px) {
+  .gate-main {
+    justify-content: flex-start;
+    padding-top: 0;
+    padding-right: 5.5rem;
+  }
+
+  .gate-title {
+    margin-top: 0.35rem;
+    font-size: 1.55rem;
+  }
+
+  .gate-lead {
+    margin-top: 0.3rem;
+    font-size: 0.8125rem;
+    line-height: 1.35;
+  }
+
+  .gate-choices {
+    margin-top: 0.65rem;
+  }
+
+  .gate-choice {
+    padding-top: 0.65rem;
+    padding-bottom: 0.65rem;
+  }
+
+  .gate-choice h2 {
+    margin-top: 0.2rem;
+    font-size: 1.05rem;
+  }
 }
 
 @keyframes gate-lines {

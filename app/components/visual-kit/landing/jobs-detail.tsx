@@ -162,10 +162,10 @@ export function JobsDetail({ embedded = false }: { embedded?: boolean }) {
               <p className="mt-6 inline-block rounded-full bg-[#FFE3C7] px-3.5 py-2 text-[15px] font-semibold text-[#7A3A00]">
                 {vacante.division?.nombre ?? "Vacante"}
               </p>
-              <h1 className="font-[family-name:var(--font-space-grotesk)] mt-5 max-w-[18ch] text-[clamp(2.8rem,5vw,5rem)] font-extrabold leading-[0.98] tracking-[-0.03em]">
+              <h1 className="font-[family-name:var(--font-space-grotesk)] mt-5 max-w-full text-balance text-[clamp(2rem,8vw,5rem)] font-extrabold leading-[0.98] tracking-[-0.03em] break-words sm:max-w-[18ch]">
                 {vacante.titulo}
               </h1>
-              <p className="mt-6 max-w-3xl text-lg leading-relaxed text-[#33466A]">
+              <p className="mt-5 max-w-3xl text-base leading-relaxed break-words text-[#33466A] sm:mt-6 sm:text-lg">
                 {[
                   vacante.ubicacion,
                   vacante.modalidad ? MODALIDAD_LABEL[vacante.modalidad] : null,
@@ -322,7 +322,7 @@ export function JobsDetail({ embedded = false }: { embedded?: boolean }) {
                           id="cv"
                           type="file"
                           accept=".pdf,.doc,.docx,application/pdf"
-                          className={`${field} file:mr-3 file:rounded-lg file:border-0 file:bg-[#E6EEFC] file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-[#1747A8]`}
+                          className={`${field} max-w-full file:mr-3 file:rounded-lg file:border-0 file:bg-[#E6EEFC] file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-[#1747A8]`}
                           onChange={(event) => setCvFile(event.target.files?.[0] ?? null)}
                         />
                         <p className="mt-2 text-sm text-[#33466A]">
@@ -364,7 +364,7 @@ export function JobsDetail({ embedded = false }: { embedded?: boolean }) {
             </div>
           </section>
           {cerrada ? null : (
-            <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[#D5DDEC] bg-white p-3 sm:hidden">
+            <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[#D5DDEC] bg-white p-3 pr-20 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:hidden">
               <a href="#postular" className="inline-flex w-full items-center justify-center rounded-xl bg-[#1F5FD6] px-6 py-3.5 text-[17px] font-semibold text-white">
                 Postularme
               </a>

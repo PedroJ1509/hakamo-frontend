@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import type { Division, Vacante } from "@/types";
 import type { VacanteCard } from "@/lib/demo-vacantes";
@@ -12,27 +12,18 @@ type TipoFilter = "" | Vacante["tipo"];
 type ModalidadFilter = "" | Vacante["modalidad"];
 
 const TIPO_OPTIONS: { value: TipoFilter; label: string }[] = [
-  { value: "", label: "Cualquiera" },
+  { value: "", label: "Cualquier contrato" },
   { value: "tiempo_completo", label: "Tiempo completo" },
   { value: "medio_tiempo", label: "Medio tiempo" },
   { value: "contrato", label: "Contrato" },
 ];
 
 const MODALIDAD_OPTIONS: { value: ModalidadFilter; label: string }[] = [
-  { value: "", label: "Cualquiera" },
+  { value: "", label: "Cualquier modalidad" },
   { value: "presencial", label: "Presencial" },
   { value: "hibrido", label: "Híbrido" },
   { value: "remoto", label: "Remoto" },
 ];
-
-const DISPONIBILIDAD_OPTIONS: { value: DisponibilidadFilter; label: string }[] = [
-  { value: "", label: "Todas" },
-  { value: "activa", label: "Disponibles" },
-  { value: "cerrada", label: "No disponibles" },
-];
-
-const PAGE_SIZES = [3, 6, 9] as const;
-const WINDOW = 5;
 
 const TAG: Record<string, string> = {
   construccion: "bg-[#E6EEFC] text-[#1747A8]",
@@ -40,6 +31,16 @@ const TAG: Record<string, string> = {
   "salud-higiene": "bg-[#DDF3E8] text-[#12623D]",
   administracion: "bg-[#F3E8FF] text-[#6B21A8]",
 };
+
+const SELECT =
+  "mt-1 w-full rounded-xl border border-[#D5DDEC] bg-white px-3 py-2.5 text-sm text-[#0A2342] outline-none focus:border-[#1F5FD6]";
+
+const PAGE_SIZES = [10, 20, 30] as const;
+
+function pageWindow(current: number, count: number) {
+  const pages = new Set([1, count, current - 1, current, current + 1]);
+  return [...pages].filter((page) => page >= 1 && page <= count).sort((a, b) => a - b);
+}
 
 function tagClass(slug?: string) {
   return TAG[slug ?? ""] ?? "bg-[#E6EEFC] text-[#1747A8]";
@@ -53,40 +54,6 @@ function formatFecha(value: string) {
     month: "short",
     year: "numeric",
   });
-}
-
-function FilterRadios<T extends string>({
-  legend,
-  name,
-  value,
-  options,
-  onChange,
-}: {
-  legend: string;
-  name: string;
-  value: T;
-  options: { value: T; label: string }[];
-  onChange: (next: T) => void;
-}) {
-  return (
-    <fieldset className="border-t border-[#D5DDEC] pt-4">
-      <legend className="text-sm font-semibold text-[#0A2342]">{legend}</legend>
-      <div className="mt-3 space-y-2">
-        {options.map((option) => (
-          <label key={option.value || "any"} className="flex cursor-pointer items-center gap-2 text-sm text-[#33466A]">
-            <input
-              type="radio"
-              name={name}
-              checked={value === option.value}
-              onChange={() => onChange(option.value)}
-              className="accent-[var(--accent)]"
-            />
-            {option.label}
-          </label>
-        ))}
-      </div>
-    </fieldset>
-  );
 }
 
 export function TalentBoard({
@@ -106,6 +73,8 @@ export function TalentBoard({
   onDisponibilidad,
   onCategory,
   onClear,
+  openCounts,
+  closedCount,
 }: {
   items: VacanteCard[];
   divisiones: Division[];
@@ -123,225 +92,365 @@ export function TalentBoard({
   onDisponibilidad: (value: DisponibilidadFilter) => void;
   onCategory: (slug: string) => void;
   onClear: () => void;
+  openCounts: Record<string, number>;
+  closedCount: number;
 }) {
-  const active = divisiones.find((item) => item.slug === activeSlug);
-  const [pageSize, setPageSize] = useState<number | null>(6);
+  const categories = [
+    { value: "", label: "Todas las áreas" },
+    ...divisiones.map((item) => ({ value: item.slug, label: item.nombre })),
+  ];
+  const showingClosed = disponibilidad !== "activa";
+  const detailActive = Boolean(localizacion || tipo || modalidad);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [areasOpen, setAreasOpen] = useState(false);
+  const [areaQuery, setAreaQuery] = useState("");
+  const areasRef = useRef<HTMLDivElement>(null);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState<number | null>(10);
   const listRef = useRef<HTMLUListElement>(null);
-  const visible = pageSize == null ? items : items.slice(0, pageSize);
-  const inScroll = pageSize == null && items.length > WINDOW;
+  const hasFilters = Boolean(query || detailActive || activeSlug || showingClosed);
+  const size = pageSize ?? Math.max(items.length, 1);
+  const pageCount = Math.max(1, Math.ceil(items.length / size));
+  const current = Math.min(page, pageCount);
+  const start = (current - 1) * size;
+  const visible = items.slice(start, start + size);
 
-  useLayoutEffect(() => {
-    const ul = listRef.current;
-    if (!ul) return;
+  useEffect(() => {
+    setPage(1);
+  }, [query, localizacion, tipo, modalidad, disponibilidad, activeSlug, items.length]);
 
-    const fit = () => {
-      if (!inScroll) {
-        ul.style.maxHeight = "";
-        return;
-      }
-      const last = ul.querySelectorAll(":scope > li")[WINDOW - 1] as HTMLElement | undefined;
-      if (!last) {
-        ul.style.maxHeight = "";
-        return;
-      }
-      const height = last.getBoundingClientRect().bottom - ul.getBoundingClientRect().top;
-      ul.style.maxHeight = `${Math.ceil(height)}px`;
+  useEffect(() => {
+    if (!areasOpen) return;
+    const onPointer = (event: MouseEvent) => {
+      if (!areasRef.current?.contains(event.target as Node)) setAreasOpen(false);
     };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setAreasOpen(false);
+    };
+    document.addEventListener("mousedown", onPointer);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onPointer);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [areasOpen]);
 
-    fit();
-    window.addEventListener("resize", fit);
-    return () => window.removeEventListener("resize", fit);
-  }, [inScroll, items]);
+  const activeCategory = categories.find((item) => item.value === activeSlug) ?? categories[0];
+  const visibleAreas = categories.filter((item) =>
+    item.label.toLowerCase().includes(areaQuery.trim().toLowerCase()),
+  );
+
+  const goTo = (next: number) => {
+    setPage(next);
+    requestAnimationFrame(() => {
+      listRef.current?.scrollIntoView({ block: "start" });
+    });
+  };
 
   return (
-    <div className="mt-8">
-      <form
-        className="flex max-w-3xl flex-col gap-2 rounded-2xl bg-white p-2 shadow-[0_8px_30px_rgba(10,35,66,0.1)] sm:flex-row sm:items-center"
-        onSubmit={(event) => event.preventDefault()}
-      >
-        <label className="sr-only" htmlFor="buscar-categoria">
-          Buscar en {active?.nombre ?? "esta categoría"}
+    <div className="mt-6">
+      <form onSubmit={(event) => event.preventDefault()}>
+        <label className="sr-only" htmlFor="buscar-vacante">
+          Buscar puesto o ciudad
         </label>
-        <input
-          id="buscar-categoria"
-          type="search"
-          value={query}
-          onChange={(event) => onQuery(event.target.value)}
-          placeholder="Puesto, área o ciudad"
-          className="min-h-12 w-full flex-1 bg-transparent px-3.5 text-[17px] text-[#0A2342] outline-none placeholder:text-[#4A5C7C]"
-        />
-        <button type="submit" className="rounded-xl bg-[#1F5FD6] px-6 py-3.5 text-[17px] font-semibold text-white">
-          Buscar
-        </button>
-      </form>
-
-      <div className="mt-8 grid items-start gap-6 lg:grid-cols-[18rem_minmax(0,1fr)]">
-        <aside className="rounded-3xl bg-white p-5 shadow-[0_2px_0_#D5DDEC]">
-          <div className="mb-3 flex items-center justify-between gap-3">
-            <p className="text-sm font-semibold text-[#0A2342]">Filtros</p>
+        <div className="flex items-center gap-2 rounded-2xl bg-white px-3 shadow-[0_8px_30px_rgba(10,35,66,0.08)]">
+          <svg viewBox="0 0 24 24" aria-hidden className="size-5 shrink-0 text-[#4A5C7C]">
+            <circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" strokeWidth="1.8" />
+            <path d="M16 16.5 20 20.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+          </svg>
+          <input
+            id="buscar-vacante"
+            type="search"
+            value={query}
+            onChange={(event) => onQuery(event.target.value)}
+            placeholder="Busca por puesto o ciudad"
+            className="min-h-12 w-full bg-transparent text-[17px] text-[#0A2342] outline-none placeholder:text-[#4A5C7C]"
+          />
+          {query ? (
             <button
               type="button"
-              onClick={onClear}
-              className="text-xs font-semibold text-[#1F5FD6] underline-offset-2 hover:underline"
+              onClick={() => onQuery("")}
+              className="shrink-0 rounded-full px-2 py-1 text-sm font-semibold text-[#1F5FD6]"
             >
-              Limpiar
+              Borrar
             </button>
-          </div>
+          ) : null}
+        </div>
+      </form>
 
-          <FilterRadios
-            legend="Categoría"
-            name="categoria"
-            value={activeSlug}
-            options={[
-              { value: "", label: "Todas" },
-              ...divisiones.map((item) => ({ value: item.slug, label: item.nombre })),
-            ]}
-            onChange={onCategory}
-          />
-
-          <fieldset className="border-t border-[#D5DDEC] pt-4">
-            <legend className="text-sm font-semibold text-[#0A2342]">Localización</legend>
-            <select
-              value={localizacion}
-              onChange={(event) => onLocalizacion(event.target.value)}
-              className="mt-3 w-full rounded-xl border border-[#D5DDEC] bg-[#F5F7FB] px-3 py-2 text-sm text-[#0A2342] outline-none focus:border-[#1F5FD6]"
-            >
-              <option value="">Todas</option>
-              {locations.map((loc) => (
-                <option key={loc} value={loc}>
-                  {loc}
-                </option>
-              ))}
-            </select>
-          </fieldset>
-
-          <FilterRadios
-            legend="Tipo de contrato"
-            name="tipo"
-            value={tipo}
-            options={TIPO_OPTIONS}
-            onChange={onTipo}
-          />
-          <FilterRadios
-            legend="Modalidad"
-            name="modalidad"
-            value={modalidad}
-            options={MODALIDAD_OPTIONS}
-            onChange={onModalidad}
-          />
-          <FilterRadios
-            legend="Disponibilidad"
-            name="disponibilidad-board"
-            value={disponibilidad}
-            options={DISPONIBILIDAD_OPTIONS}
-            onChange={onDisponibilidad}
-          />
-        </aside>
-
-        <div>
-          <p className="text-sm font-semibold text-[#33466A]">
-            {visible.length === items.length ? items.length : `${visible.length} de ${items.length}`} resultado
-            {items.length === 1 ? "" : "s"}
-            {active ? ` en ${active.nombre}` : ""}
-          </p>
-
-          {items.length === 0 ? (
-            <div className="mt-6">
-              <EmptyState
-                kicker="Vacantes"
-                title="No hay vacantes con esos filtros"
-                text="Prueba otra categoría o deja tu perfil más abajo."
+      <div ref={areasRef} className="relative mt-4">
+        <button
+          type="button"
+          aria-expanded={areasOpen}
+          aria-haspopup="listbox"
+          onClick={() => setAreasOpen((value) => !value)}
+          className="flex w-full items-center justify-between gap-3 rounded-2xl bg-white px-4 py-3 text-left shadow-[0_2px_0_#D5DDEC] sm:max-w-sm"
+        >
+          <span className="min-w-0">
+            <span className="block text-xs font-semibold text-[#4A5C7C]">Área</span>
+            <span className="mt-0.5 block truncate text-sm font-semibold text-[#0A2342]">{activeCategory?.label}</span>
+          </span>
+          <span className="shrink-0 text-sm font-semibold text-[#4A5C7C]">{openCounts[activeSlug] ?? 0}</span>
+        </button>
+        {areasOpen ? (
+          <div className="absolute z-30 mt-2 w-full overflow-hidden rounded-2xl border border-[#D5DDEC] bg-white shadow-[0_16px_40px_rgba(10,35,66,0.12)] sm:max-w-sm">
+            {categories.length > 8 ? (
+              <input
+                type="search"
+                value={areaQuery}
+                onChange={(event) => setAreaQuery(event.target.value)}
+                placeholder="Buscar área"
+                className="w-full border-b border-[#D5DDEC] px-4 py-3 text-sm text-[#0A2342] outline-none placeholder:text-[#4A5C7C]"
               />
-            </div>
-          ) : (
-            <ul
-              ref={listRef}
-              className={`mt-4 space-y-4 ${inScroll ? "empleos-scroll" : ""}`}
-            >
-              {visible.map((vacante, index) => {
-                const cerrada = vacante.estado === "cerrada";
-                const fecha = formatFecha(vacante.fechaPublicacion);
-                return (
-                  <li
-                    key={vacante.documentId}
-                    className="empleos-rise"
-                    style={{ animationDelay: `${Math.min(index, 8) * 60}ms` }}
-                  >
-                    <Link
-                      href={`/empleos/vacantes/${vacante.documentId}`}
-                      className="flex items-start gap-4 rounded-3xl bg-white p-5 shadow-[0_2px_0_#D5DDEC] transition duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(10,35,66,0.08)] sm:p-6"
-                    >
-                      <div className="min-w-0 flex-1">
+            ) : null}
+            <ul role="listbox" aria-label="Áreas" className="max-h-64 overflow-y-auto overscroll-contain py-1">
+              {visibleAreas.length === 0 ? (
+                <li className="px-4 py-3 text-sm text-[#4A5C7C]">Ninguna área coincide</li>
+              ) : (
+                visibleAreas.map((item) => {
+                  const selected = activeSlug === item.value;
+                  return (
+                    <li key={item.value || "todas"}>
+                      <button
+                        type="button"
+                        role="option"
+                        aria-selected={selected}
+                        onClick={() => {
+                          onCategory(item.value);
+                          setAreasOpen(false);
+                          setAreaQuery("");
+                        }}
+                        className={`flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left text-sm ${
+                          selected ? "bg-[#E6EEFC] font-semibold text-[#0A2342]" : "text-[#33466A] hover:bg-[#F5F7FB]"
+                        }`}
+                      >
+                        <span className="min-w-0 truncate">{item.label}</span>
+                        <span className="shrink-0 text-xs font-semibold text-[#4A5C7C]">{openCounts[item.value] ?? 0}</span>
+                      </button>
+                    </li>
+                  );
+                })
+              )}
+            </ul>
+          </div>
+        ) : null}
+      </div>
+
+      <button
+        type="button"
+        className="mt-4 text-sm font-semibold text-[#1F5FD6] sm:hidden"
+        aria-expanded={detailsOpen || detailActive}
+        onClick={() => setDetailsOpen((value) => !value)}
+      >
+        {detailsOpen || detailActive ? "Ocultar ciudad y contrato" : "Filtrar por ciudad o contrato"}
+      </button>
+
+      <div className={`mt-3 gap-3 sm:mt-4 sm:grid sm:grid-cols-3 ${detailsOpen || detailActive ? "grid" : "hidden"}`}>
+        <label className="text-xs font-semibold text-[#33466A]">
+          Ciudad
+          <select value={localizacion} onChange={(event) => onLocalizacion(event.target.value)} className={SELECT}>
+            <option value="">Todas</option>
+            {locations.map((loc) => (
+              <option key={loc} value={loc}>
+                {loc}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="text-xs font-semibold text-[#33466A]">
+          Contrato
+          <select value={tipo} onChange={(event) => onTipo(event.target.value as TipoFilter)} className={SELECT}>
+            {TIPO_OPTIONS.map((option) => (
+              <option key={option.value || "any"} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="text-xs font-semibold text-[#33466A]">
+          Modalidad
+          <select
+            value={modalidad}
+            onChange={(event) => onModalidad(event.target.value as ModalidadFilter)}
+            className={SELECT}
+          >
+            {MODALIDAD_OPTIONS.map((option) => (
+              <option key={option.value || "any"} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+
+      <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+        <p className="text-sm font-semibold text-[#33466A]">
+          {items.length} {items.length === 1 ? "puesto" : "puestos"}
+          {disponibilidad === "activa" ? " abiertos" : ""}
+        </p>
+        {closedCount > 0 ? (
+          <button
+            type="button"
+            onClick={() => onDisponibilidad(showingClosed ? "activa" : "")}
+            className="text-sm font-semibold text-[#1F5FD6] underline-offset-2 hover:underline"
+          >
+            {showingClosed ? "Ocultar cerradas" : `Ver cerradas (${closedCount})`}
+          </button>
+        ) : null}
+        {hasFilters ? (
+          <button
+            type="button"
+            onClick={onClear}
+            className="text-sm font-semibold text-[#33466A] underline-offset-2 hover:underline"
+          >
+            Limpiar filtros
+          </button>
+        ) : null}
+      </div>
+
+      {items.length === 0 ? (
+        <div className="mt-5">
+          <EmptyState
+            title="Ningún puesto coincide"
+            text="Prueba otra área o ciudad, o limpia los filtros para ver todo lo abierto."
+          />
+        </div>
+      ) : (
+        <ul ref={listRef} className="mt-4 scroll-mt-28 space-y-3">
+          {visible.map((vacante, index) => {
+            const cerrada = vacante.estado === "cerrada";
+            const fecha = formatFecha(vacante.fechaPublicacion);
+            const meta = [
+              vacante.ubicacion,
+              vacante.modalidad ? MODALIDAD_LABEL[vacante.modalidad] : null,
+              TIPO_LABEL[vacante.tipo] ?? vacante.tipo,
+            ].filter(Boolean);
+            return (
+              <li key={vacante.documentId} className="empleos-rise" style={{ animationDelay: `${Math.min(index, 8) * 50}ms` }}>
+                <Link
+                  href={`/empleos/vacantes/${vacante.documentId}`}
+                  className={`group block rounded-3xl bg-white p-5 shadow-[0_2px_0_#D5DDEC] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_16px_40px_rgba(10,35,66,0.08)] sm:p-6 ${
+                    cerrada ? "opacity-75" : ""
+                  }`}
+                >
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-center gap-2">
                         {vacante.division?.nombre ? (
-                          <span className={`inline-block rounded-full px-3 py-1 text-sm font-semibold ${tagClass(vacante.division.slug)}`}>
+                          <span className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${tagClass(vacante.division.slug)}`}>
                             {vacante.division.nombre}
                           </span>
                         ) : null}
-                        <h3 className="font-[family-name:var(--font-space-grotesk)] mt-3 text-2xl font-extrabold leading-tight tracking-[-0.03em] text-[#0A2342]">
-                          {vacante.titulo}
-                        </h3>
-                        <p className="mt-2 text-[#4A5C7C]">
-                          {[vacante.ubicacion, vacante.modalidad ? MODALIDAD_LABEL[vacante.modalidad] : null]
-                            .filter(Boolean)
-                            .join(" · ")}
+                        {cerrada ? (
+                          <span className="rounded-full bg-[#0A2342] px-3 py-1 text-xs font-semibold text-white">Cerrada</span>
+                        ) : null}
+                      </div>
+                      <h3 className="font-[family-name:var(--font-space-grotesk)] mt-3 text-balance text-xl font-extrabold leading-tight tracking-[-0.03em] break-words text-[#0A2342] sm:text-2xl">
+                        {vacante.titulo}
+                      </h3>
+                      {vacante.descripcion ? (
+                        <p className="mt-2 line-clamp-2 max-w-2xl text-sm leading-relaxed text-[#4A5C7C] sm:text-base">
+                          {vacante.descripcion}
                         </p>
-                        <div className="mt-3 flex flex-wrap gap-1.5">
-                          <span className="rounded-full bg-[#F5F7FB] px-2.5 py-1 text-xs font-semibold text-[#33466A]">
-                            {TIPO_LABEL[vacante.tipo] ?? vacante.tipo}
-                          </span>
-                          {cerrada ? (
-                            <span className="rounded-full bg-[#0A2342] px-2.5 py-1 text-xs font-semibold text-white">
-                              No disponible
-                            </span>
-                          ) : null}
-                        </div>
-                      </div>
-                      <div className="hidden shrink-0 text-right text-sm text-[#4A5C7C] sm:block">
-                        {fecha ? <p>{fecha}</p> : null}
-                        <p className="mt-3 font-semibold text-[#1F5FD6]">Ver puesto →</p>
-                      </div>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
+                      ) : null}
+                      <p className="mt-3 text-sm text-[#33466A]">{meta.join(" · ")}</p>
+                      {vacante.salario ? (
+                        <p className="mt-1 text-sm font-semibold text-[#0A2342]">{vacante.salario}</p>
+                      ) : null}
+                    </div>
+                    <div className="flex shrink-0 items-center justify-between gap-3 sm:flex-col sm:items-end">
+                      {fecha ? <p className="order-2 text-sm text-[#4A5C7C] sm:order-1">{fecha}</p> : null}
+                      <span className="order-1 inline-flex rounded-full bg-[#1F5FD6] px-4 py-2.5 text-sm font-semibold text-white transition group-hover:bg-[#1747A8] sm:order-2">
+                        {cerrada ? "Ver detalle" : "Ver puesto"}
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      )}
 
-          {items.length > 0 ? (
-            <div className="mt-6 flex flex-wrap items-center gap-2">
-              <p className="mr-1 text-sm font-semibold text-[#33466A]">Mostrar</p>
-              {PAGE_SIZES.map((size) => (
-                <button
-                  key={size}
-                  type="button"
-                  onClick={() => setPageSize(size)}
-                  className={`rounded-full border-2 px-4 py-2 text-sm font-semibold transition ${
-                    pageSize === size
-                      ? "border-[#1F5FD6] bg-[#1F5FD6] text-white"
-                      : "border-[#D5DDEC] bg-white text-[#0A2342] hover:border-[#1F5FD6]"
-                  }`}
-                >
-                  {size}
-                </button>
-              ))}
+      {items.length > 0 ? (
+        <div className="mt-6 flex flex-col items-center justify-between gap-4 border-t border-[#D5DDEC] pt-5 sm:flex-row">
+          <nav aria-label="Páginas de vacantes" className="flex flex-wrap items-center justify-center gap-2">
               <button
                 type="button"
-                onClick={() => setPageSize(null)}
+                disabled={current === 1}
+                onClick={() => goTo(current - 1)}
+                className="rounded-full border-2 border-[#D5DDEC] bg-white px-4 py-2 text-sm font-semibold text-[#0A2342] disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Anterior
+              </button>
+              {pageWindow(current, pageCount).map((number, index, list) => {
+                const gap = index > 0 && number - list[index - 1] > 1;
+                return (
+                  <span key={number} className="contents">
+                    {gap ? <span className="px-1 text-[#4A5C7C]">…</span> : null}
+                    <button
+                      type="button"
+                      aria-current={number === current ? "page" : undefined}
+                      onClick={() => goTo(number)}
+                      className={`size-10 rounded-full text-sm font-semibold ${
+                        number === current ? "bg-[#1F5FD6] text-white" : "bg-white text-[#0A2342] shadow-[0_2px_0_#D5DDEC]"
+                      }`}
+                    >
+                      {number}
+                    </button>
+                  </span>
+                );
+              })}
+              <button
+                type="button"
+                disabled={current === pageCount}
+                onClick={() => goTo(current + 1)}
+                className="rounded-full border-2 border-[#D5DDEC] bg-white px-4 py-2 text-sm font-semibold text-[#0A2342] disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Siguiente
+              </button>
+          </nav>
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <p className="mr-1 text-sm font-semibold text-[#33466A]">Por página</p>
+            {PAGE_SIZES.map((option) => (
+              <button
+                key={option}
+                type="button"
+                aria-pressed={pageSize === option}
+                onClick={() => {
+                  setPageSize(option);
+                  setPage(1);
+                }}
                 className={`rounded-full border-2 px-4 py-2 text-sm font-semibold transition ${
-                  pageSize == null
-                    ? "border-[#0A2342] bg-[#0A2342] text-white"
+                  pageSize === option
+                    ? "border-[#1F5FD6] bg-[#1F5FD6] text-white"
                     : "border-[#D5DDEC] bg-white text-[#0A2342] hover:border-[#1F5FD6]"
                 }`}
               >
-                Todas
+                {option}
               </button>
-              <p className="ml-2 text-sm text-[#4A5C7C]">
-                {visible.length} de {items.length}
-              </p>
-            </div>
-          ) : null}
+            ))}
+            <button
+              type="button"
+              aria-pressed={pageSize == null}
+              onClick={() => {
+                setPageSize(null);
+                setPage(1);
+              }}
+              className={`rounded-full border-2 px-4 py-2 text-sm font-semibold transition ${
+                pageSize == null
+                  ? "border-[#0A2342] bg-[#0A2342] text-white"
+                  : "border-[#D5DDEC] bg-white text-[#0A2342] hover:border-[#1F5FD6]"
+              }`}
+            >
+              Todas
+            </button>
+            <p className="ml-1 text-sm text-[#4A5C7C]">
+              {visible.length} de {items.length}
+            </p>
+          </div>
         </div>
-      </div>
+      ) : null}
     </div>
   );
 }

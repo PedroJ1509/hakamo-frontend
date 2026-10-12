@@ -97,25 +97,22 @@ export function PostulateHeader() {
   }, []);
 
   const barClass = [
-    "chrome-header chrome-header-paper inset-x-0 top-0 sticky",
+    "postulate-header chrome-header chrome-header-paper inset-x-0 top-0 sticky",
     scrolled && !open ? "is-compact" : "",
   ].join(" ");
 
   return (
     <>
       <header className={barClass}>
-        <div className="chrome-header-inner mx-auto flex items-center justify-between gap-2 px-3 sm:gap-3 sm:px-5 xl:px-6">
-          <div className="flex min-w-0 shrink-0 items-center gap-3">
+        <div className="chrome-header-inner chrome-header-fit mx-auto flex items-center gap-3 px-3 sm:px-4">
+          <div className="flex shrink-0 items-center gap-2">
             <Logo name={site.name} href="/empleos" inverted={false} className="text-ink" />
-            <span className="hidden text-[10px] font-semibold uppercase tracking-[0.28em] text-accent sm:inline">
+            <span className="hidden text-[10px] font-semibold uppercase tracking-[0.18em] text-accent xl:inline">
               Talentos
             </span>
           </div>
 
-          <nav
-            className="chrome-nav-tray chrome-nav-tray-paper hidden flex-1 justify-center lg:flex"
-            aria-label="Portal de empleo"
-          >
+          <nav className="chrome-nav-tray chrome-nav-tray-paper hidden min-w-0 flex-1 md:flex" aria-label="Portal de empleo">
             {POSTULATE_NAV.map((link) => {
               const hash = link.href.split("#")[1];
               const active = isActive(pathname, onLanding ? activeHash : "", link.href);
@@ -134,42 +131,41 @@ export function PostulateHeader() {
             })}
           </nav>
 
-          <div className="hidden shrink-0 items-center justify-end lg:flex">
+          <div className="ml-auto flex shrink-0 items-center">
             <Link
               href="/empresas"
-              className="text-xs font-semibold uppercase tracking-[0.16em] text-muted transition hover:text-accent"
+              className="hidden text-xs font-semibold uppercase tracking-[0.14em] text-muted transition hover:text-accent md:inline"
             >
               Empresas
             </Link>
+            <button
+              type="button"
+              className="chrome-menu-btn shrink-0 text-ink md:hidden"
+              aria-expanded={open}
+              aria-controls="postulate-menu"
+              aria-label={open ? "Cerrar menú" : "Abrir menú"}
+              onClick={() => setOpen((value) => !value)}
+            >
+              <span className="relative block h-3.5 w-5" aria-hidden>
+                <span
+                  className={`absolute left-0 top-0 h-0.5 w-5 rounded-full bg-ink transition ${open ? "top-1.5 rotate-45" : ""}`}
+                />
+                <span
+                  className={`absolute left-0 top-1.5 h-0.5 w-5 rounded-full bg-ink transition ${open ? "opacity-0" : "opacity-100"}`}
+                />
+                <span
+                  className={`absolute left-0 top-3 h-0.5 w-5 rounded-full bg-ink transition ${open ? "top-1.5 -rotate-45" : ""}`}
+                />
+              </span>
+            </button>
           </div>
-
-          <button
-            type="button"
-            className="chrome-menu-btn shrink-0 text-ink lg:hidden"
-            aria-expanded={open}
-            aria-controls="postulate-menu"
-            aria-label={open ? "Cerrar menú" : "Abrir menú"}
-            onClick={() => setOpen((value) => !value)}
-          >
-            <span className="relative block h-3.5 w-5" aria-hidden>
-              <span
-                className={`absolute left-0 top-0 h-0.5 w-5 rounded-full bg-ink transition ${open ? "top-1.5 rotate-45" : ""}`}
-              />
-              <span
-                className={`absolute left-0 top-1.5 h-0.5 w-5 rounded-full bg-ink transition ${open ? "opacity-0" : "opacity-100"}`}
-              />
-              <span
-                className={`absolute left-0 top-3 h-0.5 w-5 rounded-full bg-ink transition ${open ? "top-1.5 -rotate-45" : ""}`}
-              />
-            </span>
-          </button>
         </div>
       </header>
 
       {open ? (
         <div
           id="postulate-menu"
-          className="chrome-mobile-panel chrome-mobile-panel-paper fixed inset-x-0 bottom-0 top-[var(--header-h)] z-[70] overflow-y-auto lg:hidden"
+          className="chrome-mobile-panel chrome-mobile-panel-paper fixed inset-x-0 bottom-0 top-[var(--header-h)] z-[70] overflow-y-auto md:hidden"
         >
           <div className="mx-auto flex max-w-lg flex-col gap-8 px-5 py-8">
             <nav className="flex flex-col gap-1.5" aria-label="Portal móvil">

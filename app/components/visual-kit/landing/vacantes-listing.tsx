@@ -27,7 +27,7 @@ export function VacantesListing({
   const [area, setArea] = useState(initialCategoria);
   const [tipo, setTipo] = useState<TipoFilter>("");
   const [modalidad, setModalidad] = useState<ModalidadFilter>("");
-  const [disponibilidad, setDisponibilidad] = useState<DisponibilidadFilter>("");
+  const [disponibilidad, setDisponibilidad] = useState<DisponibilidadFilter>("activa");
 
   useEffect(() => {
     setArea(initialCategoria);
@@ -40,20 +40,46 @@ export function VacantesListing({
     return Array.from(set).sort((a, b) => a.localeCompare(b, "es"));
   }, [vacantes]);
 
+  const openCounts = useMemo(() => {
+    const counts: Record<string, number> = { "": 0 };
+    for (const item of vacantes) {
+      if (item.estado === "cerrada") continue;
+      counts[""] += 1;
+      const slug = item.division?.slug;
+      if (slug) counts[slug] = (counts[slug] ?? 0) + 1;
+    }
+    return counts;
+  }, [vacantes]);
+
+  const closedCount = useMemo(
+    () => vacantes.filter((item) => item.estado === "cerrada").length,
+    [vacantes],
+  );
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return vacantes.filter((item) => {
-      if (q && !item.titulo.toLowerCase().includes(q) && !item.descripcion?.toLowerCase().includes(q)) {
-        return false;
-      }
-      if (localizacion && item.ubicacion !== localizacion) return false;
-      if (area && item.division?.slug !== area) return false;
-      if (tipo && item.tipo !== tipo) return false;
-      if (modalidad && item.modalidad !== modalidad) return false;
-      if (disponibilidad === "cerrada" && item.estado !== "cerrada") return false;
-      if (disponibilidad === "activa" && item.estado === "cerrada") return false;
-      return true;
-    });
+    return vacantes
+      .filter((item) => {
+        if (q) {
+          const haystack = [item.titulo, item.descripcion, item.ubicacion, item.division?.nombre, item.salario]
+            .filter(Boolean)
+            .join(" ")
+            .toLowerCase();
+          if (!haystack.includes(q)) return false;
+        }
+        if (localizacion && item.ubicacion !== localizacion) return false;
+        if (area && item.division?.slug !== area) return false;
+        if (tipo && item.tipo !== tipo) return false;
+        if (modalidad && item.modalidad !== modalidad) return false;
+        if (disponibilidad === "cerrada" && item.estado !== "cerrada") return false;
+        if (disponibilidad === "activa" && item.estado === "cerrada") return false;
+        return true;
+      })
+      .sort((a, b) => {
+        const closed = Number(a.estado === "cerrada") - Number(b.estado === "cerrada");
+        if (closed !== 0) return closed;
+        return b.fechaPublicacion.localeCompare(a.fechaPublicacion);
+      });
   }, [vacantes, query, localizacion, area, tipo, modalidad, disponibilidad]);
 
   const activeName = divisiones.find((item) => item.slug === area)?.nombre;
@@ -66,12 +92,14 @@ export function VacantesListing({
   return (
     <section className="chrome-frame bg-[#F5F7FB] py-10 text-[#0A2342] sm:py-14">
       <div className="mx-auto w-full">
-        <p className="text-sm font-semibold text-[#1F5FD6]">Vacantes</p>
-        <h1 className="font-[family-name:var(--font-space-grotesk)] mt-3 max-w-[16ch] text-[clamp(2.6rem,4.5vw,4.5rem)] font-extrabold leading-[1.02] tracking-[-0.03em]">
-          {activeName ?? "Todas las vacantes"}
+        <p className="text-sm font-semibold text-[#1F5FD6]">Empleos</p>
+        <h1 className="font-[family-name:var(--font-space-grotesk)] mt-2 max-w-full text-balance text-[clamp(2rem,6vw,3.4rem)] font-extrabold leading-[1.05] tracking-[-0.03em]">
+          {activeName ? `Vacantes de ${activeName}` : "Vacantes abiertas"}
         </h1>
-        <p className="mt-3 max-w-xl text-lg text-[#33466A]">
-          Filtra por puesto, ciudad, contrato o disponibilidad.
+        <p className="mt-2 max-w-xl text-base text-[#33466A] sm:text-lg">
+          {activeName
+            ? "Puedes cambiar de área o buscar por ciudad."
+            : "Elige un área o busca por puesto y ciudad. Los puestos cerrados quedan aparte."}
         </p>
         <TalentBoard
           items={filtered}
@@ -94,8 +122,11 @@ export function VacantesListing({
             setLocalizacion("");
             setTipo("");
             setModalidad("");
-            setDisponibilidad("");
+            setDisponibilidad("activa");
+            openCategory("");
           }}
+          openCounts={openCounts}
+          closedCount={closedCount}
         />
       </div>
     </section>
