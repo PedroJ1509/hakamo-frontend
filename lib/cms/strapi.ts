@@ -5,6 +5,9 @@ const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL
 /** Segundos que el sitio guarda una página antes de volver a pedirla al CMS. */
 export const REVALIDAR_SEGUNDOS = 60
 
+/** Etiqueta de todo lo que se lee del CMS; `/api/revalidar` la invalida cuando Strapi avisa de un cambio. */
+export const ETIQUETA_CMS = 'cms'
+
 type Populate = '*' | readonly string[] | { [campo: string]: boolean | { populate: Populate } }
 
 /** Convierte `{ a: { populate: ['b'] } }` en `populate[a][populate][0]=b`, como lo espera Strapi 5. */
@@ -28,7 +31,7 @@ export async function getPagina<T>(uid: string, populate: Populate): Promise<Par
   if (!STRAPI_URL) return null
   try {
     const res = await fetch(`${STRAPI_URL}/api/${uid}?${populateQuery(populate).join('&')}`, {
-      next: { revalidate: REVALIDAR_SEGUNDOS, tags: [uid] },
+      next: { revalidate: REVALIDAR_SEGUNDOS, tags: [ETIQUETA_CMS, uid] },
     })
     if (!res.ok) return null
     const json = await res.json()
@@ -43,7 +46,7 @@ export async function getColeccion<T>(uid: string, query = ''): Promise<T[] | nu
   if (!STRAPI_URL) return null
   try {
     const res = await fetch(`${STRAPI_URL}/api/${uid}${query ? `?${query}` : ''}`, {
-      next: { revalidate: REVALIDAR_SEGUNDOS, tags: [uid] },
+      next: { revalidate: REVALIDAR_SEGUNDOS, tags: [ETIQUETA_CMS, uid] },
     })
     if (!res.ok) return null
     const json = await res.json()

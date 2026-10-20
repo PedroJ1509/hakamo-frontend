@@ -1,91 +1,96 @@
+import { ETIQUETA_CMS, REVALIDAR_SEGUNDOS } from '@/lib/cms/strapi'
+
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL
+
+/** Las lecturas se guardan como las páginas del CMS y se renuevan cuando Strapi avisa de un cambio. */
+const LEER = { next: { revalidate: REVALIDAR_SEGUNDOS, tags: [ETIQUETA_CMS] } }
 
 /** Slug de la división principal. Configurable via NEXT_PUBLIC_DIVISION_SLUG en .env.local */
 export const DIVISION_SLUG = process.env.NEXT_PUBLIC_DIVISION_SLUG || 'hakamo-outsourcing'
 
 export async function getDivisiones() {
-  const res = await fetch(`${STRAPI_URL}/api/divisions?populate=*&sort=orden:asc`)
+  const res = await fetch(`${STRAPI_URL}/api/divisions?populate=*&sort=orden:asc`, LEER)
   if (!res.ok) throw new Error('Error al obtener divisiones')
   return res.json()
 }
 
 export async function getDivision(slug: string) {
-  const res = await fetch(`${STRAPI_URL}/api/divisions?filters[slug][$eq]=${slug}&populate=*`)
+  const res = await fetch(`${STRAPI_URL}/api/divisions?filters[slug][$eq]=${slug}&populate=*`, LEER)
   if (!res.ok) throw new Error('Error al obtener división')
   const data = await res.json()
   return data.data[0]
 }
 
 export async function getProyectosPorDivision(slug: string) {
-  const res = await fetch(`${STRAPI_URL}/api/proyectos?filters[division][slug][$eq]=${slug}&populate=*`)
+  const res = await fetch(`${STRAPI_URL}/api/proyectos?filters[division][slug][$eq]=${slug}&populate=*`, LEER)
   if (!res.ok) throw new Error('Error al obtener proyectos')
   return res.json()
 }
 
 export async function getClientesPorDivision(slug: string) {
-  const res = await fetch(`${STRAPI_URL}/api/clientes?filters[division][slug][$eq]=${slug}&populate=*`)
+  const res = await fetch(`${STRAPI_URL}/api/clientes?filters[division][slug][$eq]=${slug}&populate=*`, LEER)
   if (!res.ok) throw new Error('Error al obtener clientes')
   return res.json()
 }
 
 export async function getServiciosPorDivision(slug: string) {
-  const res = await fetch(`${STRAPI_URL}/api/servicios?filters[division][slug][$eq]=${slug}&populate=*`)
+  const res = await fetch(`${STRAPI_URL}/api/servicios?filters[division][slug][$eq]=${slug}&populate=*`, LEER)
   if (!res.ok) throw new Error('Error al obtener servicios')
   return res.json()
 }
 
 export async function getPosts() {
-  const res = await fetch(`${STRAPI_URL}/api/posts?populate=*&sort=fechaPublicacion:desc`)
+  const res = await fetch(`${STRAPI_URL}/api/posts?populate=*&sort=fechaPublicacion:desc`, LEER)
   if (!res.ok) throw new Error('Error al obtener posts')
   return res.json()
 }
 
 export async function getPost(slug: string) {
-  const res = await fetch(`${STRAPI_URL}/api/posts?filters[slug][$eq]=${slug}&populate=*`)
+  const res = await fetch(`${STRAPI_URL}/api/posts?filters[slug][$eq]=${slug}&populate=*`, LEER)
   if (!res.ok) throw new Error('Error al obtener post')
   const data = await res.json()
   return data.data[0]
 }
 
 export async function getPostsPorDivision(slug: string) {
-  const res = await fetch(`${STRAPI_URL}/api/posts?filters[division][slug][$eq]=${slug}&populate=*&sort=fechaPublicacion:desc`)
+  const res = await fetch(`${STRAPI_URL}/api/posts?filters[division][slug][$eq]=${slug}&populate=*&sort=fechaPublicacion:desc`, LEER)
   if (!res.ok) throw new Error('Error al obtener posts por división')
   return res.json()
 }
 
 export async function getPreviewPostsPorDivision(slug: string) {
-  const res = await fetch(`${STRAPI_URL}/api/posts?filters[division][slug][$eq]=${slug}&populate=*&sort=fechaPublicacion:desc&pagination[limit]=3`)
+  const res = await fetch(`${STRAPI_URL}/api/posts?filters[division][slug][$eq]=${slug}&populate=*&sort=fechaPublicacion:desc&pagination[limit]=3`, LEER)
   if (!res.ok) throw new Error('Error al obtener preview posts por división')
   return res.json()
 }
 
 export async function getProyecto(documentId: string) {
-  const res = await fetch(`${STRAPI_URL}/api/proyectos/${documentId}?populate=*`)
+  const res = await fetch(`${STRAPI_URL}/api/proyectos/${documentId}?populate=*`, LEER)
   if (!res.ok) throw new Error('Error al obtener proyecto')
   return res.json()
 }
 
 export async function getHeroSlides() {
-  const res = await fetch(`${STRAPI_URL}/api/hero-slides?filters[activo][$eq]=true&populate=*&sort=orden:asc`)
+  const res = await fetch(`${STRAPI_URL}/api/hero-slides?filters[activo][$eq]=true&populate=*&sort=orden:asc`, LEER)
   if (!res.ok) throw new Error('Error al obtener hero slides')
   return res.json()
 }
 
 export async function getVacantes() {
-  const res = await fetch(`${STRAPI_URL}/api/vacantes?populate=*&sort=fechaPublicacion:desc`)
+  const res = await fetch(`${STRAPI_URL}/api/vacantes?populate=*&sort=fechaPublicacion:desc`, LEER)
   if (!res.ok) throw new Error('Error al obtener vacantes')
   return res.json()
 }
 
 export async function getVacante(slug: string) {
-  const res = await fetch(`${STRAPI_URL}/api/vacantes?filters[slug][$eq]=${slug}&populate=*`)
+  const res = await fetch(`${STRAPI_URL}/api/vacantes?filters[slug][$eq]=${slug}&populate=*`, LEER)
   if (!res.ok) throw new Error('Error al obtener vacante')
   const data = await res.json()
   return data.data[0]
 }
 
 export async function getVacantesPorDivision(slug: string) {
-  const res = await fetch(`${STRAPI_URL}/api/vacantes?filters[division][slug][$eq]=${slug}&filters[estado][$eq]=activa&populate=*&sort=fechaPublicacion:desc`)
+  const res = await fetch(`${STRAPI_URL}/api/vacantes?filters[division][slug][$eq]=${slug}&filters[estado][$eq]=activa&populate=*&sort=fechaPublicacion:desc`, LEER)
   if (!res.ok) throw new Error('Error al obtener vacantes por división')
   return res.json()
 }
