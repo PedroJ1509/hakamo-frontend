@@ -1,26 +1,22 @@
 "use client";
 
+import { useSitio } from "@/app/components/sitio-context";
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { Division, Vacante } from "@/types";
-import { COMPANY_INFO } from "@/lib/data";
 import type { VacanteCard } from "@/lib/demo-vacantes";
 import { CvBuilder } from "../cv/cv-builder";
 import { CvUpload } from "../cv/cv-upload";
 import { EmptyState } from "../empty-state";
 import { Reveal } from "../reveal";
 import { MODALIDAD_LABEL } from "./jobs-landing";
+import type { Seccion } from "@/lib/cms/comun";
+import type { ContenidoEmpleos } from "@/lib/cms/empleos";
+import { enlaceSitio, textoConContacto } from "@/lib/cms/sitio";
+import { FondoSeccion } from "../fondo-seccion";
 
 type Mode = "builder" | "upload" | null;
-
-const STEPS = [
-  { n: "01", title: "Elige un área", hint: "O busca por puesto y ciudad.", href: "#categorias" },
-  { n: "02", title: "Abre el puesto", hint: "Postúlate desde la vacante.", href: "/empleos/vacantes" },
-  { n: "03", title: "O deja tu CV", hint: "Si aún no hay match, te avisamos.", href: "#tu-cv" },
-];
-
-const BENEFITS = ["Gratis", "Vacantes reales", "Te ayudamos con el CV", "Te avisamos"];
 
 const TAG: Record<string, string> = {
   construccion: "bg-[#E6EEFC] text-[#1747A8]",
@@ -42,6 +38,26 @@ function tagClass(slug?: string) {
   return TAG[slug ?? ""] ?? "bg-[#E6EEFC] text-[#1747A8]";
 }
 
+/** Colores de la etiqueta de área: los de la División en el CMS si los tiene, si no los de siempre. */
+function tagStyle(division?: Division | null) {
+  if (!division?.colorPrimario && !division?.colorSecundario) return undefined;
+  return { color: division.colorPrimario || undefined, backgroundColor: division.colorSecundario || undefined };
+}
+
+/** Sección con fondo opcional del CMS. Con fondo oscuro, los textos pasan a claro. */
+function Bloque({ seccion, id, className, children }: { seccion: Seccion; id?: string; className: string; children: React.ReactNode }) {
+  const claro = seccion.fondo.tono === "claro";
+  return (
+    <section
+      id={id}
+      className={`relative isolate ${className} ${claro ? "text-white [&_.texto-suave]:text-white/75" : ""}`}
+    >
+      <FondoSeccion fondo={seccion.fondo} />
+      <div className="relative">{children}</div>
+    </section>
+  );
+}
+
 function placeLine(vacante: VacanteCard) {
   return [vacante.ubicacion, vacante.modalidad ? MODALIDAD_LABEL[vacante.modalidad] : null]
     .filter(Boolean)
@@ -51,11 +67,16 @@ function placeLine(vacante: VacanteCard) {
 export function CvLanding({
   vacantes = [],
   divisiones = [],
+  contenido,
 }: {
   vacantes?: VacanteCard[];
   divisiones?: Division[];
+  contenido: ContenidoEmpleos;
 }) {
   const router = useRouter();
+  const { contacto } = useSitio();
+  const { portada, areas, sinVacantes, masOportunidades, como, tuCv, beneficios } = contenido;
+  const [crear, subir] = tuCv.elementos;
   const [mode, setMode] = useState<Mode>(null);
   const [query, setQuery] = useState("");
 
@@ -91,7 +112,9 @@ export function CvLanding({
 
   return (
     <div className="bg-[#F5F7FB] text-[#0A2342]">
-      <section className={`${wide} grid items-center gap-8 py-6 sm:gap-10 sm:py-12 lg:grid-cols-2 lg:gap-16 lg:py-16`}>
+      <div className={`relative isolate ${portada.fondo.tono === "claro" ? "text-white [&_.texto-suave]:text-white/75" : ""}`}>
+      <FondoSeccion fondo={portada.fondo} />
+      <section className={`relative ${wide} grid items-center gap-8 py-6 sm:gap-10 sm:py-12 lg:grid-cols-2 lg:gap-16 lg:py-16`}>
         <Reveal from="left" className="min-w-0">
           {abiertas > 0 ? (
             <p className="inline-block rounded-full bg-[#FFE3C7] px-3.5 py-2 text-sm font-semibold text-[#7A3A00] sm:text-[15px]">
@@ -99,11 +122,11 @@ export function CvLanding({
             </p>
           ) : null}
           <h1 className={`${display} mt-4 max-w-full text-balance text-[clamp(2.15rem,8.5vw,5.4rem)] leading-[0.98] sm:mt-5 sm:max-w-[14ch]`}>
-            Tu próxima oportunidad empieza aquí.
+            {portada.titulo}
           </h1>
-          <p className="mt-4 max-w-xl text-base leading-relaxed text-[#33466A] sm:text-xl">
-            Busca un puesto o deja tu CV. Si hay match, te contactamos.
-          </p>
+          {portada.texto ? (
+            <p className="texto-suave mt-4 max-w-xl text-base leading-relaxed text-[#33466A] sm:text-xl">{portada.texto}</p>
+          ) : null}
           <form
             onSubmit={searchJobs}
             className="mt-8 flex w-full flex-col gap-2 rounded-2xl bg-white p-2 shadow-[0_8px_30px_rgba(10,35,66,0.1)] sm:flex-row sm:items-center"
@@ -115,19 +138,21 @@ export function CvLanding({
               id="buscar-empleo"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Puesto, área o ciudad"
+              placeholder={contenido.textoBuscador}
               className="min-h-12 w-full flex-1 bg-transparent px-3.5 text-[17px] text-[#0A2342] outline-none placeholder:text-[#4A5C7C]"
             />
             <button
               type="submit"
               className="rounded-xl bg-[#1F5FD6] px-6 py-3.5 text-[17px] font-semibold text-white"
             >
-              Buscar
+              {contenido.botonBuscar}
             </button>
           </form>
-          <a href="#tu-cv" className="mt-5 inline-block font-semibold text-[#1F5FD6] underline">
-            ¿No ves tu puesto? Deja tu CV →
-          </a>
+          {portada.botonSecundario ? (
+            <a href={portada.botonSecundario.url} className="mt-5 inline-block font-semibold text-[#1F5FD6] underline">
+              {portada.botonSecundario.texto}
+            </a>
+          ) : null}
         </Reveal>
 
         {destacadas.length > 0 ? (
@@ -149,16 +174,18 @@ export function CvLanding({
           </Reveal>
         ) : null}
       </section>
+      </div>
 
-      <section className="empleos-tape" aria-label="Qué incluye postularte">
+      <section className="empleos-tape relative isolate" aria-label="Qué incluye postularte">
+        <FondoSeccion fondo={contenido.fondoBeneficios} />
         <ul className="sr-only">
-          {BENEFITS.map((item) => (
+          {beneficios.map((item) => (
             <li key={item}>{item}</li>
           ))}
         </ul>
-        <div className="empleos-tape-track" aria-hidden>
+        <div className="empleos-tape-track relative" aria-hidden>
           {Array.from({ length: 12 }, (_, copy) =>
-            BENEFITS.map((item) => (
+            beneficios.map((item) => (
               <span key={`${copy}-${item}`} className="empleos-tape-item">
                 <span className="text-[#7EB0FF]">✓</span>
                 {item}
@@ -168,15 +195,12 @@ export function CvLanding({
         </div>
       </section>
 
-      <section id="categorias" className={`scroll-mt-[var(--header-h)] ${wide} pb-4 pt-16 sm:pt-20`}>
-        <h2 className={`${display} text-balance text-[clamp(1.75rem,6vw,2.25rem)]`}>Elige tu área</h2>
-        <p className="mb-7 mt-2 text-[#33466A]">Si ninguna de arriba es la tuya, entra por categoría.</p>
+      {areas.mostrar ? (
+      <Bloque seccion={areas} id="categorias" className={`scroll-mt-[var(--header-h)] ${wide} pb-4 pt-16 sm:pt-20`}>
+        <h2 className={`${display} text-balance text-[clamp(1.75rem,6vw,2.25rem)]`}>{areas.titulo}</h2>
+        {areas.texto ? <p className="texto-suave mb-7 mt-2 text-[#33466A]">{areas.texto}</p> : <div className="mb-7" />}
         {categories.length === 0 ? (
-          <EmptyState
-            kicker="Vacantes"
-            title="Ahora no hay puestos abiertos"
-            text="Deja tu perfil y te avisamos cuando haya uno para ti."
-          />
+          <EmptyState kicker={sinVacantes.antetitulo} title={sinVacantes.titulo} text={sinVacantes.texto} />
         ) : (
           <div className="flex flex-wrap gap-3">
             {categories.map((category) => (
@@ -189,20 +213,25 @@ export function CvLanding({
                 <span className="ml-2 text-[#4A5C7C]">{category.count}</span>
               </Link>
             ))}
-            <Link href="/empleos/vacantes" className="rounded-full bg-[#0A2342] px-5 py-3 text-[15px] font-semibold text-white sm:px-6 sm:py-4 sm:text-base">
-              Ver todas →
-            </Link>
+            {areas.boton ? (
+              <Link href={areas.boton.url} className="rounded-full bg-[#0A2342] px-5 py-3 text-[15px] font-semibold text-white sm:px-6 sm:py-4 sm:text-base">
+                {areas.boton.texto}
+              </Link>
+            ) : null}
           </div>
         )}
-      </section>
+      </Bloque>
+      ) : null}
 
-      {siguientes.length > 0 ? (
-        <section id="vacantes" className={`scroll-mt-[var(--header-h)] ${wide} py-12`}>
+      {masOportunidades.mostrar && siguientes.length > 0 ? (
+        <Bloque seccion={masOportunidades} id="vacantes" className={`scroll-mt-[var(--header-h)] ${wide} py-12`}>
           <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
-            <h2 className={`${display} text-balance text-[clamp(1.75rem,6vw,2.25rem)]`}>Más oportunidades</h2>
-            <Link href="/empleos/vacantes" className="font-semibold text-[#1F5FD6] underline">
-              Ver todas las vacantes →
-            </Link>
+            <h2 className={`${display} text-balance text-[clamp(1.75rem,6vw,2.25rem)]`}>{masOportunidades.titulo}</h2>
+            {masOportunidades.boton ? (
+              <Link href={masOportunidades.boton.url} className="font-semibold text-[#1F5FD6] underline">
+                {masOportunidades.boton.texto}
+              </Link>
+            ) : null}
           </div>
           <div className="grid gap-5 md:grid-cols-3">
             {siguientes.map((vacante, index) => (
@@ -211,56 +240,60 @@ export function CvLanding({
                   href={`/empleos/vacantes/${vacante.documentId}`}
                   className="flex h-full min-w-0 flex-col gap-3 rounded-3xl bg-white p-5 shadow-[0_2px_0_#D5DDEC] transition duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(10,35,66,0.08)] sm:gap-3.5 sm:p-7"
                 >
-                  <span className={`w-fit rounded-full px-3 py-1.5 text-sm font-semibold ${tagClass(vacante.division?.slug)}`}>
+                  <span className={`w-fit rounded-full px-3 py-1.5 text-sm font-semibold ${tagClass(vacante.division?.slug)}`} style={tagStyle(vacante.division)}>
                     {vacante.division?.nombre}
                   </span>
                   <h3 className={`${display} text-balance text-[1.35rem] leading-tight break-words sm:text-[1.6rem]`}>{vacante.titulo}</h3>
                   <p className="text-[#4A5C7C]">{placeLine(vacante)}</p>
-                  <span className="mt-4 font-semibold text-[#1F5FD6]">Ver puesto →</span>
+                  <span className="mt-4 font-semibold text-[#1F5FD6]">{masOportunidades.botonSecundario?.texto ?? "Ver puesto →"}</span>
                 </Link>
               </Reveal>
             ))}
           </div>
-        </section>
+        </Bloque>
       ) : null}
 
-      <section id="como" className={`scroll-mt-[var(--header-h)] ${wide} py-12`}>
-        <h2 className={`${display} mb-6 text-balance text-[clamp(1.75rem,6vw,2.25rem)] sm:mb-8`}>Cómo postularte</h2>
+      {como.mostrar ? (
+      <Bloque seccion={como} id="como" className={`scroll-mt-[var(--header-h)] ${wide} py-12`}>
+        <h2 className={`${display} mb-6 text-balance text-[clamp(1.75rem,6vw,2.25rem)] sm:mb-8`}>{como.titulo}</h2>
+        {como.texto ? <p className="texto-suave -mt-3 mb-8 max-w-xl text-[#33466A]">{como.texto}</p> : null}
         <ol className="grid gap-5 md:grid-cols-3">
-          {STEPS.map((step) => (
-            <li key={step.n}>
+          {como.elementos.map((step, index) => (
+            <li key={step.titulo + index}>
               <Link
-                href={step.href}
+                href={step.enlace || "#"}
                 className="block h-full border-t-4 border-[#1F5FD6] pt-5 transition duration-300 hover:-translate-y-0.5"
               >
-                <p className={`${display} text-4xl leading-none text-[#1F5FD6] sm:text-5xl`}>{step.n}</p>
-                <h3 className={`${display} mt-3 text-xl sm:text-2xl`}>{step.title}</h3>
-                <p className="mt-1.5 text-[#33466A]">{step.hint}</p>
+                <p className={`${display} text-4xl leading-none text-[#1F5FD6] sm:text-5xl`}>{step.etiqueta || String(index + 1).padStart(2, "0")}</p>
+                <h3 className={`${display} mt-3 text-xl sm:text-2xl`}>{step.titulo}</h3>
+                <p className="texto-suave mt-1.5 text-[#33466A]">{step.texto}</p>
               </Link>
             </li>
           ))}
         </ol>
-      </section>
+      </Bloque>
+      ) : null}
 
-      <section id="tu-cv" className={`scroll-mt-[var(--header-h)] ${wide} py-10 pb-16 sm:pb-20`}>
+      {tuCv.mostrar ? (
+      <Bloque seccion={tuCv} id="tu-cv" className={`scroll-mt-[var(--header-h)] ${wide} py-10 pb-16 sm:pb-20`}>
         <div className="flex flex-col gap-6 rounded-[1.5rem] bg-[#0A2342] p-5 text-white sm:gap-8 sm:rounded-[2rem] sm:p-10 lg:flex-row lg:gap-10 lg:p-14">
           <div className="min-w-0 lg:min-w-[20rem] lg:flex-1">
-            <h2 className={`${display} text-balance text-[clamp(1.75rem,6vw,2.75rem)]`}>Deja tu perfil</h2>
-            <p className="mt-3 max-w-md leading-relaxed text-[#C8D4EA]">
-              Quedas en nuestra base y te avisamos. También puedes escribir a{" "}
-              <a href={`mailto:${COMPANY_INFO.emailReclutamiento}`} className="font-semibold break-words text-white underline">
-                {COMPANY_INFO.emailReclutamiento}
+            <h2 className={`${display} text-balance text-[clamp(1.75rem,6vw,2.75rem)]`}>{tuCv.titulo}</h2>
+            {tuCv.texto ? (
+              <p className="mt-3 max-w-md leading-relaxed text-[#C8D4EA]">
+                <TextoConCorreo texto={tuCv.texto} correo={contacto.emailReclutamiento} contacto={contacto} />
+              </p>
+            ) : null}
+            {tuCv.boton ? (
+              <a
+                href={enlaceSitio(tuCv.boton.url, contacto)}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-5 inline-block max-w-full rounded-xl bg-[#25D366] px-5 py-3.5 text-[15px] font-semibold leading-snug text-[#06311A] sm:text-base"
+              >
+                {textoConContacto(tuCv.boton.texto, contacto)}
               </a>
-              .
-            </p>
-            <a
-              href={COMPANY_INFO.social.whatsapp}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-5 inline-block max-w-full rounded-xl bg-[#25D366] px-5 py-3.5 text-[15px] font-semibold leading-snug text-[#06311A] sm:text-base"
-            >
-              ¿Dudas? WhatsApp {COMPANY_INFO.telefono}
-            </a>
+            ) : null}
           </div>
           <div className="grid min-w-0 gap-3 sm:gap-4 lg:min-w-[24rem] lg:flex-1">
             <button
@@ -272,8 +305,8 @@ export function CvLanding({
               }`}
             >
               <span className="min-w-0">
-                <span className="block text-sm opacity-85">Sin CV</span>
-                <span className={`${display} text-[1.35rem] sm:text-[1.6rem]`}>Crear mi CV</span>
+                <span className="block text-sm opacity-85">{crear.etiqueta}</span>
+                <span className={`${display} text-[1.35rem] sm:text-[1.6rem]`}>{crear.titulo}</span>
               </span>
               <span className="text-3xl" aria-hidden>
                 →
@@ -288,8 +321,8 @@ export function CvLanding({
               }`}
             >
               <span className="min-w-0">
-                <span className="block text-sm text-[#4A5C7C]">Ya tengo CV</span>
-                <span className={`${display} text-[1.35rem] sm:text-[1.6rem]`}>Subir archivo</span>
+                <span className="block text-sm text-[#4A5C7C]">{subir.etiqueta}</span>
+                <span className={`${display} text-[1.35rem] sm:text-[1.6rem]`}>{subir.titulo}</span>
               </span>
               <span className="text-3xl" aria-hidden>
                 →
@@ -303,23 +336,43 @@ export function CvLanding({
             {mode === "builder" ? (
               <>
                 <div className="mb-10">
-                  <p className="text-sm font-semibold text-[#1F5FD6]">Constructor</p>
-                  <h2 className={`${display} mt-2 text-balance text-[clamp(1.6rem,5vw,2.25rem)]`}>Vamos a armar tu CV juntos</h2>
+                  <p className="text-sm font-semibold text-[#1F5FD6]">{crear.titulo}</p>
+                  <h2 className={`${display} mt-2 text-balance text-[clamp(1.6rem,5vw,2.25rem)]`}>{crear.texto}</h2>
                 </div>
                 <CvBuilder />
               </>
             ) : (
               <>
                 <div className="mb-10">
-                  <p className="text-sm font-semibold text-[#1F5FD6]">Subir archivo</p>
-                  <h2 className={`${display} mt-2 text-balance text-[clamp(1.6rem,5vw,2.25rem)]`}>Carga tu CV y déjanos tus datos</h2>
+                  <p className="text-sm font-semibold text-[#1F5FD6]">{subir.titulo}</p>
+                  <h2 className={`${display} mt-2 text-balance text-[clamp(1.6rem,5vw,2.25rem)]`}>{subir.texto}</h2>
                 </div>
                 <CvUpload />
               </>
             )}
           </div>
         ) : null}
-      </section>
+      </Bloque>
+      ) : null}
     </div>
+  );
+}
+
+/** Texto del CMS donde `{correoReclutamiento}` se vuelve un enlace de correo. */
+function TextoConCorreo({ texto, correo, contacto }: { texto: string; correo: string; contacto: Parameters<typeof textoConContacto>[1] }) {
+  const partes = texto.split("{correoReclutamiento}");
+  return (
+    <>
+      {partes.map((parte, i) => (
+        <span key={i}>
+          {textoConContacto(parte, contacto)}
+          {i < partes.length - 1 ? (
+            <a href={`mailto:${correo}`} className="font-semibold break-words text-white underline">
+              {correo}
+            </a>
+          ) : null}
+        </span>
+      ))}
+    </>
   );
 }

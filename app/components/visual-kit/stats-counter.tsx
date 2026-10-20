@@ -3,7 +3,8 @@
 import { motion } from "framer-motion";
 import type { Stat } from "@/lib/visual-kit/types";
 
-export function StatsCounter({ stats }: { stats: Stat[] }) {
+export function StatsCounter({ stats, tono = "oscuro" }: { stats: Stat[]; tono?: "oscuro" | "claro" }) {
+  const claro = tono === "claro";
   return (
     <div
       className={`mx-auto grid gap-x-6 gap-y-12 ${
@@ -19,8 +20,8 @@ export function StatsCounter({ stats }: { stats: Stat[] }) {
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.45, delay: index * 0.08 }}
         >
-          <p className="font-display text-4xl tracking-tight text-ink sm:text-5xl">{item.value}</p>
-          <p className="mx-auto mt-3 max-w-[12rem] text-sm leading-6 text-muted">{item.label}</p>
+          <p className={`font-display text-4xl tracking-tight sm:text-5xl ${claro ? "text-paper" : "text-ink"}`}>{item.value}</p>
+          <p className={`mx-auto mt-3 max-w-[12rem] text-sm leading-6 ${claro ? "text-paper/75" : "text-muted"}`}>{item.label}</p>
         </motion.article>
       ))}
     </div>

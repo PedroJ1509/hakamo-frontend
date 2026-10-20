@@ -7,17 +7,23 @@ export function LandingScrollExpand({
   title,
   children,
   alt = "Equipo de profesionales de gestión humana",
+  src = "/visual-kit/obra.jpg",
+  scrollHint = "Baja para continuar",
 }: {
   title: string;
   children?: ReactNode;
   alt?: string;
+  /** Imagen o video (.mp4, .webm) que se expande. */
+  src?: string;
+  scrollHint?: string;
 }) {
   return (
     <ScrollExpand
-      src="/visual-kit/obra.jpg"
+      src={src}
+      mediaType={/\.(mp4|webm|mov)$/i.test(src) ? "video" : "image"}
       alt={alt}
       title={title}
-      scrollHint="Baja para continuar"
+      scrollHint={scrollHint}
       useWindowScroll
       startWidth={48}
       startHeight={54}

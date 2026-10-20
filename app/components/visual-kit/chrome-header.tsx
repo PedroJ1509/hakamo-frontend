@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { COMPANY_INFO } from "@/lib/data";
+import { useSitio } from "@/app/components/sitio-context";
 import type { NavLink } from "@/lib/visual-kit/types";
 import { Logo } from "./logo";
 import { PostulateCta } from "./postulate-cta";
@@ -21,6 +21,10 @@ function isActive(pathname: string, href: string, links: NavLink[]) {
   return pathname.startsWith(`${path}/`);
 }
 
+/**
+ * Cabecera de las páginas de empresas. Nombre, menú, botón y contacto salen de la
+ * Configuración del sitio; las props solo sirven para sobrescribirlos en una página.
+ */
 export function ChromeHeader({
   name,
   links,
@@ -29,16 +33,19 @@ export function ChromeHeader({
   placement,
   tone,
 }: {
-  name: string;
-  links: NavLink[];
-  ctaHref: string;
-  ctaLabel: string;
-  ctaExternal?: boolean;
+  name?: string;
+  links?: NavLink[];
   cvHref?: string;
   cvLabel?: string;
   placement: "fixed" | "sticky";
   tone: "night" | "paper";
 }) {
+  const sitio = useSitio();
+  const { contacto } = sitio;
+  name = name ?? sitio.nombre;
+  links = links ?? sitio.menuEmpresas;
+  cvHref = cvHref ?? sitio.botonCabeceraEmpresas.url;
+  cvLabel = cvLabel ?? sitio.botonCabeceraEmpresas.texto;
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -177,17 +184,17 @@ export function ChromeHeader({
             </nav>
 
             <div className={`chrome-mobile-meta ${night ? "border-white/10" : "border-ink/10"}`}>
-              <a href={`tel:${COMPANY_INFO.whatsapp}`} className="chrome-mobile-meta-row" onClick={() => setOpen(false)}>
+              <a href={contacto.whatsappUrl} target="_blank" rel="noreferrer" className="chrome-mobile-meta-row" onClick={() => setOpen(false)}>
                 <span className="chrome-mobile-meta-label">WhatsApp</span>
-                <span>{COMPANY_INFO.telefono}</span>
+                <span>{contacto.telefono}</span>
               </a>
-              <a href={`tel:${COMPANY_INFO.telefonoAlt.replace(/-/g, "")}`} className="chrome-mobile-meta-row" onClick={() => setOpen(false)}>
+              <a href={contacto.telefonoAltUrl} className="chrome-mobile-meta-row" onClick={() => setOpen(false)}>
                 <span className="chrome-mobile-meta-label">Teléfono</span>
-                <span>{COMPANY_INFO.telefonoAlt}</span>
+                <span>{contacto.telefonoAlt}</span>
               </a>
-              <a href={`mailto:${COMPANY_INFO.email}`} className="chrome-mobile-meta-row" onClick={() => setOpen(false)}>
+              <a href={`mailto:${contacto.email}`} className="chrome-mobile-meta-row" onClick={() => setOpen(false)}>
                 <span className="chrome-mobile-meta-label">Correo</span>
-                <span className="truncate">{COMPANY_INFO.email}</span>
+                <span className="truncate">{contacto.email}</span>
               </a>
             </div>
 
@@ -228,18 +235,12 @@ function PhoneIcon() {
 export function LandingHeader({
   name,
   links,
-  ctaHref,
-  ctaLabel,
-  ctaExternal = false,
   cvHref,
   cvLabel,
   tone = "night",
 }: {
-  name: string;
-  links: NavLink[];
-  ctaHref: string;
-  ctaLabel: string;
-  ctaExternal?: boolean;
+  name?: string;
+  links?: NavLink[];
   cvHref?: string;
   cvLabel?: string;
   tone?: "night" | "paper";
@@ -248,9 +249,6 @@ export function LandingHeader({
     <ChromeHeader
       name={name}
       links={links}
-      ctaHref={ctaHref}
-      ctaLabel={ctaLabel}
-      ctaExternal={ctaExternal}
       cvHref={cvHref}
       cvLabel={cvLabel}
       placement={tone === "paper" ? "sticky" : "fixed"}

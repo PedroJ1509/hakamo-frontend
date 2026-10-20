@@ -1,15 +1,11 @@
-import type { Metadata } from 'next'
 import { CvLanding } from '@/app/components/visual-kit/landing/cv-landing'
+import { contenidoEmpleos, metadataEmpleos } from '@/lib/cms/empleos'
 import { loadVacantes } from '@/lib/load-vacantes'
 
-export const metadata: Metadata = {
-  title: 'Empleos — Hakamo',
-  description:
-    'Revisa vacantes y deja tu perfil con Hakamo. Crea tu currículum o súbelo gratis. Empleo en República Dominicana.',
-}
+export const generateMetadata = metadataEmpleos
 
 export default async function EmpleosPage() {
-  const { vacantes, divisiones } = await loadVacantes()
+  const [{ vacantes, divisiones }, contenido] = await Promise.all([loadVacantes(), contenidoEmpleos()])
 
-  return <CvLanding vacantes={vacantes} divisiones={divisiones} />
+  return <CvLanding vacantes={vacantes} divisiones={divisiones} contenido={contenido} />
 }

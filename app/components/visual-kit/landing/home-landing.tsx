@@ -1,6 +1,7 @@
 "use client";
 
 import { CinematicTitle } from "../cinematic-title";
+import { FondoSeccion } from "../fondo-seccion";
 import { Grain } from "../grain";
 import { MagneticButton } from "../magnetic-button";
 import { Marquee } from "../marquee";
@@ -11,37 +12,21 @@ import { LandingHeroSection } from "../landing-hero-section";
 import { LandingScrollExpand } from "../landing-scroll-expand";
 import { PublicFooter } from "../public-footer";
 import { StatsCounter } from "../stats-counter";
-import type { LandingCopy, NavLink, Offering, SitePublic, Stat } from "@/lib/visual-kit/types";
+import { lineasTitulo } from "@/lib/cms/comun";
+import type { ContenidoEmpresas } from "@/lib/cms/empresas";
+import type { LandingCopy } from "@/lib/visual-kit/types";
 import { LANDING_HERO_BACKGROUNDS } from "@/lib/visual-kit/hakamo";
 
-function splitTitle(title: string) {
-  const index = title.indexOf(",");
-  if (index === -1) return [title];
-  return [title.slice(0, index + 1), title.slice(index + 1).trim()];
-}
-
-const DOORS = [
-  { href: "/nosotros", kicker: "Nosotros", title: "Quiénes somos" },
-  { href: "/servicios", kicker: "Servicios", title: "Seis soluciones" },
-  { href: "/proyectos", kicker: "Proyectos", title: "Obras en campo" },
-  { href: "/contacto", kicker: "Contacto", title: "Hablemos" },
-  { href: "/empresas/solicitar", kicker: "Solicitar", title: "Solicitar personal" },
-];
-
 export function HomeLanding({
-  site,
-  nav,
-  stats,
-  offerings,
   copy,
+  contenido,
 }: {
-  site: SitePublic;
-  nav: NavLink[];
-  stats: Stat[];
-  offerings: Offering[];
   copy: LandingCopy;
+  contenido: ContenidoEmpresas;
 }) {
-  const lines = splitTitle(site.heroTitle);
+  const { portada, imagenExpandible, fondoDatos, fondoCinta, fondoAccesos } = contenido;
+  const lines = lineasTitulo(portada.titulo);
+  const accesosClaro = fondoAccesos.tono === "claro";
 
   return (
     <div className="landing">
@@ -55,63 +40,79 @@ export function HomeLanding({
         {copy.skip}
       </a>
 
-      <LandingHeader
-        name={site.name}
-        links={nav}
-        ctaHref={site.ctaHref}
-        ctaLabel={site.ctaLabel}
-        ctaExternal={site.ctaHref.startsWith("http")}
-        cvHref={site.cvHref}
-        cvLabel={site.cvLabel}
-      />
+      <LandingHeader />
 
-      <LandingHeroSection background={LANDING_HERO_BACKGROUNDS.home}>
+      <LandingHeroSection background={LANDING_HERO_BACKGROUNDS.home} fondo={portada.fondo}>
         <div className="landing-hero-inner mx-auto max-w-3xl px-4 text-center sm:px-6">
-          <p className="text-[11px] font-medium uppercase tracking-[0.42em] text-glow">{site.name}</p>
+          <p className="text-[11px] font-medium uppercase tracking-[0.42em] text-glow">{portada.antetitulo}</p>
           <div className="mt-5">
             <CinematicTitle lines={lines} />
           </div>
-          <p className="mt-6 max-w-lg text-sm leading-6 text-paper/70 sm:text-base">{site.heroSubtitle}</p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-            <MagneticButton href={site.ctaHref} external={site.ctaHref.startsWith("http")}>
-              {site.ctaLabel}
-            </MagneticButton>
-            <MagneticButton href="/servicios" variant="ghost">
-              Ver servicios
-            </MagneticButton>
-          </div>
+          <p className="mt-6 max-w-lg text-sm leading-6 text-paper/70 sm:text-base">{portada.texto}</p>
+          {portada.botonPrincipal || portada.botonSecundario ? (
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+              {portada.botonPrincipal ? (
+                <MagneticButton href={portada.botonPrincipal.url} external={portada.botonPrincipal.url.startsWith("http")}>
+                  {portada.botonPrincipal.texto}
+                </MagneticButton>
+              ) : null}
+              {portada.botonSecundario ? (
+                <MagneticButton href={portada.botonSecundario.url} external={portada.botonSecundario.url.startsWith("http")} variant="ghost">
+                  {portada.botonSecundario.texto}
+                </MagneticButton>
+              ) : null}
+            </div>
+          ) : null}
         </div>
       </LandingHeroSection>
 
-      <LandingScrollExpand title="Talento" alt="Equipo de profesionales de gestión humana">
-        <p>Soluciones integrales para la gestión empresarial, de la planificación a la ejecución.</p>
+      <LandingScrollExpand
+        title={imagenExpandible.titulo}
+        alt={imagenExpandible.alt}
+        src={imagenExpandible.imagen}
+        scrollHint={imagenExpandible.indicacion}
+      >
+        <p>{imagenExpandible.texto}</p>
       </LandingScrollExpand>
 
-      <section className="bg-paper px-4 py-20 sm:px-6 sm:py-28">
-        <div className="mx-auto max-w-6xl">
-          <StatsCounter stats={stats} />
+      <section className="relative isolate bg-paper px-4 py-20 sm:px-6 sm:py-28">
+        <FondoSeccion fondo={fondoDatos} />
+        <div className="relative mx-auto max-w-6xl">
+          <StatsCounter stats={contenido.datos.map((d) => ({ value: d.valor, label: d.etiqueta }))} tono={fondoDatos.tono} />
         </div>
       </section>
 
       <div id="contenido" />
 
-      <Marquee items={offerings.map((item) => item.name)} />
+      <div className="relative isolate">
+        <FondoSeccion fondo={fondoCinta} />
+        <div className={fondoCinta.color || fondoCinta.imagen ? "relative [&_.marquee]:bg-transparent" : "relative"}>
+          <Marquee items={contenido.cinta} />
+        </div>
+      </div>
 
-      <section className="bg-paper px-4 py-20 sm:px-6 sm:py-24">
-        <div className="mx-auto grid max-w-6xl gap-10 sm:grid-cols-2 lg:grid-cols-5">
-          {DOORS.map((door, index) => (
-            <Reveal key={door.href} delay={index * 60} from="up">
-              <a href={door.href} className="group block">
-                <p className="text-[11px] uppercase tracking-[0.32em] text-accent">{door.kicker}</p>
-                <h2 className="font-display mt-3 text-2xl leading-snug text-ink sm:text-3xl">{door.title}</h2>
-                <p className="mt-4 text-sm text-muted transition group-hover:text-accent">Ver →</p>
+      <section className="relative isolate bg-paper px-4 py-20 sm:px-6 sm:py-24">
+        <FondoSeccion fondo={fondoAccesos} />
+        <div className="relative mx-auto grid max-w-6xl gap-10 sm:grid-cols-2 lg:grid-cols-5">
+          {contenido.accesos.map((acceso, index) => (
+            <Reveal key={acceso.url + index} delay={index * 60} from="up">
+              <a href={acceso.url} className="group block">
+                {acceso.imagen ? (
+                  // eslint-disable-next-line @next/next/no-img-element -- imagen del CMS de tamaño libre
+                  <img src={acceso.imagen} alt="" className="mb-4 aspect-[4/3] w-full rounded-2xl object-cover" loading="lazy" />
+                ) : null}
+                <p className={`text-[11px] uppercase tracking-[0.32em] ${accesosClaro ? "text-glow" : "text-accent"}`}>{acceso.antetitulo}</p>
+                <h2 className={`font-display mt-3 text-2xl leading-snug sm:text-3xl ${accesosClaro ? "text-paper" : "text-ink"}`}>{acceso.titulo}</h2>
+                <p className={`mt-4 text-sm transition ${accesosClaro ? "text-paper/70 group-hover:text-glow" : "text-muted group-hover:text-accent"}`}>
+                  {acceso.textoEnlace}
+                </p>
               </a>
             </Reveal>
           ))}
         </div>
       </section>
 
-      <PublicFooter site={site} links={nav} />
+      <PublicFooter />
     </div>
   );
 }

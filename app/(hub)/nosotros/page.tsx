@@ -1,12 +1,8 @@
-import type { Metadata } from "next";
 import { AboutLanding } from "@/app/components/visual-kit/landing/about-landing";
+import { contenidoNosotros, metadataNosotros } from "@/lib/cms/nosotros";
 
-export const metadata: Metadata = {
-  title: "Nosotros — Hakamo",
-  description:
-    "Startup dominicana de outsourcing de personal, reclutamiento y gestión de proyectos para el sector construcción. Misión, visión, valores y trayectoria de Hakamo.",
-};
+export const generateMetadata = metadataNosotros;
 
-export default function NosotrosPage() {
-  return <AboutLanding />;
+export default async function NosotrosPage() {
+  return <AboutLanding contenido={await contenidoNosotros()} />;
 }

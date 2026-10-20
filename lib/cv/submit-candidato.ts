@@ -1,6 +1,5 @@
+import { enviarPostulacion } from "./enviar-postulacion";
 import type { CvData } from "./types";
-
-const STRAPI = process.env.NEXT_PUBLIC_STRAPI_URL;
 
 function cvSummary(data: CvData): string {
   const parts = [
@@ -18,46 +17,24 @@ function cvSummary(data: CvData): string {
   return parts.join("\n");
 }
 
+/** CV armado en el constructor: se guarda como postulación con su PDF. Lanza un error si falla. */
 export async function submitCvBuilder(data: CvData, pdf?: Blob): Promise<void> {
-  const payload = {
-    nombre: data.nombre,
-    apellido: data.apellido,
-    telefono: data.telefono,
-    email: data.email,
-    areaInteres: data.areaInteres,
-    nivelExperiencia: "CV construido en web",
-    mensaje: cvSummary(data),
-  };
-
-  try {
-    if (!STRAPI) throw new Error("Sin Strapi");
-
-    if (pdf) {
-      const form = new FormData();
-      form.append(
-        "data",
-        JSON.stringify({
-          ...payload,
-          mensaje: `${payload.mensaje}\n\n[CV PDF adjunto]`,
-        }),
-      );
-      form.append("files.cv", pdf, cvFilenameSafe(data));
-      const fileRes = await fetch(`${STRAPI}/api/candidatos`, { method: "POST", body: form });
-      if (fileRes.ok) return;
-    }
-
-    const res = await fetch(`${STRAPI}/api/candidatos`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ data: payload }),
-    });
-    if (!res.ok) throw new Error("Error al enviar");
-  } catch {
-    // Same graceful UX as EmpleoForm when Strapi is down / schema mismatch
-    console.log("Candidato CV (sin Strapi):", payload);
-  }
+  await enviarPostulacion(
+    {
+      nombre: data.nombre,
+      apellido: data.apellido,
+      telefono: data.telefono,
+      email: data.email,
+      areaInteres: data.areaInteres,
+      cartaPresentacion: cvSummary(data),
+      origen: "cv_creado",
+    },
+    pdf,
+    cvFilenameSafe(data),
+  );
 }
 
+/** CV subido por la persona: se guarda como postulación con su archivo. Lanza un error si falla. */
 export async function submitCvUpload(input: {
   nombre: string;
   apellido: string;
@@ -66,34 +43,18 @@ export async function submitCvUpload(input: {
   areaInteres: string;
   file: File;
 }): Promise<void> {
-  const payload = {
-    nombre: input.nombre,
-    apellido: input.apellido,
-    telefono: input.telefono,
-    email: input.email,
-    areaInteres: input.areaInteres,
-    nivelExperiencia: "CV subido por candidato",
-    mensaje: `Archivo: ${input.file.name}`,
-  };
-
-  try {
-    if (!STRAPI) throw new Error("Sin Strapi");
-
-    const form = new FormData();
-    form.append("data", JSON.stringify(payload));
-    form.append("files.cv", input.file, input.file.name);
-    const fileRes = await fetch(`${STRAPI}/api/candidatos`, { method: "POST", body: form });
-    if (fileRes.ok) return;
-
-    const res = await fetch(`${STRAPI}/api/candidatos`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ data: payload }),
-    });
-    if (!res.ok) throw new Error("Error al enviar");
-  } catch {
-    console.log("Candidato upload (sin Strapi):", { ...payload, file: input.file.name });
-  }
+  await enviarPostulacion(
+    {
+      nombre: input.nombre,
+      apellido: input.apellido,
+      telefono: input.telefono,
+      email: input.email,
+      areaInteres: input.areaInteres,
+      origen: "cv_subido",
+    },
+    input.file,
+    input.file.name,
+  );
 }
 
 function cvFilenameSafe(data: CvData) {

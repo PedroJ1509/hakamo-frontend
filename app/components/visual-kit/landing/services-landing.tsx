@@ -1,14 +1,9 @@
 "use client";
 
-import {
-  COMPROMISO_HSE,
-  MARCO_LEGAL,
-  PROCESO_EMPRESAS,
-  SECTORES,
-  SERVICIOS,
-  VALOR_HAKAMO,
-} from "@/lib/data";
-import { SITE_NAV, SITE_PUBLIC, LANDING_HERO_BACKGROUNDS } from "@/lib/visual-kit/hakamo";
+import { useSitio } from "@/app/components/sitio-context";
+import { lineasTitulo } from "@/lib/cms/comun";
+import type { ContenidoServicios } from "@/lib/cms/servicios";
+import { LANDING_HERO_BACKGROUNDS } from "@/lib/visual-kit/hakamo";
 import { LandingHeader } from "../chrome-header";
 import { CinematicTitle } from "../cinematic-title";
 import { Grain } from "../grain";
@@ -17,10 +12,12 @@ import { MagneticButton } from "../magnetic-button";
 import { PublicFooter } from "../public-footer";
 import { Reveal } from "../reveal";
 import { ScrollProgress } from "../scroll-progress";
+import { BotonSeccion, CONTINUA, Encabezado, ItemImagen, numero, SeccionBloque } from "../seccion";
 import { ServiceTimeline } from "../service-timeline";
 
-export function ServicesLanding() {
-  const site = SITE_PUBLIC;
+export function ServicesLanding({ contenido }: { contenido: ContenidoServicios }) {
+  const { contacto } = useSitio();
+  const { portada, catalogo, seguridad, valor, proceso, sectores, marcoLegal, cierre } = contenido;
 
   return (
     <div className="landing">
@@ -34,179 +31,189 @@ export function ServicesLanding() {
         Saltar al contenido
       </a>
 
-      <LandingHeader
-        name={site.name}
-        links={SITE_NAV}
-        ctaHref={site.ctaHref}
-        ctaLabel={site.ctaLabel}
-        ctaExternal={site.ctaHref.startsWith("http")}
-        cvHref={site.cvHref}
-        cvLabel={site.cvLabel}
-      />
+      <LandingHeader />
 
-      <LandingHeroSection background={LANDING_HERO_BACKGROUNDS.services}>
+      <LandingHeroSection background={LANDING_HERO_BACKGROUNDS.services} fondo={portada.fondo}>
         <div className="landing-hero-inner mx-auto max-w-3xl px-4 text-center sm:px-6">
-          <p className="visit-rise text-[11px] font-medium uppercase tracking-[0.42em] text-glow">Lo que ofrecemos</p>
+          <p className="visit-rise text-[11px] font-medium uppercase tracking-[0.42em] text-glow">{portada.antetitulo}</p>
           <div className="visit-rise mt-5" style={{ animationDelay: "90ms" }}>
-            <CinematicTitle lines={["Soluciones para cada", "obra y cada equipo"]} />
+            <CinematicTitle lines={lineasTitulo(portada.titulo)} />
           </div>
-          <div className="visit-rise mt-8 flex flex-wrap items-center justify-center gap-4" style={{ animationDelay: "200ms" }}>
-            <MagneticButton href={site.ctaHref}>Solicitar personal</MagneticButton>
-            <MagneticButton href="/contacto" variant="ghost">
-              Hablemos
-            </MagneticButton>
-          </div>
+          {portada.texto ? (
+            <p className="visit-rise mt-6 max-w-2xl text-sm leading-6 text-paper/70 sm:text-base" style={{ animationDelay: "150ms" }}>
+              {portada.texto}
+            </p>
+          ) : null}
+          {portada.botonPrincipal || portada.botonSecundario ? (
+            <div className="visit-rise mt-8 flex flex-wrap items-center justify-center gap-4" style={{ animationDelay: "200ms" }}>
+              {portada.botonPrincipal ? (
+                <MagneticButton href={portada.botonPrincipal.url} external={portada.botonPrincipal.url.startsWith("http")}>
+                  {portada.botonPrincipal.texto}
+                </MagneticButton>
+              ) : null}
+              {portada.botonSecundario ? (
+                <MagneticButton href={portada.botonSecundario.url} external={portada.botonSecundario.url.startsWith("http")} variant="ghost">
+                  {portada.botonSecundario.texto}
+                </MagneticButton>
+              ) : null}
+            </div>
+          ) : null}
         </div>
       </LandingHeroSection>
 
       <div id="contenido" className="scroll-mt-[var(--header-h)]">
-        <ServiceTimeline items={SERVICIOS} />
+        {catalogo.mostrar ? <ServiceTimeline items={contenido.servicios} seccion={catalogo} /> : null}
       </div>
 
-      <section id="seguridad" className="scroll-mt-[var(--header-h)] bg-paper text-ink">
-        <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
-          <div className="grid items-end gap-8 border-b border-ink/10 pb-12 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16">
-            <Reveal from="left">
-              <p className="text-[11px] uppercase tracking-[0.32em] text-accent">Seguridad</p>
-              <h2 className="font-display mt-4 text-3xl leading-[1.15] sm:text-5xl">
-                {COMPROMISO_HSE.titulo}
-              </h2>
-            </Reveal>
-            <Reveal from="right" delay={80}>
-              <p className="max-w-xl text-base leading-7 text-muted lg:justify-self-end">{COMPROMISO_HSE.texto}</p>
-            </Reveal>
-          </div>
-
-          <div className="mt-16 lg:mt-20">
-            <Reveal from="up">
-              <p className="text-[11px] uppercase tracking-[0.32em] text-accent">¿Por qué trabajar con Hakamo?</p>
-              <h2 className="font-display mt-3 max-w-2xl text-3xl leading-snug sm:text-4xl">
-                Valor para su directiva y su obra
-              </h2>
-            </Reveal>
-            <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4">
-              {VALOR_HAKAMO.map((item, index) => (
-                <Reveal
-                  key={item.titulo}
-                  from="up"
-                  delay={index * 70}
-                  className="border-t border-ink/15 py-7 sm:px-6 sm:first:pl-0 lg:[&:nth-child(4)]:pr-0"
-                >
-                  <p className="font-display text-3xl leading-none text-accent">
-                    {String(index + 1).padStart(2, "0")}
-                  </p>
-                  <h3 className="font-display mt-5 text-xl leading-snug">{item.titulo}</h3>
-                  <p className="mt-3 text-sm leading-6 text-muted">{item.descripcion}</p>
+      {seguridad.mostrar ? (
+        <div id="seguridad" className="scroll-mt-[var(--header-h)]">
+          <SeccionBloque fondo={seguridad.fondo} base="paper" className="px-4 pt-20 pb-12 sm:px-6 sm:pt-28">
+            {(p) => (
+              <div className={`grid items-end gap-8 border-b ${p.linea} pb-12 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16`}>
+                <Reveal from="left">
+                  {seguridad.antetitulo ? <p className={`text-[11px] uppercase tracking-[0.32em] ${p.acento}`}>{seguridad.antetitulo}</p> : null}
+                  <h2 className="font-display mt-4 text-3xl leading-[1.15] sm:text-5xl">{seguridad.titulo}</h2>
                 </Reveal>
-              ))}
-            </div>
-          </div>
+                <Reveal from="right" delay={80}>
+                  <p className={`max-w-xl text-base leading-7 ${p.suave} lg:justify-self-end`}>{seguridad.texto}</p>
+                  <BotonSeccion s={seguridad} />
+                </Reveal>
+              </div>
+            )}
+          </SeccionBloque>
         </div>
-      </section>
+      ) : null}
 
-      <section className="bg-night px-4 py-20 text-paper sm:px-6 sm:py-28">
-        <div className="mx-auto max-w-6xl">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-            <Reveal from="left">
-              <p className="text-[11px] uppercase tracking-[0.32em] text-glow">Cómo trabajamos</p>
-              <h2 className="font-display mt-3 max-w-xl text-3xl leading-snug sm:text-5xl">
-                Un proceso claro, de principio a fin
-              </h2>
-            </Reveal>
-            <Reveal from="right" delay={80}>
-              <p className="max-w-sm text-sm leading-6 text-paper/65 lg:pb-1">
-                Simple, transparente y orientado a resultados desde el primer contacto.
-              </p>
-            </Reveal>
-          </div>
-
-          <ol className="mt-14 grid gap-x-8 lg:grid-cols-4">
-            {PROCESO_EMPRESAS.map((paso, index) => (
-              <li key={paso.paso}>
-                <Reveal from="up" delay={index * 80} className="border-t border-glow/50 pt-6 pb-10">
-                  <p className="font-display text-4xl leading-none text-glow">{paso.paso}</p>
-                  <h3 className="font-display mt-6 text-2xl leading-snug">{paso.titulo}</h3>
-                  <p className="mt-3 text-sm leading-6 text-paper/65">{paso.descripcion}</p>
-                </Reveal>
-              </li>
-            ))}
-          </ol>
-
-          <div className="mt-6 border-t border-white/10 pt-16">
-            <Reveal from="up">
-              <p className="text-[11px] uppercase tracking-[0.32em] text-glow">Sectores que servimos</p>
-              <h2 className="font-display mt-3 max-w-xl text-3xl leading-snug sm:text-4xl">
-                Experiencia donde la operación exige más
-              </h2>
-            </Reveal>
-            <ul className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3">
-              {SECTORES.map((sector, index) => (
-                <li key={sector.nombre}>
-                  <Reveal from="up" delay={index * 60} className="border-t border-white/15 py-7 sm:pr-8">
-                    <p className="text-xs tracking-[0.2em] text-glow">{String(index + 1).padStart(2, "0")}</p>
-                    <p className="font-display mt-3 text-2xl leading-snug">{sector.nombre}</p>
+      {valor.mostrar ? (
+        <SeccionBloque fondo={valor.fondo} base="paper" className="px-4 pt-4 pb-20 sm:px-6 sm:pb-28">
+          {(p) => (
+            <div className="mt-12 lg:mt-16">
+              <Encabezado s={valor} p={p} grande={false} />
+              <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4">
+                {valor.elementos.map((item, index) => (
+                  <Reveal
+                    key={item.titulo + index}
+                    from="up"
+                    delay={index * 70}
+                    className={`border-t ${p.borde} py-7 sm:px-6 sm:first:pl-0 lg:[&:nth-child(4)]:pr-0`}
+                  >
+                    <ItemImagen item={item} />
+                    <p className={`font-display text-3xl leading-none ${p.acento}`}>{item.etiqueta || numero(index)}</p>
+                    <h3 className="font-display mt-5 text-xl leading-snug">{item.titulo}</h3>
+                    <p className={`mt-3 text-sm leading-6 ${p.suave}`}>{item.texto}</p>
                   </Reveal>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>
+                ))}
+              </div>
+              <BotonSeccion s={valor} />
+            </div>
+          )}
+        </SeccionBloque>
+      ) : null}
 
-      <section className="bg-paper px-4 py-20 text-ink sm:px-6 sm:py-28">
-        <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[minmax(16rem,0.75fr)_minmax(0,1.25fr)] lg:items-start lg:gap-20">
-          <Reveal from="left" className="lg:sticky lg:top-[calc(var(--header-h)+1.5rem)]">
-            <p className="text-[11px] uppercase tracking-[0.32em] text-accent">Marco legal dominicano</p>
-            <h2 className="font-display mt-4 text-3xl leading-snug sm:text-4xl">
-              Cumplimiento total con la ley dominicana
-            </h2>
-            <p className="mt-4 max-w-sm text-sm leading-6 text-muted">
-              Operamos bajo el Código Laboral (Ley 16-92) y las regulaciones de seguridad social
-              vigentes. Asumimos la responsabilidad patronal.
-            </p>
-          </Reveal>
-          <ol className="divide-y divide-ink/10 border-y border-ink/10">
-            {MARCO_LEGAL.filter((item) => item.titulo !== "Seguridad y salud ocupacional").map((item, index) => (
-              <li key={item.titulo}>
-                <Reveal
-                  from="up"
-                  delay={index * 50}
-                  className="grid grid-cols-[3.25rem_minmax(0,1fr)] gap-4 py-7 sm:grid-cols-[4.5rem_minmax(0,1fr)] sm:gap-6"
-                >
-                  <span className="font-display text-2xl leading-none text-accent sm:text-3xl" aria-hidden>
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <div>
-                    <h3 className="font-display text-xl leading-snug sm:text-2xl">{item.titulo}</h3>
-                    <p className="mt-2 max-w-xl text-sm leading-6 text-muted">{item.descripcion}</p>
-                  </div>
-                </Reveal>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
+      {proceso.mostrar ? (
+        <SeccionBloque fondo={proceso.fondo} base="night">
+          {(p) => (
+            <>
+              <Encabezado s={proceso} p={p} lado />
+              <ol className="mt-14 grid gap-x-8 lg:grid-cols-4">
+                {proceso.elementos.map((paso, index) => (
+                  <li key={paso.titulo + index}>
+                    <Reveal from="up" delay={index * 80} className={`border-t ${p.fuerte} pt-6 pb-10`}>
+                      <ItemImagen item={paso} />
+                      <p className={`font-display text-4xl leading-none ${p.acento}`}>{paso.etiqueta || numero(index)}</p>
+                      <h3 className="font-display mt-6 text-2xl leading-snug">{paso.titulo}</h3>
+                      <p className={`mt-3 text-sm leading-6 ${p.suave}`}>{paso.texto}</p>
+                    </Reveal>
+                  </li>
+                ))}
+              </ol>
+              <BotonSeccion s={proceso} />
+            </>
+          )}
+        </SeccionBloque>
+      ) : null}
 
-      <section className="border-t border-white/10 bg-night px-4 py-16 text-paper sm:px-6 sm:py-20">
-        <Reveal from="up" className="mx-auto flex max-w-6xl flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-          <div className="max-w-xl">
-            <h2 className="font-display text-3xl leading-snug sm:text-5xl">
-              Garantice el éxito de su obra desde el día uno
-            </h2>
-            <p className="mt-4 text-sm leading-6 text-paper/70">
-              Con personal calificado, sin complicaciones administrativas.
-            </p>
-          </div>
-          <div className="flex flex-wrap items-center gap-3">
-            <MagneticButton href="/empresas/solicitar">Solicitar personal</MagneticButton>
-            <MagneticButton href="https://wa.me/18296790671" variant="ghost" external>
-              WhatsApp
-            </MagneticButton>
-          </div>
-        </Reveal>
-      </section>
+      {sectores.mostrar ? (
+        <SeccionBloque fondo={sectores.fondo} base="night" className={CONTINUA}>
+          {(p) => (
+            <div className={`border-t ${p.linea} pt-16`}>
+              <Encabezado s={sectores} p={p} grande={false} />
+              <ul className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3">
+                {sectores.elementos.map((sector, index) => (
+                  <li key={sector.titulo + index}>
+                    <Reveal from="up" delay={index * 60} className={`border-t ${p.borde} py-7 sm:pr-8`}>
+                      <ItemImagen item={sector} />
+                      <p className={`text-xs tracking-[0.2em] ${p.acento}`}>{sector.etiqueta || numero(index)}</p>
+                      <p className="font-display mt-3 text-2xl leading-snug">{sector.titulo}</p>
+                      {sector.texto ? <p className={`mt-2 text-sm leading-6 ${p.suave}`}>{sector.texto}</p> : null}
+                    </Reveal>
+                  </li>
+                ))}
+              </ul>
+              <BotonSeccion s={sectores} />
+            </div>
+          )}
+        </SeccionBloque>
+      ) : null}
 
-      <PublicFooter site={site} links={SITE_NAV} />
+      {marcoLegal.mostrar ? (
+        <SeccionBloque fondo={marcoLegal.fondo} base="paper">
+          {(p) => (
+            <div className="grid gap-12 lg:grid-cols-[minmax(16rem,0.75fr)_minmax(0,1.25fr)] lg:items-start lg:gap-20">
+              <Reveal from="left" className="lg:sticky lg:top-[calc(var(--header-h)+1.5rem)]">
+                {marcoLegal.antetitulo ? <p className={`text-[11px] uppercase tracking-[0.32em] ${p.acento}`}>{marcoLegal.antetitulo}</p> : null}
+                <h2 className="font-display mt-4 text-3xl leading-snug sm:text-4xl">{marcoLegal.titulo}</h2>
+                {marcoLegal.texto ? <p className={`mt-4 max-w-sm text-sm leading-6 ${p.suave}`}>{marcoLegal.texto}</p> : null}
+                <BotonSeccion s={marcoLegal} />
+              </Reveal>
+              <ol className={`divide-y ${p.divisor} border-y ${p.linea}`}>
+                {marcoLegal.elementos.map((item, index) => (
+                  <li key={item.titulo + index}>
+                    <Reveal
+                      from="up"
+                      delay={index * 50}
+                      className="grid grid-cols-[3.25rem_minmax(0,1fr)] gap-4 py-7 sm:grid-cols-[4.5rem_minmax(0,1fr)] sm:gap-6"
+                    >
+                      <span className={`font-display text-2xl leading-none ${p.acento} sm:text-3xl`} aria-hidden>
+                        {item.etiqueta || numero(index)}
+                      </span>
+                      <div>
+                        <h3 className="font-display text-xl leading-snug sm:text-2xl">{item.titulo}</h3>
+                        <p className={`mt-2 max-w-xl text-sm leading-6 ${p.suave}`}>{item.texto}</p>
+                      </div>
+                    </Reveal>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )}
+        </SeccionBloque>
+      ) : null}
+
+      {cierre.mostrar ? (
+        <SeccionBloque fondo={cierre.fondo} base="night" className="border-t border-white/10 px-4 py-16 sm:px-6 sm:py-20">
+          {(p) => (
+            <Reveal from="up" className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+              <div className="max-w-xl">
+                <h2 className="font-display text-3xl leading-snug sm:text-5xl">{cierre.titulo}</h2>
+                {cierre.texto ? <p className={`mt-4 text-sm leading-6 ${p.suave}`}>{cierre.texto}</p> : null}
+              </div>
+              <div className="flex flex-wrap items-center gap-3">
+                {cierre.boton ? (
+                  <MagneticButton href={cierre.boton.url} external={cierre.boton.url.startsWith("http")}>
+                    {cierre.boton.texto}
+                  </MagneticButton>
+                ) : null}
+                <MagneticButton href={contacto.whatsappUrl} variant="ghost" external>
+                  WhatsApp
+                </MagneticButton>
+              </div>
+            </Reveal>
+          )}
+        </SeccionBloque>
+      ) : null}
+
+      <PublicFooter />
     </div>
   );
 }

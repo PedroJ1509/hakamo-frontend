@@ -1,4 +1,11 @@
-import type { Division, Vacante } from "@/types";
+import { mediaUrl } from "@/lib/cms/strapi";
+import type { Division, StrapiMedia, Vacante } from "@/types";
+
+/**
+ * Las vacantes de demostración solo existen en desarrollo, para ver el diseño sin datos.
+ * En producción el sitio muestra únicamente lo que hay en Strapi, aunque sea nada.
+ */
+export const USAR_DEMO = process.env.NODE_ENV !== "production";
 
 const baseDivision = {
   documentId: "demo-div",
@@ -15,10 +22,10 @@ const baseDivision = {
 };
 
 export const DEMO_DIVISIONES = [
-  { ...baseDivision, id: 1, documentId: "demo-div-1", nombre: "Construcción", slug: "construccion" },
-  { ...baseDivision, id: 2, documentId: "demo-div-2", nombre: "Energía", slug: "energia" },
-  { ...baseDivision, id: 3, documentId: "demo-div-3", nombre: "Salud e Higiene", slug: "salud-higiene" },
-  { ...baseDivision, id: 4, documentId: "demo-div-4", nombre: "Administración", slug: "administracion" },
+  { ...baseDivision, id: 1, documentId: "demo-div-1", nombre: "Construcción", slug: "construccion", colorPrimario: "#1747A8", colorSecundario: "#E6EEFC" },
+  { ...baseDivision, id: 2, documentId: "demo-div-2", nombre: "Energía", slug: "energia", colorPrimario: "#7A3A00", colorSecundario: "#FFEFD9" },
+  { ...baseDivision, id: 3, documentId: "demo-div-3", nombre: "Salud e Higiene", slug: "salud-higiene", colorPrimario: "#12623D", colorSecundario: "#DDF3E8" },
+  { ...baseDivision, id: 4, documentId: "demo-div-4", nombre: "Administración", slug: "administracion", colorPrimario: "#6B21A8", colorSecundario: "#F3E8FF" },
 ] as Division[];
 
 export type VacanteCard = Vacante & { imagen?: string };
@@ -165,9 +172,11 @@ export function resolveVacanteImage(vacante: VacanteCard, index: number): string
   return IMAGES[index % IMAGES.length];
 }
 
+/** Imagen de cada vacante: la subida en el CMS; si no hay, una de las fotos de respaldo. */
 export function withJobImages(items: Vacante[]): VacanteCard[] {
-  return items.map((item, index) => ({
-    ...item,
-    imagen: (item as VacanteCard).imagen ?? FALLBACK_JOB_IMAGES[index % FALLBACK_JOB_IMAGES.length],
-  }));
+  return items.map((item, index) => {
+    const propia = (item as { imagen?: string | StrapiMedia | null }).imagen;
+    const url = typeof propia === "string" ? propia : mediaUrl(propia);
+    return { ...item, imagen: url ?? FALLBACK_JOB_IMAGES[index % FALLBACK_JOB_IMAGES.length] };
+  });
 }

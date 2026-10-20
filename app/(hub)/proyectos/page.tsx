@@ -1,12 +1,8 @@
-import type { Metadata } from 'next'
 import { ProjectsLanding } from '@/app/components/visual-kit/landing/projects-landing'
+import { contenidoProyectos, metadataProyectos } from '@/lib/cms/proyectos'
 
-export const metadata: Metadata = {
-  title: 'Proyectos — Hakamo',
-  description:
-    'Obras, energía e infraestructura donde Hakamo sostiene el talento en campo. Portafolio y galería de operaciones en República Dominicana.',
-}
+export const generateMetadata = metadataProyectos
 
-export default function ProyectosPage() {
-  return <ProjectsLanding />
+export default async function ProyectosPage() {
+  return <ProjectsLanding contenido={await contenidoProyectos()} />
 }

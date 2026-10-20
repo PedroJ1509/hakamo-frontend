@@ -1,44 +1,27 @@
 "use client";
 
+import { useSitio } from "@/app/components/sitio-context";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Link from "next/link";
-import { COMPANY_INFO } from "@/lib/data";
-import { SITE_NAV, SITE_PUBLIC } from "@/lib/visual-kit/hakamo";
 import { btnGhostOnNight, btnGlow } from "@/lib/visual-kit/styles";
 import { LandingHeader } from "../chrome-header";
 import { Grain } from "../grain";
 import { LandingHeroSection } from "../landing-hero-section";
 import { PublicFooter } from "../public-footer";
 import { Reveal } from "../reveal";
+import { lineasTitulo } from "@/lib/cms/comun";
+import type { ContenidoSolicitar, Intencion } from "@/lib/cms/solicitar";
+import { FondoSeccion } from "../fondo-seccion";
 import { ScrollProgress } from "../scroll-progress";
 
-type Intent = "personal" | "reunion" | "contactar";
+type Intent = Intencion;
 
-const INTENTS: { id: Intent; index: string; title: string; note: string }[] = [
-  { id: "personal", index: "01", title: "Personal", note: "Equipos para tu obra o proyecto" },
-  { id: "reunion", index: "02", title: "Reunión", note: "Presencial, en obra o virtual" },
-  { id: "contactar", index: "03", title: "Contactar", note: "Una consulta o un mensaje" },
-];
-
-const STEPS: Record<Intent, { id: string; title: string; hint: string }[]> = {
-  personal: [
-    { id: "datos", title: "Tus datos", hint: "Para contactarte" },
-    { id: "necesidad", title: "El personal", hint: "Qué perfiles buscas" },
-    { id: "detalle", title: "Detalle", hint: "Obra y urgencia" },
-    { id: "enviar", title: "Confirmar", hint: "WhatsApp y correo" },
-  ],
-  reunion: [
-    { id: "datos", title: "Tus datos", hint: "Para contactarte" },
-    { id: "reunion", title: "La reunión", hint: "Cuándo y cómo" },
-    { id: "detalle", title: "Detalle", hint: "De qué hablamos" },
-    { id: "enviar", title: "Confirmar", hint: "WhatsApp y correo" },
-  ],
-  contactar: [
-    { id: "datos", title: "Tus datos", hint: "Para responderte" },
-    { id: "mensaje", title: "Mensaje", hint: "Qué quieres decirnos" },
-    { id: "enviar", title: "Confirmar", hint: "WhatsApp y correo" },
-  ],
+/** Ids de los pasos de cada intención: deciden qué campos se muestran y se validan. Sus textos vienen del CMS. */
+const STEP_IDS: Record<Intent, string[]> = {
+  personal: ["datos", "necesidad", "detalle", "enviar"],
+  reunion: ["datos", "reunion", "detalle", "enviar"],
+  contactar: ["datos", "mensaje", "enviar"],
 };
 
 const SUBJECT: Record<Intent, string> = {
@@ -46,20 +29,6 @@ const SUBJECT: Record<Intent, string> = {
   reunion: "Solicitar reunión",
   contactar: "Contactar",
 };
-
-const PERSONAL = [
-  { value: "Outsourcing de personal", note: "Equipos para obra" },
-  { value: "Reclutamiento", note: "Perfiles clave" },
-  { value: "Payroll y nómina", note: "Administración salarial" },
-  { value: "Cumplimiento laboral", note: "TSS, contratos, DGT3" },
-  { value: "Otro", note: "Cuéntanos en el detalle" },
-];
-
-const MODALIDADES = [
-  { value: "Presencial en Montecristi", note: "En nuestra base" },
-  { value: "Visita en nuestra operación / obra", note: "Vamos a tu proyecto" },
-  { value: "Virtual (videollamada)", note: "Rápida y remota" },
-];
 
 type FormState = {
   nombre: string;
@@ -126,8 +95,9 @@ function buildMessage(intent: Intent, data: FormState) {
 
 const STEP_EASE = [0.22, 1, 0.36, 1] as const;
 
-export function VisitLanding() {
-  const site = SITE_PUBLIC;
+export function VisitLanding({ contenido }: { contenido: ContenidoSolicitar }) {
+  const { contacto } = useSitio();
+  const { portada, opciones, textos: t, tiposPersonal, modalidades, fondoFormulario, listo } = contenido;
   const reduceMotion = useReducedMotion();
   const [intent, setIntent] = useState<Intent | null>(null);
   const [step, setStep] = useState(0);
@@ -142,7 +112,9 @@ export function VisitLanding() {
     if (!done) return;
     window.scrollTo(0, 0);
   }, [done]);
-  const steps = intent ? STEPS[intent] : [];
+  const steps = intent
+    ? STEP_IDS[intent].map((id, i) => ({ id, title: contenido.pasos[intent][i]?.title ?? "", hint: contenido.pasos[intent][i]?.hint ?? "" }))
+    : [];
   const current = steps[step];
   const patch = (partial: Partial<FormState>) => setData((d) => ({ ...d, ...partial }));
   const message = useMemo(() => (intent ? buildMessage(intent, data) : ""), [data, intent]);
@@ -215,6 +187,7 @@ export function VisitLanding() {
       email: data.email,
       telefono: data.telefono,
       mensaje: message,
+      asunto: intent ? SUBJECT[intent] : "Solicitud",
     };
 
     try {
@@ -227,9 +200,9 @@ export function VisitLanding() {
       // WhatsApp / mailto still deliver
     }
 
-    const wa = `https://wa.me/18296790671?text=${encodeURIComponent(message)}`;
+    const wa = `${contacto.whatsappUrl}?text=${encodeURIComponent(message)}`;
     const subject = intent ? `${SUBJECT[intent]} — ${data.nombre}` : data.nombre;
-    const mail = `mailto:${COMPANY_INFO.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
+    const mail = `mailto:${contacto.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
 
     window.open(wa, "_blank", "noopener,noreferrer");
     window.setTimeout(() => {
@@ -244,26 +217,20 @@ export function VisitLanding() {
     return (
       <div className="visit-night landing min-h-[100svh] bg-night text-paper">
         <Grain />
-        <LandingHeader
-          name={site.name}
-          links={SITE_NAV}
-          ctaHref="/contacto"
-          ctaLabel="Contactar"
-          cvHref={site.cvHref}
-          cvLabel={site.cvLabel}
-        />
-        <section className="flex min-h-[100svh] w-full items-center justify-center px-4 pb-16 pt-[calc(var(--header-h)+1.5rem)] sm:px-6">
-          <div className="w-full text-center">
-          <p className="visit-rise text-[11px] uppercase tracking-[0.32em] text-glow">Listo</p>
+        <LandingHeader />
+        <section className="relative isolate flex min-h-[100svh] w-full items-center justify-center px-4 pb-16 pt-[calc(var(--header-h)+1.5rem)] sm:px-6">
+          <FondoSeccion fondo={listo.fondo} />
+          <div className="relative w-full text-center">
+          {listo.antetitulo ? <p className="visit-rise text-[11px] uppercase tracking-[0.32em] text-glow">{listo.antetitulo}</p> : null}
           <h1 className="visit-rise font-display mt-4 text-[clamp(2.4rem,5vw,4.25rem)] italic leading-[1.05] text-paper" style={{ animationDelay: "90ms" }}>
-            Solicitud preparada
+            {listo.titulo}
           </h1>
           <p className="visit-rise mx-auto mt-6 max-w-3xl text-base leading-7 text-paper/65 sm:text-lg" style={{ animationDelay: "180ms" }}>
-            Abrimos WhatsApp y tu correo con el resumen. Si alguno no se abrió, usa los botones.
+            {listo.texto}
           </p>
           <div className="visit-rise mt-10 flex flex-wrap justify-center gap-3" style={{ animationDelay: "280ms" }}>
             <a
-              href={`https://wa.me/18296790671?text=${encodeURIComponent(message)}`}
+              href={`${contacto.whatsappUrl}?text=${encodeURIComponent(message)}`}
               target="_blank"
               rel="noreferrer"
               className={btnGlow}
@@ -271,7 +238,7 @@ export function VisitLanding() {
               Abrir WhatsApp
             </a>
             <a
-              href={`mailto:${COMPANY_INFO.email}?subject=${encodeURIComponent(
+              href={`mailto:${contacto.email}?subject=${encodeURIComponent(
                 intent ? `${SUBJECT[intent]} — ${data.nombre}` : data.nombre,
               )}&body=${encodeURIComponent(message)}`}
               className={btnGhostOnNight}
@@ -279,12 +246,14 @@ export function VisitLanding() {
               Abrir correo
             </a>
           </div>
-          <Link href="/contacto" className="mt-10 inline-block text-sm font-semibold text-glow">
-            Volver a contacto →
-          </Link>
+          {listo.boton ? (
+            <Link href={listo.boton.url} className="mt-10 inline-block text-sm font-semibold text-glow">
+              {listo.boton.texto}
+            </Link>
+          ) : null}
           </div>
         </section>
-        <PublicFooter site={site} links={SITE_NAV} />
+        <PublicFooter />
       </div>
     );
   }
@@ -293,14 +262,7 @@ export function VisitLanding() {
     <div className="visit-night landing min-h-[100svh] bg-night text-paper">
       <ScrollProgress />
       <Grain />
-      <LandingHeader
-        name={site.name}
-        links={SITE_NAV}
-        ctaHref="/contacto"
-        ctaLabel="Contactar"
-        cvHref={site.cvHref}
-        cvLabel={site.cvLabel}
-      />
+      <LandingHeader />
 
       <LandingHeroSection
         background={{
@@ -309,20 +271,25 @@ export function VisitLanding() {
           objectPosition: "50% 40%",
           priority: true,
         }}
+        fondo={portada.fondo}
       >
         <div className="landing-hero-inner visit-hero mx-auto w-full max-w-6xl px-4 sm:px-6">
-          <p className="visit-rise text-[11px] font-medium uppercase tracking-[0.42em] text-glow">Solicitar</p>
+          <p className="visit-rise text-[11px] font-medium uppercase tracking-[0.42em] text-glow">{portada.antetitulo}</p>
           <h1
             className="visit-rise font-display mt-4 max-w-xl text-[clamp(2.6rem,6vw,4.6rem)] leading-[0.98] tracking-[-0.035em] text-paper"
             style={{ animationDelay: "90ms" }}
           >
-            Qué necesitas
+            {lineasTitulo(portada.titulo).map((linea, i) => (
+              <span key={i} className="block">
+                {linea}
+              </span>
+            ))}
           </h1>
           <p className="visit-rise mt-4 max-w-md text-sm leading-6 text-paper/75 sm:text-base" style={{ animationDelay: "170ms" }}>
-            Personal para la obra, una reunión o un mensaje.
+            {portada.texto}
           </p>
           <div className="mt-8 grid gap-3 sm:grid-cols-3">
-            {INTENTS.map((item, index) => {
+            {opciones.map((item, index) => {
               const active = intent === item.id;
               return (
                 <button
@@ -383,8 +350,9 @@ export function VisitLanding() {
             </div>
           </section>
 
-          <section className="bg-night px-4 pb-24 pt-4 sm:px-6">
-            <div className="mx-auto max-w-6xl">
+          <section className="relative isolate bg-night px-4 pb-24 pt-4 sm:px-6">
+            <FondoSeccion fondo={fondoFormulario} />
+            <div className="relative mx-auto max-w-6xl">
               <Reveal from="up">
                 <div className="visit-form">
                   <AnimatePresence mode="wait" initial={false}>
@@ -400,40 +368,40 @@ export function VisitLanding() {
                   <div className="mt-8">
                   {current.id === "datos" && (
                     <div className="visit-stagger grid gap-x-10 gap-y-8 sm:grid-cols-2">
-                      <LineField label="Nombre completo" wide>
+                      <LineField label={t.etiquetaNombre} wide>
                         <input
                           className="visit-input"
                           value={data.nombre}
                           onChange={(e) => patch({ nombre: e.target.value })}
-                          placeholder="María García"
+                          placeholder={t.ejemploNombre}
                           autoComplete="name"
                         />
                       </LineField>
-                      <LineField label="Empresa">
+                      <LineField label={t.etiquetaEmpresa}>
                         <input
                           className="visit-input"
                           value={data.empresa}
                           onChange={(e) => patch({ empresa: e.target.value })}
-                          placeholder="Opcional"
+                          placeholder={t.ejemploEmpresa}
                           autoComplete="organization"
                         />
                       </LineField>
-                      <LineField label="Teléfono / WhatsApp">
+                      <LineField label={t.etiquetaTelefono}>
                         <input
                           className="visit-input"
                           value={data.telefono}
                           onChange={(e) => patch({ telefono: e.target.value })}
-                          placeholder="829-000-0000"
+                          placeholder={t.ejemploTelefono}
                           autoComplete="tel"
                         />
                       </LineField>
-                      <LineField label="Correo">
+                      <LineField label={t.etiquetaCorreo}>
                         <input
                           type="email"
                           className="visit-input"
                           value={data.email}
                           onChange={(e) => patch({ email: e.target.value })}
-                          placeholder="tu@empresa.com"
+                          placeholder={t.ejemploCorreo}
                           autoComplete="email"
                         />
                       </LineField>
@@ -442,10 +410,10 @@ export function VisitLanding() {
 
                   {current.id === "necesidad" && (
                     <div>
-                      <p className="text-[11px] uppercase tracking-[0.28em] text-glow">Personal</p>
-                      <p className="mt-2 text-sm text-paper/65">¿Qué tipo de personal necesitas?</p>
+                      <p className="text-[11px] uppercase tracking-[0.28em] text-glow">{t.antetituloPersonal}</p>
+                      <p className="mt-2 text-sm text-paper/65">{t.preguntaPersonal}</p>
                       <div className="visit-stagger mt-5 grid gap-3 sm:grid-cols-2">
-                        {PERSONAL.map((item) => {
+                        {tiposPersonal.map((item) => {
                           const active = data.motivo === item.value;
                           return (
                             <button
@@ -466,10 +434,10 @@ export function VisitLanding() {
                   {current.id === "reunion" && (
                     <div className="space-y-10">
                       <div>
-                        <p className="text-[11px] uppercase tracking-[0.28em] text-glow">Modalidad</p>
-                        <p className="mt-2 text-sm text-paper/65">¿Cómo prefieres la reunión?</p>
+                        <p className="text-[11px] uppercase tracking-[0.28em] text-glow">{t.antetituloModalidad}</p>
+                        <p className="mt-2 text-sm text-paper/65">{t.preguntaModalidad}</p>
                         <div className="visit-stagger mt-5 grid gap-3">
-                          {MODALIDADES.map((item) => {
+                          {modalidades.map((item) => {
                             const active = data.modalidad === item.value;
                             return (
                               <button
@@ -488,7 +456,7 @@ export function VisitLanding() {
                           })}
                         </div>
                       </div>
-                      <LineField label="Fecha preferida">
+                      <LineField label={t.etiquetaFecha}>
                         <input
                           type="date"
                           className="visit-input"
@@ -509,17 +477,17 @@ export function VisitLanding() {
                   )}
 
                   {(current.id === "detalle" || current.id === "mensaje") && (
-                    <LineField label={current.id === "mensaje" ? "Tu mensaje" : "Cuéntanos el detalle"} wide>
+                    <LineField label={current.id === "mensaje" ? t.etiquetaMensaje : t.etiquetaDetalle} wide>
                       <textarea
                         className="visit-input visit-textarea"
                         value={data.detalle}
                         onChange={(e) => patch({ detalle: e.target.value })}
                         placeholder={
                           intent === "personal"
-                            ? "Cargos, cantidad de personas, ubicación de la obra y urgencia."
+                            ? t.ejemploDetallePersonal
                             : intent === "reunion"
-                              ? "De qué quieres hablar y quiénes participan."
-                              : "Tu consulta, duda o comentario."
+                              ? t.ejemploDetalleReunion
+                              : t.ejemploMensaje
                         }
                         rows={6}
                       />
@@ -528,8 +496,8 @@ export function VisitLanding() {
 
                   {current.id === "enviar" && (
                     <div className="max-w-2xl">
-                      <p className="text-[11px] uppercase tracking-[0.28em] text-glow">Resumen</p>
-                      <h2 className="font-display mt-3 text-3xl italic text-paper">Todo listo para enviar</h2>
+                      <p className="text-[11px] uppercase tracking-[0.28em] text-glow">{t.antetituloResumen}</p>
+                      <h2 className="font-display mt-3 text-3xl italic text-paper">{t.tituloResumen}</h2>
                       <dl className="visit-stagger mt-8 divide-y divide-white/10 border-y border-white/10">
                         {summaryRows(intent, data).map(([label, value]) => (
                           <div key={label} className="grid gap-1 py-4 sm:grid-cols-[10rem_1fr] sm:gap-6">
@@ -539,7 +507,7 @@ export function VisitLanding() {
                         ))}
                       </dl>
                       <p className="mt-6 text-sm leading-6 text-paper/65">
-                        Al confirmar se abre WhatsApp con este texto y tu cliente de correo.
+                        {t.textoResumen}
                       </p>
                     </div>
                   )}
@@ -563,15 +531,15 @@ export function VisitLanding() {
                       }}
                       disabled={step === 0 || busy}
                     >
-                      Atrás
+                      {t.botonAtras}
                     </button>
                     {step < steps.length - 1 ? (
                       <button type="button" className={btnGlow} onClick={next}>
-                        Continuar
+                        {t.botonContinuar}
                       </button>
                     ) : (
                       <button type="button" className={btnGlow} onClick={submit} disabled={busy}>
-                        {busy ? "Preparando…" : "Enviar a WhatsApp y correo"}
+                        {busy ? t.botonEnviando : t.botonEnviar}
                       </button>
                     )}
                   </div>
@@ -584,7 +552,7 @@ export function VisitLanding() {
         <div className="bg-night pb-24" />
       )}
 
-      <PublicFooter site={site} links={SITE_NAV} />
+      <PublicFooter />
     </div>
   );
 }

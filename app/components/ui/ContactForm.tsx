@@ -41,14 +41,13 @@ export default function ContactForm({ tone = "paper" }: { tone?: "paper" | "nigh
       const res = await fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/mensajes`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ data: formData }),
+        body: JSON.stringify({ data: { ...formData, asunto: "Mensaje desde Contacto" } }),
       });
       if (!res.ok) throw new Error("Error al enviar");
       setEnviado(true);
       setFormData(initialForm);
     } catch {
-      setEnviado(true);
-      setFormData(initialForm);
+      setError("No pudimos enviar el mensaje. Inténtalo de nuevo o escríbenos por WhatsApp.");
     } finally {
       setEnviando(false);
     }

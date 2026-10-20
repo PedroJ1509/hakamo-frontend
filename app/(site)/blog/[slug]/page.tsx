@@ -1,10 +1,12 @@
-import { getPost, getPosts, getPreviewPostsPorDivision, DIVISION_SLUG } from '@/lib/api'
+import { getPost, getPosts } from '@/lib/api'
+import { contenidoBlog } from '@/lib/cms/blog'
 import { Post } from '@/types'
 import StrapiImage from '@/app/components/ui/StrapiImage'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import ReactMarkdown from 'react-markdown'
 import type { Metadata } from 'next'
+import { FondoSeccion } from '@/app/components/visual-kit/fondo-seccion'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -31,14 +33,17 @@ const PRIMARY = '#1E3A5F'
 export default async function PostPage({ params }: Props) {
   const { slug } = await params
 
-  const [post, relacionadosRes] = await Promise.all([
+  // Relacionados: los artículos más recientes, sin contar el actual.
+  const [post, relacionadosRes, contenido] = await Promise.all([
     getPost(slug).catch(() => null),
-    getPreviewPostsPorDivision(DIVISION_SLUG).catch(() => ({ data: [] })),
+    getPosts().catch(() => ({ data: [] })),
+    contenidoBlog(),
   ])
+  const recuadro = contenido.recuadroArticulo
 
   if (!post) notFound()
 
-  const relacionados: Post[] = (relacionadosRes.data as Post[]).filter(p => p.slug !== slug).slice(0, 3)
+  const relacionados: Post[] = ((relacionadosRes.data ?? []) as Post[]).filter(p => p.slug !== slug).slice(0, 3)
 
   return (
     <main className="min-h-screen">
@@ -50,7 +55,7 @@ export default async function PostPage({ params }: Props) {
             href="/blog"
             className="inline-flex items-center gap-2 text-sm font-medium text-white/60 hover:text-white/90 transition-colors mb-8"
           >
-            ← Volver al blog
+            {contenido.textoVolver}
           </Link>
           <h1
             className="font-bold leading-tight mb-5"
@@ -67,7 +72,7 @@ export default async function PostPage({ params }: Props) {
           )}
           {post.fechaPublicacion && (
             <time className="text-sm text-white/50">
-              {new Date(post.fechaPublicacion).toLocaleDateString('es-DO', {
+              {new Date(`${post.fechaPublicacion}T12:00:00`).toLocaleDateString('es-DO', {
                 year: 'numeric', month: 'long', day: 'numeric',
               })}
             </time>
@@ -102,14 +107,14 @@ export default async function PostPage({ params }: Props) {
           {/* Footer del artículo */}
           <div className="mt-12 pt-8 border-t border-gray-100 flex flex-wrap gap-4 items-center justify-between">
             <Link href="/blog" className="text-sm font-medium flex items-center gap-1.5 hover:gap-2 transition-all" style={{ color: PRIMARY }}>
-              ← Todos los artículos
+              {contenido.textoTodos}
             </Link>
             <Link
-              href="/contacto"
+              href={contenido.botonArticulo.url}
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white"
               style={{ backgroundColor: PRIMARY }}
             >
-              Contáctanos →
+              {contenido.botonArticulo.texto}
             </Link>
           </div>
         </article>
@@ -119,7 +124,7 @@ export default async function PostPage({ params }: Props) {
           {relacionados.length > 0 && (
             <div className="sticky top-24">
               <h3 className="font-bold text-base mb-5" style={{ color: '#0D1B5E', fontFamily: 'var(--font-space-grotesk, sans-serif)' }}>
-                Artículos relacionados
+                {contenido.tituloRelacionados}
               </h3>
               <div className="space-y-5">
                 {relacionados.map((rel: Post) => (
@@ -143,7 +148,7 @@ export default async function PostPage({ params }: Props) {
                     <div className="flex-1 min-w-0">
                       {rel.fechaPublicacion && (
                         <time className="text-xs text-gray-400 block mb-1">
-                          {new Date(rel.fechaPublicacion).toLocaleDateString('es-DO', { month: 'short', day: 'numeric' })}
+                          {new Date(`${rel.fechaPublicacion}T12:00:00`).toLocaleDateString('es-DO', { month: 'short', day: 'numeric' })}
                         </time>
                       )}
                       <h4 className="text-sm font-semibold leading-snug group-hover:opacity-70 transition-opacity line-clamp-2" style={{ color: '#0D1B5E' }}>
@@ -155,19 +160,27 @@ export default async function PostPage({ params }: Props) {
               </div>
 
               {/* CTA sidebar */}
-              <div className="mt-8 rounded-2xl p-6 text-white" style={{ backgroundColor: PRIMARY }}>
-                <h4 className="font-bold text-base mb-2">¿Necesitas personal?</h4>
-                <p className="text-white/70 text-sm mb-4 leading-relaxed">
-                  Hablemos sobre cómo Hakamo puede ayudar a tu empresa.
-                </p>
-                <Link
-                  href="/contacto"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-white transition-all hover:opacity-90"
-                  style={{ color: PRIMARY }}
+              {recuadro.mostrar ? (
+                <div
+                  className={`relative isolate mt-8 overflow-hidden rounded-2xl p-6 ${recuadro.fondo.tono === 'claro' ? 'text-white' : 'text-[#0D1B5E]'}`}
+                  style={{ backgroundColor: PRIMARY }}
                 >
-                  Obtener Cotización
-                </Link>
-              </div>
+                  <FondoSeccion fondo={recuadro.fondo} />
+                  <div className="relative">
+                    <h4 className="font-bold text-base mb-2">{recuadro.titulo}</h4>
+                    {recuadro.texto ? <p className="opacity-70 text-sm mb-4 leading-relaxed">{recuadro.texto}</p> : null}
+                    {recuadro.boton ? (
+                      <Link
+                        href={recuadro.boton.url}
+                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-white transition-all hover:opacity-90"
+                        style={{ color: PRIMARY }}
+                      >
+                        {recuadro.boton.texto}
+                      </Link>
+                    ) : null}
+                  </div>
+                </div>
+              ) : null}
             </div>
           )}
         </aside>

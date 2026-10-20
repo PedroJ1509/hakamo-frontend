@@ -6,24 +6,29 @@ import type { Division, Vacante } from "@/types";
 import type { VacanteCard } from "@/lib/demo-vacantes";
 import { EmptyState } from "../empty-state";
 import { MODALIDAD_LABEL, TIPO_LABEL } from "./jobs-landing";
+import { TEXTOS_VACANTES, type TextosVacantes } from "@/lib/cms/vacantes";
 
 type DisponibilidadFilter = "" | "activa" | "cerrada";
 type TipoFilter = "" | Vacante["tipo"];
 type ModalidadFilter = "" | Vacante["modalidad"];
 
-const TIPO_OPTIONS: { value: TipoFilter; label: string }[] = [
-  { value: "", label: "Cualquier contrato" },
-  { value: "tiempo_completo", label: "Tiempo completo" },
-  { value: "medio_tiempo", label: "Medio tiempo" },
-  { value: "contrato", label: "Contrato" },
-];
+function tipoOptions(t: TextosVacantes): { value: TipoFilter; label: string }[] {
+  return [
+    { value: "", label: t.cualquierContrato },
+    { value: "tiempo_completo", label: TIPO_LABEL.tiempo_completo },
+    { value: "medio_tiempo", label: TIPO_LABEL.medio_tiempo },
+    { value: "contrato", label: TIPO_LABEL.contrato },
+  ];
+}
 
-const MODALIDAD_OPTIONS: { value: ModalidadFilter; label: string }[] = [
-  { value: "", label: "Cualquier modalidad" },
-  { value: "presencial", label: "Presencial" },
-  { value: "hibrido", label: "Híbrido" },
-  { value: "remoto", label: "Remoto" },
-];
+function modalidadOptions(t: TextosVacantes): { value: ModalidadFilter; label: string }[] {
+  return [
+    { value: "", label: t.cualquierModalidad },
+    { value: "presencial", label: MODALIDAD_LABEL.presencial },
+    { value: "hibrido", label: MODALIDAD_LABEL.hibrido },
+    { value: "remoto", label: MODALIDAD_LABEL.remoto },
+  ];
+}
 
 const TAG: Record<string, string> = {
   construccion: "bg-[#E6EEFC] text-[#1747A8]",
@@ -42,6 +47,12 @@ function pageWindow(current: number, count: number) {
   return [...pages].filter((page) => page >= 1 && page <= count).sort((a, b) => a - b);
 }
 
+/** Colores de la etiqueta de área: los de la División en el CMS si los tiene. */
+function tagStyle(division?: Division | null) {
+  if (!division?.colorPrimario && !division?.colorSecundario) return undefined;
+  return { color: division.colorPrimario || undefined, backgroundColor: division.colorSecundario || undefined };
+}
+
 function tagClass(slug?: string) {
   return TAG[slug ?? ""] ?? "bg-[#E6EEFC] text-[#1747A8]";
 }
@@ -57,6 +68,7 @@ function formatFecha(value: string) {
 }
 
 export function TalentBoard({
+  textos: t = TEXTOS_VACANTES,
   items,
   divisiones,
   activeSlug,
@@ -92,11 +104,13 @@ export function TalentBoard({
   onDisponibilidad: (value: DisponibilidadFilter) => void;
   onCategory: (slug: string) => void;
   onClear: () => void;
+  /** Textos del CMS; los que falten salen de los de siempre. */
+  textos?: TextosVacantes;
   openCounts: Record<string, number>;
   closedCount: number;
 }) {
   const categories = [
-    { value: "", label: "Todas las áreas" },
+    { value: "", label: t.todasLasAreas },
     ...divisiones.map((item) => ({ value: item.slug, label: item.nombre })),
   ];
   const showingClosed = disponibilidad !== "activa";
@@ -151,7 +165,7 @@ export function TalentBoard({
     <div className="mt-6">
       <form onSubmit={(event) => event.preventDefault()}>
         <label className="sr-only" htmlFor="buscar-vacante">
-          Buscar puesto o ciudad
+          {t.buscador}
         </label>
         <div className="flex items-center gap-2 rounded-2xl bg-white px-3 shadow-[0_8px_30px_rgba(10,35,66,0.08)]">
           <svg viewBox="0 0 24 24" aria-hidden className="size-5 shrink-0 text-[#4A5C7C]">
@@ -163,7 +177,7 @@ export function TalentBoard({
             type="search"
             value={query}
             onChange={(event) => onQuery(event.target.value)}
-            placeholder="Busca por puesto o ciudad"
+            placeholder={t.buscador}
             className="min-h-12 w-full bg-transparent text-[17px] text-[#0A2342] outline-none placeholder:text-[#4A5C7C]"
           />
           {query ? (
@@ -172,7 +186,7 @@ export function TalentBoard({
               onClick={() => onQuery("")}
               className="shrink-0 rounded-full px-2 py-1 text-sm font-semibold text-[#1F5FD6]"
             >
-              Borrar
+              {t.borrar}
             </button>
           ) : null}
         </div>
@@ -187,7 +201,7 @@ export function TalentBoard({
           className="flex w-full items-center justify-between gap-3 rounded-2xl bg-white px-4 py-3 text-left shadow-[0_2px_0_#D5DDEC] sm:max-w-sm"
         >
           <span className="min-w-0">
-            <span className="block text-xs font-semibold text-[#4A5C7C]">Área</span>
+            <span className="block text-xs font-semibold text-[#4A5C7C]">{t.etiquetaArea}</span>
             <span className="mt-0.5 block truncate text-sm font-semibold text-[#0A2342]">{activeCategory?.label}</span>
           </span>
           <span className="shrink-0 text-sm font-semibold text-[#4A5C7C]">{openCounts[activeSlug] ?? 0}</span>
@@ -199,13 +213,13 @@ export function TalentBoard({
                 type="search"
                 value={areaQuery}
                 onChange={(event) => setAreaQuery(event.target.value)}
-                placeholder="Buscar área"
+                placeholder={t.buscarArea}
                 className="w-full border-b border-[#D5DDEC] px-4 py-3 text-sm text-[#0A2342] outline-none placeholder:text-[#4A5C7C]"
               />
             ) : null}
             <ul role="listbox" aria-label="Áreas" className="max-h-64 overflow-y-auto overscroll-contain py-1">
               {visibleAreas.length === 0 ? (
-                <li className="px-4 py-3 text-sm text-[#4A5C7C]">Ninguna área coincide</li>
+                <li className="px-4 py-3 text-sm text-[#4A5C7C]">{t.sinAreas}</li>
               ) : (
                 visibleAreas.map((item) => {
                   const selected = activeSlug === item.value;
@@ -242,14 +256,14 @@ export function TalentBoard({
         aria-expanded={detailsOpen || detailActive}
         onClick={() => setDetailsOpen((value) => !value)}
       >
-        {detailsOpen || detailActive ? "Ocultar ciudad y contrato" : "Filtrar por ciudad o contrato"}
+        {detailsOpen || detailActive ? t.ocultarFiltros : t.mostrarFiltros}
       </button>
 
       <div className={`mt-3 gap-3 sm:mt-4 sm:grid sm:grid-cols-3 ${detailsOpen || detailActive ? "grid" : "hidden"}`}>
         <label className="text-xs font-semibold text-[#33466A]">
-          Ciudad
+          {t.etiquetaCiudad}
           <select value={localizacion} onChange={(event) => onLocalizacion(event.target.value)} className={SELECT}>
-            <option value="">Todas</option>
+            <option value="">{t.todas}</option>
             {locations.map((loc) => (
               <option key={loc} value={loc}>
                 {loc}
@@ -258,9 +272,9 @@ export function TalentBoard({
           </select>
         </label>
         <label className="text-xs font-semibold text-[#33466A]">
-          Contrato
+          {t.etiquetaContrato}
           <select value={tipo} onChange={(event) => onTipo(event.target.value as TipoFilter)} className={SELECT}>
-            {TIPO_OPTIONS.map((option) => (
+            {tipoOptions(t).map((option) => (
               <option key={option.value || "any"} value={option.value}>
                 {option.label}
               </option>
@@ -268,13 +282,13 @@ export function TalentBoard({
           </select>
         </label>
         <label className="text-xs font-semibold text-[#33466A]">
-          Modalidad
+          {t.etiquetaModalidad}
           <select
             value={modalidad}
             onChange={(event) => onModalidad(event.target.value as ModalidadFilter)}
             className={SELECT}
           >
-            {MODALIDAD_OPTIONS.map((option) => (
+            {modalidadOptions(t).map((option) => (
               <option key={option.value || "any"} value={option.value}>
                 {option.label}
               </option>
@@ -285,8 +299,8 @@ export function TalentBoard({
 
       <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
         <p className="text-sm font-semibold text-[#33466A]">
-          {items.length} {items.length === 1 ? "puesto" : "puestos"}
-          {disponibilidad === "activa" ? " abiertos" : ""}
+          {items.length} {items.length === 1 ? t.puesto : t.puestos}
+          {disponibilidad === "activa" ? ` ${t.abiertos}` : ""}
         </p>
         {closedCount > 0 ? (
           <button
@@ -294,7 +308,7 @@ export function TalentBoard({
             onClick={() => onDisponibilidad(showingClosed ? "activa" : "")}
             className="text-sm font-semibold text-[#1F5FD6] underline-offset-2 hover:underline"
           >
-            {showingClosed ? "Ocultar cerradas" : `Ver cerradas (${closedCount})`}
+            {showingClosed ? t.ocultarCerradas : `${t.verCerradas} (${closedCount})`}
           </button>
         ) : null}
         {hasFilters ? (
@@ -303,7 +317,7 @@ export function TalentBoard({
             onClick={onClear}
             className="text-sm font-semibold text-[#33466A] underline-offset-2 hover:underline"
           >
-            Limpiar filtros
+            {t.limpiarFiltros}
           </button>
         ) : null}
       </div>
@@ -311,8 +325,8 @@ export function TalentBoard({
       {items.length === 0 ? (
         <div className="mt-5">
           <EmptyState
-            title="Ningún puesto coincide"
-            text="Prueba otra área o ciudad, o limpia los filtros para ver todo lo abierto."
+            title={t.sinResultadosTitulo}
+            text={t.sinResultadosTexto}
           />
         </div>
       ) : (
@@ -337,12 +351,12 @@ export function TalentBoard({
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
                         {vacante.division?.nombre ? (
-                          <span className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${tagClass(vacante.division.slug)}`}>
+                          <span className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${tagClass(vacante.division.slug)}`} style={tagStyle(vacante.division)}>
                             {vacante.division.nombre}
                           </span>
                         ) : null}
                         {cerrada ? (
-                          <span className="rounded-full bg-[#0A2342] px-3 py-1 text-xs font-semibold text-white">Cerrada</span>
+                          <span className="rounded-full bg-[#0A2342] px-3 py-1 text-xs font-semibold text-white">{t.cerrada}</span>
                         ) : null}
                       </div>
                       <h3 className="font-[family-name:var(--font-space-grotesk)] mt-3 text-balance text-xl font-extrabold leading-tight tracking-[-0.03em] break-words text-[#0A2342] sm:text-2xl">
@@ -361,7 +375,7 @@ export function TalentBoard({
                     <div className="flex shrink-0 items-center justify-between gap-3 sm:flex-col sm:items-end">
                       {fecha ? <p className="order-2 text-sm text-[#4A5C7C] sm:order-1">{fecha}</p> : null}
                       <span className="order-1 inline-flex rounded-full bg-[#1F5FD6] px-4 py-2.5 text-sm font-semibold text-white transition group-hover:bg-[#1747A8] sm:order-2">
-                        {cerrada ? "Ver detalle" : "Ver puesto"}
+                        {cerrada ? t.verDetalle : t.verPuesto}
                       </span>
                     </div>
                   </div>
@@ -381,7 +395,7 @@ export function TalentBoard({
                 onClick={() => goTo(current - 1)}
                 className="rounded-full border-2 border-[#D5DDEC] bg-white px-4 py-2 text-sm font-semibold text-[#0A2342] disabled:cursor-not-allowed disabled:opacity-40"
               >
-                Anterior
+                {t.anterior}
               </button>
               {pageWindow(current, pageCount).map((number, index, list) => {
                 const gap = index > 0 && number - list[index - 1] > 1;
@@ -407,11 +421,11 @@ export function TalentBoard({
                 onClick={() => goTo(current + 1)}
                 className="rounded-full border-2 border-[#D5DDEC] bg-white px-4 py-2 text-sm font-semibold text-[#0A2342] disabled:cursor-not-allowed disabled:opacity-40"
               >
-                Siguiente
+                {t.siguiente}
               </button>
           </nav>
           <div className="flex flex-wrap items-center justify-center gap-2">
-            <p className="mr-1 text-sm font-semibold text-[#33466A]">Por página</p>
+            <p className="mr-1 text-sm font-semibold text-[#33466A]">{t.porPagina}</p>
             {PAGE_SIZES.map((option) => (
               <button
                 key={option}
@@ -443,10 +457,10 @@ export function TalentBoard({
                   : "border-[#D5DDEC] bg-white text-[#0A2342] hover:border-[#1F5FD6]"
               }`}
             >
-              Todas
+              {t.todasPorPagina}
             </button>
             <p className="ml-1 text-sm text-[#4A5C7C]">
-              {visible.length} de {items.length}
+              {visible.length} {t.de} {items.length}
             </p>
           </div>
         </div>

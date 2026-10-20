@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { POSTULATE_NAV, SITE_PUBLIC } from "@/lib/visual-kit/hakamo";
+import { useSitio } from "@/app/components/sitio-context";
 import { Logo } from "./logo";
 
 const SECTIONS = ["categorias", "como", "tu-cv"];
@@ -30,7 +30,9 @@ export function PostulateHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [activeHash, setActiveHash] = useState("");
-  const site = SITE_PUBLIC;
+  const sitio = useSitio();
+  const links = sitio.menuEmpleos;
+  const empresas = sitio.botonCabeceraEmpleos;
   const onLanding = pathname === "/empleos";
 
   useEffect(() => {
@@ -106,14 +108,14 @@ export function PostulateHeader() {
       <header className={barClass}>
         <div className="chrome-header-inner chrome-header-fit mx-auto flex items-center gap-3 px-3 sm:px-4">
           <div className="flex shrink-0 items-center gap-2">
-            <Logo name={site.name} href="/empleos" inverted={false} className="text-ink" />
+            <Logo href="/empleos" inverted={false} className="text-ink" />
             <span className="hidden text-[10px] font-semibold uppercase tracking-[0.18em] text-accent xl:inline">
               Talentos
             </span>
           </div>
 
           <nav className="chrome-nav-tray chrome-nav-tray-paper hidden min-w-0 flex-1 md:flex" aria-label="Portal de empleo">
-            {POSTULATE_NAV.map((link) => {
+            {links.map((link) => {
               const hash = link.href.split("#")[1];
               const active = isActive(pathname, onLanding ? activeHash : "", link.href);
               const href = hash && onLanding ? `#${hash}` : link.href;
@@ -133,10 +135,10 @@ export function PostulateHeader() {
 
           <div className="ml-auto flex shrink-0 items-center">
             <Link
-              href="/empresas"
+              href={empresas.url}
               className="hidden text-xs font-semibold uppercase tracking-[0.14em] text-muted transition hover:text-accent md:inline"
             >
-              Empresas
+              {empresas.texto}
             </Link>
             <button
               type="button"
@@ -169,7 +171,7 @@ export function PostulateHeader() {
         >
           <div className="mx-auto flex max-w-lg flex-col gap-8 px-5 py-8">
             <nav className="flex flex-col gap-1.5" aria-label="Portal móvil">
-              {POSTULATE_NAV.map((link) => {
+              {links.map((link) => {
                 const hash = link.href.split("#")[1];
                 const active = isActive(pathname, onLanding ? activeHash : "", link.href);
                 const href = hash && onLanding ? `#${hash}` : link.href;
@@ -189,11 +191,11 @@ export function PostulateHeader() {
             </nav>
 
             <Link
-              href="/empresas"
+              href={empresas.url}
               className="text-center text-sm font-semibold text-muted transition hover:text-accent"
               onClick={() => setOpen(false)}
             >
-              Empresas
+              {empresas.texto}
             </Link>
           </div>
         </div>

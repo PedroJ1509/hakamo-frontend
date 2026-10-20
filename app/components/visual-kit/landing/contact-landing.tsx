@@ -1,8 +1,11 @@
 "use client";
 
+import { useSitio } from "@/app/components/sitio-context";
+import { lineasTitulo, type Item } from "@/lib/cms/comun";
+import type { ContenidoContacto } from "@/lib/cms/contacto";
+import type { Contacto, Red } from "@/lib/cms/sitio";
 import ContactForm from "@/app/components/ui/ContactForm";
-import { COMPANY_INFO } from "@/lib/data";
-import { SITE_NAV, SITE_PUBLIC, LANDING_HERO_BACKGROUNDS } from "@/lib/visual-kit/hakamo";
+import { LANDING_HERO_BACKGROUNDS } from "@/lib/visual-kit/hakamo";
 import { btnGhostOnNight, btnGlow } from "@/lib/visual-kit/styles";
 import { Grain } from "../grain";
 import { LandingHeader } from "../chrome-header";
@@ -10,48 +13,34 @@ import { LandingHeroSection } from "../landing-hero-section";
 import { Reveal } from "../reveal";
 import { PublicFooter } from "../public-footer";
 import { ScrollProgress } from "../scroll-progress";
+import { Encabezado, ItemImagen, SeccionBloque } from "../seccion";
 import { RoutePanel } from "./route-panel";
 
-const CHANNELS = [
-  {
-    href: COMPANY_INFO.social.whatsapp,
-    kicker: "WhatsApp / Cotizaciones",
-    title: COMPANY_INFO.telefono,
-    detail: "Respuesta rápida para proyectos y consultas",
-    external: true,
-  },
-  {
-    href: `tel:+1${COMPANY_INFO.telefonoAlt.replace(/-/g, "")}`,
-    kicker: "Teléfono",
-    title: COMPANY_INFO.telefonoAlt,
-    detail: "Línea directa con el equipo Hakamo",
-    external: false,
-  },
-  {
-    href: `mailto:${COMPANY_INFO.email}`,
-    kicker: "Correo gestión",
-    title: COMPANY_INFO.email,
-    detail: "Cotizaciones y atención empresarial",
-    external: false,
-  },
-  {
-    href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(COMPANY_INFO.ubicacion)}`,
-    kicker: "Dirección",
-    title: COMPANY_INFO.ubicacion,
-    detail: "Oficina de Hakamo",
-    external: true,
-  },
-  {
-    href: COMPANY_INFO.social.instagram,
-    kicker: "Redes",
-    title: "Instagram @hakamord",
-    detail: "LinkedIn · Hakamo",
-    external: true,
-  },
-];
+/** Tarjetas de contacto armadas con los datos de la Configuración del sitio. */
+function canalesDesdeContacto(contacto: Contacto, redes: Red[]): Item[] {
+  const canales: Omit<Item, "subtitulo">[] = [
+    { etiqueta: "WhatsApp / Cotizaciones", titulo: contacto.telefono, texto: "Respuesta rápida para proyectos y consultas", enlace: contacto.whatsappUrl, imagen: null },
+    { etiqueta: "Teléfono", titulo: contacto.telefonoAlt, texto: "Línea directa con el equipo Hakamo", enlace: contacto.telefonoAltUrl, imagen: null },
+    { etiqueta: "Correo gestión", titulo: contacto.email, texto: "Cotizaciones y atención empresarial", enlace: `mailto:${contacto.email}`, imagen: null },
+    { etiqueta: "Dirección", titulo: contacto.direccion, texto: "Oficina de Hakamo", enlace: contacto.mapaUrl, imagen: null },
+    {
+      etiqueta: "Redes",
+      titulo: redes[0]?.texto || redes[0]?.nombre || "",
+      texto: redes.slice(1).map((red) => red.texto || red.nombre).join(" · "),
+      enlace: redes[0]?.url ?? "",
+      imagen: null,
+    },
+  ];
+  return canales.filter((canal) => canal.enlace && canal.titulo).map((canal) => ({ ...canal, subtitulo: "" }));
+}
 
-export function ContactLanding() {
-  const site = SITE_PUBLIC;
+const externo = (href: string) => /^https?:/.test(href);
+
+export function ContactLanding({ contenido }: { contenido: ContenidoContacto }) {
+  const { contacto, redes } = useSitio();
+  const { portada, canales, formulario, ruta } = contenido;
+  const [linea1, ...resto] = lineasTitulo(portada.titulo);
+  const tarjetas = canales.elementos.length > 0 ? canales.elementos : canalesDesdeContacto(contacto, redes);
 
   return (
     <div className="landing min-h-[100svh] bg-night text-paper">
@@ -65,106 +54,110 @@ export function ContactLanding() {
         Saltar al formulario
       </a>
 
-      <LandingHeader
-        name={site.name}
-        links={SITE_NAV}
-        ctaHref="#formulario"
-        ctaLabel="Escribirnos"
-        cvHref={site.cvHref}
-        cvLabel={site.cvLabel}
-      />
+      <LandingHeader />
 
-      <LandingHeroSection background={LANDING_HERO_BACKGROUNDS.contact}>
+      <LandingHeroSection background={LANDING_HERO_BACKGROUNDS.contact} fondo={portada.fondo}>
         <div className="landing-hero-inner mx-auto max-w-3xl px-4 text-center sm:px-6">
-          <p className="text-[11px] font-medium uppercase tracking-[0.42em] text-glow">Hablemos</p>
+          <p className="text-[11px] font-medium uppercase tracking-[0.42em] text-glow">{portada.antetitulo}</p>
           <h1 className="font-display mt-5 text-[clamp(2.1rem,6vw,4rem)] leading-[1.05] tracking-[-0.03em] text-paper">
-            Hablemos de
-            <span className="mt-1 block italic text-glow">su proyecto</span>
+            {linea1}
+            {resto.length > 0 ? <span className="mt-1 block italic text-glow">{resto.join(" ")}</span> : null}
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-sm leading-6 text-paper/70 sm:text-base">
-            Escríbenos o llámanos. Respondemos en menos de 24 horas.
-          </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <a href="#formulario" className={btnGlow}>
-              Escribirnos ahora
-            </a>
-            <a href="#ruta" className={btnGhostOnNight}>
-              Cómo llegar
-            </a>
-          </div>
+          {portada.texto ? <p className="mx-auto mt-6 max-w-2xl text-sm leading-6 text-paper/70 sm:text-base">{portada.texto}</p> : null}
+          {portada.botonPrincipal || portada.botonSecundario ? (
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              {portada.botonPrincipal ? (
+                <a href={portada.botonPrincipal.url} className={btnGlow}>
+                  {portada.botonPrincipal.texto}
+                </a>
+              ) : null}
+              {portada.botonSecundario ? (
+                <a href={portada.botonSecundario.url} className={btnGhostOnNight}>
+                  {portada.botonSecundario.texto}
+                </a>
+              ) : null}
+            </div>
+          ) : null}
         </div>
       </LandingHeroSection>
 
-      <section className="bg-night px-4 py-16 sm:px-6 sm:py-20">
-        <div className="mx-auto max-w-6xl">
-          <Reveal from="up">
-            <p className="text-[11px] uppercase tracking-[0.32em] text-glow">Canales</p>
-            <h2 className="font-display mt-3 max-w-2xl text-3xl leading-snug text-paper sm:text-4xl">
-              Cómo contactarnos
-            </h2>
-          </Reveal>
-          <div className="mt-10 grid gap-4 sm:grid-cols-2">
-            {CHANNELS.map((channel, index) => (
-              <Reveal key={channel.href + channel.kicker} delay={index * 60} from="up">
-                <a
-                  href={channel.href}
-                  className="group block h-full rounded-[1.5rem] border border-white/10 bg-white/5 p-6 transition hover:border-glow/40 sm:p-7"
-                  {...(channel.external ? { target: "_blank", rel: "noreferrer" } : {})}
-                >
-                  <p className="text-[11px] uppercase tracking-[0.28em] text-glow">{channel.kicker}</p>
-                  <h3 className="font-display mt-3 break-all text-xl leading-snug text-paper sm:text-2xl">
-                    {channel.title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-6 text-paper/65">{channel.detail}</p>
-                  <p className="mt-5 text-sm font-semibold text-glow transition group-hover:translate-x-0.5">
-                    Abrir →
-                  </p>
-                </a>
-              </Reveal>
-            ))}
-          </div>
+      {canales.mostrar ? (
+        <SeccionBloque fondo={canales.fondo} base="night" className="px-4 py-16 sm:px-6 sm:py-20">
+          {(p) => (
+            <>
+              <Encabezado s={canales} p={p} grande={false} />
+              <div className="mt-10 grid gap-4 sm:grid-cols-2">
+                {tarjetas.map((canal, index) => (
+                  <Reveal key={(canal.enlace ?? "") + index} delay={index * 60} from="up">
+                    <a
+                      href={canal.enlace ?? "#"}
+                      className={`group block h-full rounded-[1.5rem] border p-6 transition sm:p-7 ${
+                        canales.fondo.tono === "claro" ? "border-white/10 bg-white/5 hover:border-glow/40" : "border-ink/10 bg-ink/5 hover:border-accent/40"
+                      }`}
+                      {...(externo(canal.enlace ?? "") ? { target: "_blank", rel: "noreferrer" } : {})}
+                    >
+                      <ItemImagen item={canal} className="mb-4 aspect-[16/9] w-full rounded-2xl object-cover" />
+                      <p className={`text-[11px] uppercase tracking-[0.28em] ${p.acento}`}>{canal.etiqueta}</p>
+                      <h3 className="font-display mt-3 break-all text-xl leading-snug sm:text-2xl">{canal.titulo}</h3>
+                      {canal.texto ? <p className={`mt-2 text-sm leading-6 ${p.suave}`}>{canal.texto}</p> : null}
+                      <p className={`mt-5 text-sm font-semibold transition group-hover:translate-x-0.5 ${p.acento}`}>
+                        {canales.boton?.texto ?? "Abrir →"}
+                      </p>
+                    </a>
+                  </Reveal>
+                ))}
+              </div>
+            </>
+          )}
+        </SeccionBloque>
+      ) : null}
+
+      {formulario.mostrar ? (
+        <div id="formulario" className="scroll-mt-24">
+          <SeccionBloque fondo={formulario.fondo} base="night" className="px-4 py-16 sm:px-6 sm:py-24">
+            {(p) => (
+              <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+                <Reveal from="up">
+                  {formulario.antetitulo ? <p className={`text-[11px] uppercase tracking-[0.32em] ${p.acento}`}>{formulario.antetitulo}</p> : null}
+                  <h2 className="font-display mt-3 text-3xl leading-snug sm:text-4xl">{formulario.titulo}</h2>
+                  {formulario.texto ? <p className={`mt-4 max-w-md text-sm leading-6 ${p.suave}`}>{formulario.texto}</p> : null}
+                </Reveal>
+
+                <Reveal from="up" delay={80}>
+                  <div className={`rounded-[1.8rem] border border-white/10 p-6 text-paper sm:p-8 ${formulario.fondo.tono === "claro" ? "bg-white/5" : "bg-night"}`}>
+                    <ContactForm tone="night" />
+                  </div>
+                </Reveal>
+              </div>
+            )}
+          </SeccionBloque>
         </div>
-      </section>
+      ) : null}
 
-      <section id="formulario" className="bg-night px-4 py-16 sm:px-6 sm:py-24">
-        <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
-          <Reveal from="up">
-            <p className="text-[11px] uppercase tracking-[0.32em] text-glow">Mensaje</p>
-            <h2 className="font-display mt-3 text-3xl leading-snug text-paper sm:text-4xl">
-              Cuéntanos tu operación
-            </h2>
-            <p className="mt-4 max-w-md text-sm leading-6 text-paper/65">
-              Completa el formulario y te respondemos con alcance, tiempos y siguiente paso.
-            </p>
-          </Reveal>
-
-          <Reveal from="up" delay={80}>
-            <div className="rounded-[1.8rem] border border-white/10 bg-white/5 p-6 sm:p-8">
-              <ContactForm tone="night" />
-            </div>
-          </Reveal>
+      {ruta.mostrar ? (
+        <div id="ruta" className="scroll-mt-24">
+          <SeccionBloque fondo={ruta.fondo} base="night" className="px-4 py-16 sm:px-6 sm:py-24">
+            {(p) => (
+              <>
+                <Reveal from="up">
+                  {ruta.antetitulo ? <p className={`text-[11px] uppercase tracking-[0.32em] ${p.acento}`}>{ruta.antetitulo}</p> : null}
+                  <h2 className="font-display mt-3 text-3xl leading-snug sm:text-4xl">{ruta.titulo}</h2>
+                  {ruta.texto ? (
+                    <p className={`mt-4 max-w-xl text-sm leading-6 ${p.suave}`}>{ruta.texto.replaceAll("{direccion}", contacto.direccion)}</p>
+                  ) : null}
+                </Reveal>
+                <div className="mt-10 text-paper">
+                  <Reveal from="up" delay={60}>
+                    <RoutePanel />
+                  </Reveal>
+                </div>
+              </>
+            )}
+          </SeccionBloque>
         </div>
-      </section>
+      ) : null}
 
-      <section id="ruta" className="scroll-mt-24 bg-night px-4 py-16 sm:px-6 sm:py-24">
-        <div className="mx-auto max-w-6xl">
-          <Reveal from="up">
-            <p className="text-[11px] uppercase tracking-[0.32em] text-glow">Ubicación</p>
-            <h2 className="font-display mt-3 text-3xl leading-snug text-paper sm:text-4xl">Cómo llegar</h2>
-            <p className="mt-4 max-w-xl text-sm leading-6 text-paper/65">
-              Hakamo está en {COMPANY_INFO.ubicacion}. El mapa ya muestra el punto. Calcula el tiempo
-              desde tu ubicación o desde una ciudad.
-            </p>
-          </Reveal>
-          <div className="mt-10">
-            <Reveal from="up" delay={60}>
-              <RoutePanel />
-            </Reveal>
-          </div>
-        </div>
-      </section>
-
-      <PublicFooter site={site} links={SITE_NAV} />
+      <PublicFooter />
     </div>
   );
 }

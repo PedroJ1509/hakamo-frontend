@@ -1,12 +1,8 @@
-import type { Metadata } from "next";
 import { GateLanding } from "@/app/components/visual-kit/landing/gate-landing";
+import { contenidoPuerta, metadataPuerta } from "@/lib/cms/puerta";
 
-export const metadata: Metadata = {
-  title: "Hakamo | Empresas y talento",
-  description:
-    "Hakamo conecta empresas con talento. Elige si buscas personal para tu operación o si buscas empleo.",
-};
+export const generateMetadata = metadataPuerta;
 
-export default function HomePage() {
-  return <GateLanding />;
+export default async function HomePage() {
+  return <GateLanding contenido={await contenidoPuerta()} />;
 }

@@ -1,17 +1,12 @@
 "use client";
 
+import { useSitio } from "@/app/components/sitio-context";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { CIUDADES_RD } from "@/lib/ciudades-rd";
-import { COMPANY_INFO } from "@/lib/data";
 import { btnGhostOnNight, btnGlow } from "@/lib/visual-kit/styles";
 
-/** Hakamo — Montecristi, RD */
-const DEST = {
-  lat: 19.8469,
-  lng: -71.6453,
-  label: COMPANY_INFO.ubicacion,
-};
+type Destino = { lat: number; lng: number; label: string };
 
 const KNOWN_COORDS: Record<string, { lat: number; lng: number }> = {
   "santo domingo": { lat: 18.4861, lng: -69.9312 },
@@ -58,7 +53,7 @@ function formatCoords(lat: number, lng: number) {
   return `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
 }
 
-async function fetchRoute(fromLat: number, fromLng: number): Promise<{ minutes: number; km: number } | null> {
+async function fetchRoute(DEST: Destino, fromLat: number, fromLng: number): Promise<{ minutes: number; km: number } | null> {
   try {
     const url = `https://router.project-osrm.org/route/v1/driving/${fromLng},${fromLat};${DEST.lng},${DEST.lat}?overview=false`;
     const res = await fetch(url);
@@ -110,6 +105,11 @@ async function reverseGeocode(lat: number, lng: number): Promise<string | null> 
 }
 
 export function RoutePanel() {
+  const { contacto } = useSitio();
+  const DEST = useMemo<Destino>(
+    () => ({ lat: contacto.latitud, lng: contacto.longitud, label: contacto.direccion }),
+    [contacto.latitud, contacto.longitud, contacto.direccion],
+  );
   const [mode, setMode] = useState<OriginMode>("exact");
   const [route, setRoute] = useState<RouteInfo | null>(null);
   const [loading, setLoading] = useState(false);
@@ -125,14 +125,14 @@ export function RoutePanel() {
       return `https://maps.google.com/maps?saddr=${origin.lat},${origin.lng}&daddr=${DEST.lat},${DEST.lng}&hl=es&output=embed`;
     }
     return `https://www.google.com/maps?q=${DEST.lat},${DEST.lng}&ll=${DEST.lat},${DEST.lng}&z=13&output=embed`;
-  }, [origin]);
+  }, [origin, DEST]);
 
   const directionsUrl = useMemo(() => {
     if (origin) {
       return `https://www.google.com/maps/dir/?api=1&origin=${origin.lat},${origin.lng}&destination=${DEST.lat},${DEST.lng}&travelmode=driving`;
     }
     return `https://www.google.com/maps/dir/?api=1&destination=${DEST.lat},${DEST.lng}&travelmode=driving`;
-  }, [origin]);
+  }, [origin, DEST]);
 
   const applyOrigin = useCallback(async (lat: number, lng: number, fromLabel: string, extras?: { accuracy?: number; address?: string }) => {
     setLoading(true);
@@ -143,7 +143,7 @@ export function RoutePanel() {
       accuracy: extras?.accuracy,
       address: extras?.address,
     });
-    const result = await fetchRoute(lat, lng);
+    const result = await fetchRoute(DEST, lat, lng);
     setLoading(false);
     if (!result) {
       setError("No pudimos calcular la ruta ahora. Abre Google Maps para ver el tiempo en vivo.");
@@ -151,7 +151,7 @@ export function RoutePanel() {
       return;
     }
     setRoute({ ...result, fromLabel });
-  }, []);
+  }, [DEST]);
 
   const useMyExactLocation = () => {
     if (!navigator.geolocation) {
@@ -376,7 +376,7 @@ export function RoutePanel() {
         ) : !locating && !loading ? (
           <div className="mt-8 rounded-[1.25rem] border border-dashed border-white/15 p-5">
             <p className="text-sm leading-6 text-paper/65">
-              El mapa muestra Montecristi. Pulsa <strong className="font-semibold text-paper">Mi ubicación exacta</strong>{" "}
+              El mapa muestra {DEST.label}. Pulsa <strong className="font-semibold text-paper">Mi ubicación exacta</strong>{" "}
               para partir desde donde estás, o elige una ciudad.
             </p>
           </div>

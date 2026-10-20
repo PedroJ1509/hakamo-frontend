@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import type { Division, Vacante } from "@/types";
 import type { VacanteCard } from "@/lib/demo-vacantes";
 import { TalentBoard } from "./talent-board";
+import type { ContenidoVacantes } from "@/lib/cms/vacantes";
+import { FondoSeccion } from "../fondo-seccion";
 
 type DisponibilidadFilter = "" | "activa" | "cerrada";
 type TipoFilter = "" | Vacante["tipo"];
@@ -15,11 +17,13 @@ export function VacantesListing({
   divisiones,
   initialCategoria,
   initialQuery = "",
+  contenido,
 }: {
   vacantes: VacanteCard[];
   divisiones: Division[];
   initialCategoria: string;
   initialQuery?: string;
+  contenido: ContenidoVacantes;
 }) {
   const router = useRouter();
   const [query, setQuery] = useState(initialQuery);
@@ -90,16 +94,19 @@ export function VacantesListing({
   };
 
   return (
-    <section className="chrome-frame bg-[#F5F7FB] py-10 text-[#0A2342] sm:py-14">
-      <div className="mx-auto w-full">
-        <p className="text-sm font-semibold text-[#1F5FD6]">Empleos</p>
+    <section
+      className={`relative isolate bg-[#F5F7FB] py-10 sm:py-14 ${
+        contenido.fondo.tono === "claro" ? "text-white [&_.texto-suave]:text-white/75" : "text-[#0A2342]"
+      }`}
+    >
+      <FondoSeccion fondo={contenido.fondo} />
+      <div className="chrome-frame relative mx-auto w-full">
+        <p className="text-sm font-semibold text-[#1F5FD6]">{contenido.antetitulo}</p>
         <h1 className="font-[family-name:var(--font-space-grotesk)] mt-2 max-w-full text-balance text-[clamp(2rem,6vw,3.4rem)] font-extrabold leading-[1.05] tracking-[-0.03em]">
-          {activeName ? `Vacantes de ${activeName}` : "Vacantes abiertas"}
+          {activeName ? contenido.tituloArea.replaceAll("{area}", activeName) : contenido.titulo}
         </h1>
-        <p className="mt-2 max-w-xl text-base text-[#33466A] sm:text-lg">
-          {activeName
-            ? "Puedes cambiar de área o buscar por ciudad."
-            : "Elige un área o busca por puesto y ciudad. Los puestos cerrados quedan aparte."}
+        <p className="texto-suave mt-2 max-w-xl text-base text-[#33466A] sm:text-lg">
+          {activeName ? contenido.textoArea.replaceAll("{area}", activeName) : contenido.texto}
         </p>
         <TalentBoard
           items={filtered}
@@ -127,6 +134,7 @@ export function VacantesListing({
           }}
           openCounts={openCounts}
           closedCount={closedCount}
+          textos={contenido.textos}
         />
       </div>
     </section>

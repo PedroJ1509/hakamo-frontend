@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Division, Vacante } from "@/types";
 import { resolveVacanteImage, type VacanteCard } from "@/lib/demo-vacantes";
-import { SITE_NAV, SITE_PUBLIC, LANDING_HERO_BACKGROUNDS } from "@/lib/visual-kit/hakamo";
+import { LANDING_HERO_BACKGROUNDS } from "@/lib/visual-kit/hakamo";
 import { btnPrimary, btnSecondary } from "@/lib/visual-kit/styles";
 import { LandingHeader } from "../chrome-header";
 import { EmptyState } from "../empty-state";
@@ -52,7 +52,6 @@ export function JobsLanding({
   total: number;
   embedded?: boolean;
 }) {
-  const site = SITE_PUBLIC;
   const [nombre, setNombre] = useState("");
   const [localizacion, setLocalizacion] = useState("");
   const [area, setArea] = useState("");
@@ -316,18 +315,12 @@ export function JobsLanding({
       </a>
 
       <LandingHeader
-        name={site.name}
-        links={SITE_NAV}
-        ctaHref="/contacto"
-        ctaLabel="Contactar"
-        cvHref={site.cvHref}
-        cvLabel={site.cvLabel}
         tone="paper"
       />
 
       {body}
 
-      <PublicFooter site={site} links={SITE_NAV} tone="paper" />
+      <PublicFooter tone="paper" />
     </div>
   );
 }

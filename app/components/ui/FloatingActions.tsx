@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { COMPANY_INFO } from '@/lib/data'
+import { useSitio } from '@/app/components/sitio-context'
 
 const PRIMARY = '#1E3A5F'
 
@@ -25,6 +25,7 @@ function IconWhatsApp({ size = 22 }: { size?: number }) {
 
 /** Botones flotantes: WhatsApp + volver arriba. */
 export default function FloatingActions() {
+  const { contacto, mostrarWhatsapp } = useSitio()
   const [showTop, setShowTop] = useState(false)
 
   useEffect(() => {
@@ -59,8 +60,9 @@ export default function FloatingActions() {
         ) : null}
       </AnimatePresence>
 
+      {mostrarWhatsapp ? (
       <motion.a
-        href={COMPANY_INFO.social.whatsapp}
+        href={contacto.whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Escribir por WhatsApp"
@@ -71,6 +73,7 @@ export default function FloatingActions() {
       >
         <IconWhatsApp size={24} />
       </motion.a>
+      ) : null}
     </div>
   )
 }

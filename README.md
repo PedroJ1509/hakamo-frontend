@@ -2,7 +2,7 @@
 
 Sitio público de [Hakamo](https://hakamo.com.do), outsourcing de gestión humana para construcción e industria en República Dominicana. El visitante elige una de dos experiencias: **empresas** (contratar personal) o **empleos** (buscar trabajo).
 
-Next.js 16 (App Router), React 19 y Tailwind CSS 4. El contenido institucional vive en el repositorio. Vacantes, blog y formularios pueden salir de Strapi; si el CMS no responde, las vacantes usan datos de demostración.
+Next.js 16 (App Router), React 19 y Tailwind CSS 4. Todo el contenido (textos, imágenes, fondos, menús, contacto) se edita en Strapi. El texto original de cada página queda en el repositorio como respaldo: si el CMS no responde, el sitio se ve igual que antes.
 
 La referencia completa de arquitectura, datos y animaciones está en [docs/proyecto.md](docs/proyecto.md).
 
@@ -29,12 +29,11 @@ Abre [http://localhost:3000](http://localhost:3000).
 
 ## Variables de entorno
 
-Crea `.env.local` en la raíz. Sin estas variables el sitio institucional sigue funcionando; vacantes y blog caen a su respaldo.
+Crea `.env.local` en la raíz. Sin estas variables el sitio funciona con el texto de respaldo.
 
 | Variable | Uso |
 | --- | --- |
 | `NEXT_PUBLIC_STRAPI_URL` | URL del CMS, sin barra final. Ejemplo: `https://cms.ejemplo.com` |
-| `NEXT_PUBLIC_DIVISION_SLUG` | División de Strapi. Por defecto `hakamo-outsourcing`. Filtra los posts relacionados en `/blog/[slug]` |
 
 Imágenes remotas permitidas en `next.config.ts`: `res.cloudinary.com`.
 
@@ -81,15 +80,35 @@ Estas rutas usan el layout de `app/(site)` (cabecera y pie propios), no el de la
 
 ## Dónde se edita el contenido
 
-| Qué cambiar | Archivo |
-| --- | --- |
-| Textos institucionales, servicios, FAQ, equipo, clientes | `lib/data.ts` |
-| Navegación, textos de hero y fondos | `lib/visual-kit/hakamo.ts` |
-| Obras de la página Proyectos | `lib/demo-proyectos.ts` |
-| Vacantes de respaldo | `lib/demo-vacantes.ts` |
-| Llamadas a Strapi | `lib/api.ts` |
+En el panel de Strapi. Cada página es un tipo único «Página · …» y lo que se repite en todas está en «Configuración del sitio».
 
-Cada página de `app/(hub)` es delgada: exporta metadata y renderiza una landing en `app/components/visual-kit/landing/`.
+| Qué cambiar | En Strapi |
+| --- | --- |
+| Logo, teléfonos, correos, dirección, punto del mapa, redes, menús, pie, botón de WhatsApp | Configuración del sitio |
+| Textos, imágenes y fondos de una página | Página · (nombre de la página) |
+| Servicios del catálogo | Servicio |
+| Obras de Proyectos | Proyecto |
+| Clientes | Cliente |
+| Vacantes y áreas del portal | Vacante y División |
+| Artículos del blog | Post |
+| Mensajes y postulaciones recibidos | Mensaje y Postulacion |
+
+Cómo leer los campos:
+
+- Cada bloque de página tiene **mostrar** (ocultar la sección), textos, una lista de elementos, botones y **fondo**.
+- **Fondo**: imagen o video, color, color y opacidad de la capa, y **tono del texto** (claro sobre fondos oscuros, oscuro sobre fondos claros). Un color sin imagen deja la sección en color plano.
+- Un salto de línea en el título de una portada lo parte en dos líneas.
+- En enlaces se puede escribir `whatsapp`, `telefono` o `correo`; en textos, `{correo}`, `{correoReclutamiento}`, `{telefono}` y `{direccion}`. Se cambian por los datos de Configuración del sitio.
+- Un texto o botón vacío no se muestra. El texto de respaldo solo aparece si la página no llega del CMS.
+
+Un cambio publicado tarda hasta un minuto en verse: el sitio guarda cada página 60 segundos (`lib/cms/strapi.ts`).
+
+| En el código | Archivo |
+| --- | --- |
+| Lectura del CMS y respaldo de cada página | `lib/cms/` |
+| Datos originales usados como respaldo | `lib/data.ts`, `lib/visual-kit/hakamo.ts`, `lib/demo-*.ts` |
+| Vacantes de demostración (solo en desarrollo y si Strapi no tiene ninguna; en producción nunca) | `lib/demo-vacantes.ts`, `lib/load-vacantes.ts` |
+| Envío de postulaciones y CV (`POST /api/postulaciones/enviar`) | `lib/cv/enviar-postulacion.ts` |
 
 ## Estructura
 
