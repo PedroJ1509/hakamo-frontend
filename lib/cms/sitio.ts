@@ -5,6 +5,7 @@ import type { NavLink } from '@/lib/visual-kit/types'
 import type { StrapiMedia } from '@/types'
 import { metadataDesde, resolverFondo, type Boton, type Fondo, type FondoCms, type Seo } from './comun'
 import { getPagina, lista, mediaUrl, texto } from './strapi'
+import { SITIO_URL } from '@/lib/sitio-url'
 
 interface SitioCms {
   nombre: string
@@ -138,7 +139,7 @@ const leerSitio = cache(() => getPagina<SitioCms>('configuracion-sitio', POPULAT
 
 export async function metadataSitio() {
   const cms = await leerSitio()
-  return metadataDesde(cms?.seo, RESPALDO_SEO)
+  return { metadataBase: new URL(SITIO_URL), ...metadataDesde(cms?.seo, RESPALDO_SEO) }
 }
 
 export async function getSitio(): Promise<Sitio> {

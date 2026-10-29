@@ -34,6 +34,7 @@ Crea `.env.local` en la raíz. Sin estas variables el sitio funciona con el text
 | Variable | Uso |
 | --- | --- |
 | `NEXT_PUBLIC_STRAPI_URL` | URL del CMS, sin barra final. Ejemplo: `https://cms.ejemplo.com` |
+| `NEXT_PUBLIC_SITE_URL` | Dirección pública del sitio, sin barra final. Va en `sitemap.xml`, `robots.txt` y los metadatos. Si falta: `https://hakamo.com.do` |
 | `REVALIDAR_SECRETO` | Clave que Strapi manda al avisar de un cambio (`POST /api/revalidar`). La misma que `SITIO_REVALIDAR_SECRETO` en el CMS. Sin ella, los cambios se ven como mucho un minuto después. |
 
 Imágenes remotas permitidas en `next.config.ts`: `res.cloudinary.com`.
