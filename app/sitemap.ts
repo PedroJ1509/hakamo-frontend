@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next'
+import { idsObras } from '@/lib/cms/proyectos'
 import { getColeccion } from '@/lib/cms/strapi'
 import { SITIO_URL } from '@/lib/sitio-url'
 
@@ -27,17 +28,23 @@ type Publicado = { documentId: string; slug?: string; updatedAt?: string }
 const fecha = (valor?: string) => (valor ? new Date(valor) : undefined)
 
 /**
- * Lista de páginas para los buscadores. Incluye cada vacante abierta y cada artículo
- * activo del blog, así que lo nuevo que se publica en el panel aparece solo.
+ * Lista de páginas para los buscadores. Incluye cada proyecto, cada vacante abierta y
+ * cada artículo activo del blog, así que lo nuevo que se publica en el panel aparece solo.
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [vacantes, articulos] = await Promise.all([
+  const [obras, vacantes, articulos] = await Promise.all([
+    idsObras(),
     getColeccion<Publicado>('vacantes', 'filters[estado][$eq]=activa&fields[0]=updatedAt&pagination[pageSize]=100'),
     getColeccion<Publicado>('posts', 'filters[activo][$eq]=true&fields[0]=slug&fields[1]=updatedAt&pagination[pageSize]=100'),
   ])
 
   return [
     ...PAGINAS.map((p) => ({ url: `${SITIO_URL}${p.ruta}`, changeFrequency: p.cambia, priority: p.prioridad })),
+    ...obras.map((id) => ({
+      url: `${SITIO_URL}/proyectos/${id}`,
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    })),
     ...(vacantes ?? []).map((v) => ({
       url: `${SITIO_URL}/empleos/vacantes/${v.documentId}`,
       lastModified: fecha(v.updatedAt),

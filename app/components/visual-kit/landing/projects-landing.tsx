@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { lineasTitulo } from "@/lib/cms/comun";
 import type { Clip, ContenidoProyectos } from "@/lib/cms/proyectos";
 import { LANDING_HERO_BACKGROUNDS } from "@/lib/visual-kit/hakamo";
@@ -84,7 +85,7 @@ function ClipStage({ clip }: { clip: Clip }) {
 }
 
 export function ProjectsLanding({ contenido }: { contenido: ContenidoProyectos }) {
-  const { portada, galeria, obras, clip, cierre, listaObras } = contenido;
+  const { portada, galeria, obras, clip, cierre, listaObras, ficha } = contenido;
   const [principal, ...resto] = listaObras;
   const obrasClaro = obras.fondo.tono === "claro";
 
@@ -161,7 +162,8 @@ export function ProjectsLanding({ contenido }: { contenido: ContenidoProyectos }
         <section id="obras" className="relative isolate scroll-mt-[var(--header-h)] bg-paper">
           <FondoSeccion fondo={obras.fondo} />
           {principal ? (
-            <article className="relative min-h-[78svh] overflow-hidden bg-night text-paper">
+            <article className="group relative min-h-[78svh] overflow-hidden bg-night text-paper">
+              <Link href={`/proyectos/${principal.id}`} className="absolute inset-0 z-20" aria-label={`${ficha.textoVerProyecto}: ${principal.titulo}`} />
               <Image src={principal.imagen} alt="" fill className="projects-hero-photo object-cover" sizes="100vw" unoptimized={externa(principal.imagen)} />
               <div className="hero-vignette" aria-hidden />
               <div
@@ -180,6 +182,9 @@ export function ProjectsLanding({ contenido }: { contenido: ContenidoProyectos }
                   <h2 className="font-display mt-4 text-[clamp(2.4rem,6vw,4.6rem)] leading-[1.02] tracking-[-0.03em]">{principal.titulo}</h2>
                   <p className="mt-5 max-w-md text-sm leading-6 text-paper/75 sm:text-base">{principal.texto}</p>
                   <p className="mt-6 text-[11px] font-semibold uppercase tracking-[0.22em] text-glow">{principal.rol}</p>
+                  <span className="mt-8 inline-flex items-center gap-2 rounded-full border border-white/25 px-5 py-3 text-sm font-semibold transition group-hover:gap-3 group-hover:border-glow group-hover:text-glow">
+                    {ficha.textoVerProyecto} <span aria-hidden>→</span>
+                  </span>
                 </Reveal>
               </div>
             </article>
@@ -201,14 +206,16 @@ export function ProjectsLanding({ contenido }: { contenido: ContenidoProyectos }
                   from={imageFirst ? "left" : "right"}
                   className={`projects-frame relative aspect-[4/5] overflow-hidden sm:aspect-[5/4] ${index % 2 === 0 ? "lg:mt-10" : ""}`}
                 >
-                  <Image
-                    src={project.imagen}
-                    alt=""
-                    fill
-                    className="projects-photo object-cover"
-                    sizes="(max-width: 1024px) 100vw, 46vw"
-                    unoptimized={externa(project.imagen)}
-                  />
+                  <Link href={`/proyectos/${project.id}`} className="group absolute inset-0 block" aria-label={`${ficha.textoVerProyecto}: ${project.titulo}`}>
+                    <Image
+                      src={project.imagen}
+                      alt=""
+                      fill
+                      className="projects-photo object-cover transition duration-700 group-hover:scale-105"
+                      sizes="(max-width: 1024px) 100vw, 46vw"
+                      unoptimized={externa(project.imagen)}
+                    />
+                  </Link>
                 </Reveal>
               );
               const copy = (
@@ -220,12 +227,22 @@ export function ProjectsLanding({ contenido }: { contenido: ContenidoProyectos }
                     {[project.estado ? ESTADO_LABEL[project.estado] : "", project.sector].filter(Boolean).join(" · ")}
                   </p>
                   <h2 className={`font-display mt-3 max-w-md text-3xl leading-snug sm:text-4xl ${obrasClaro ? "text-paper" : "text-ink"}`}>
-                    {project.titulo}
+                    <Link href={`/proyectos/${project.id}`} className={`transition ${obrasClaro ? "hover:text-glow" : "hover:text-accent"}`}>
+                      {project.titulo}
+                    </Link>
                   </h2>
                   <p className={`mt-4 max-w-md text-sm leading-6 ${obrasClaro ? "text-paper/65" : "text-muted"}`}>{project.texto}</p>
                   <p className={`mt-5 text-[11px] font-semibold uppercase tracking-[0.2em] ${obrasClaro ? "text-paper/70" : "text-ink/70"}`}>
                     {project.rol}
                   </p>
+                  <Link
+                    href={`/proyectos/${project.id}`}
+                    className={`mt-7 inline-flex items-center gap-2 rounded-full border px-5 py-3 text-sm font-semibold transition hover:gap-3 ${
+                      obrasClaro ? "border-white/25 text-paper hover:border-glow hover:text-glow" : "border-ink/15 text-ink hover:border-accent hover:text-accent"
+                    }`}
+                  >
+                    {ficha.textoVerProyecto} <span aria-hidden>→</span>
+                  </Link>
                 </Reveal>
               );
 
