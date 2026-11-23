@@ -1,12 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSitio } from "@/app/components/sitio-context";
 import type { NavLink } from "@/lib/visual-kit/types";
-import { Logo } from "./logo";
-import { PostulateCta } from "./postulate-cta";
+import { conSubmenus } from "@/lib/visual-kit/submenus";
+import { SiteHeader } from "./site-header";
 
 function isActive(pathname: string, href: string, links: NavLink[]) {
   const path = href.split("#")[0] || "/";
@@ -21,9 +19,13 @@ function isActive(pathname: string, href: string, links: NavLink[]) {
   return pathname.startsWith(`${path}/`);
 }
 
+/** Destino que se muestra como botón principal en vez de como enlace del menú. */
+const SOLICITAR = "/empresas/solicitar";
+
 /**
- * Cabecera de las páginas de empresas. Nombre, menú, botón y contacto salen de la
- * Configuración del sitio; las props solo sirven para sobrescribirlos en una página.
+ * Cabecera de las páginas de empresas. El menú sale de la Configuración del
+ * sitio; los submenús, de lib/visual-kit/submenus. "Solicitar personal" pasa a
+ * ser el botón principal y "Busco empleo" vive en el cambio de audiencia.
  */
 export function ChromeHeader({
   name,
@@ -35,200 +37,37 @@ export function ChromeHeader({
 }: {
   name?: string;
   links?: NavLink[];
+  /** Solo si una página quiere otro botón principal. */
   cvHref?: string;
   cvLabel?: string;
   placement: "fixed" | "sticky";
   tone: "night" | "paper";
 }) {
   const sitio = useSitio();
-  const { contacto } = sitio;
-  name = name ?? sitio.nombre;
-  links = links ?? sitio.menuEmpresas;
-  cvHref = cvHref ?? sitio.botonCabeceraEmpresas.url;
-  cvLabel = cvLabel ?? sitio.botonCabeceraEmpresas.texto;
   const pathname = usePathname();
-  const [scrolled, setScrolled] = useState(false);
-  const [open, setOpen] = useState(false);
-  const night = tone === "night";
-  const showCv = Boolean(cvHref && cvLabel);
+  const menu = links ?? sitio.menuEmpresas;
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 16);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  const solicitar = menu.find((l) => l.href === SOLICITAR);
+  const cta =
+    cvHref && cvLabel
+      ? { texto: cvLabel, url: cvHref }
+      : solicitar
+        ? { texto: solicitar.label === "Solicitar" ? "Solicitar personal" : solicitar.label, url: solicitar.href }
+        : sitio.botonCabeceraEmpresas;
 
-  useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
-
-  useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [open]);
-
-  useEffect(() => {
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
-
-  const barClass = [
-    "chrome-header inset-x-0 top-0",
-    placement === "fixed" ? "fixed" : "sticky",
-    night ? "chrome-header-night" : "chrome-header-paper",
-    scrolled && !open ? "is-compact" : "",
-  ].join(" ");
-
-  const cvCta = showCv ? (
-    <PostulateCta href={cvHref!} label={cvLabel!} tone={tone} onNavigate={() => setOpen(false)} />
-  ) : null;
+  const items = conSubmenus(menu, sitio.submenus, solicitar && !(cvHref && cvLabel) ? [SOLICITAR] : []);
 
   return (
-    <>
-      <header className={barClass}>
-        <div className="chrome-header-inner mx-auto flex items-center justify-between gap-2 px-3 sm:gap-3 sm:px-5 xl:px-6">
-          <div className="flex shrink-0 items-center gap-3">
-            <Logo name={name} inverted={night} className={night ? "text-paper" : "text-ink"} />
-          </div>
-
-          <nav
-            className={`chrome-nav-tray hidden flex-1 justify-center lg:flex ${
-              night ? "chrome-nav-tray-night" : "chrome-nav-tray-paper"
-            }`}
-            aria-label="Principal"
-          >
-            {links.map((link) => {
-              const active = isActive(pathname, link.href, links);
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`chrome-nav-link ${active ? "is-active" : ""} ${
-                    night ? "chrome-nav-link-night" : "chrome-nav-link-paper"
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              );
-            })}
-          </nav>
-
-          {showCv ? (
-            <div className="hidden shrink-0 items-center justify-end gap-2 lg:flex">
-              {placement === "fixed" ? (
-                <PostulateCta href={cvHref!} label={cvLabel!} tone={tone} size="sm" />
-              ) : (
-                cvCta
-              )}
-            </div>
-          ) : null}
-
-          <button
-            type="button"
-            className={`chrome-menu-btn shrink-0 lg:hidden ${night ? "text-paper" : "text-ink"}`}
-            aria-expanded={open}
-            aria-controls="site-menu"
-            aria-label={open ? "Cerrar menú" : "Abrir menú"}
-            onClick={() => setOpen((value) => !value)}
-          >
-            <span className="relative block h-3.5 w-5" aria-hidden>
-              <span
-                className={`absolute left-0 h-0.5 w-5 rounded-full transition ${
-                  night ? "bg-paper" : "bg-ink"
-                } ${open ? "top-1.5 rotate-45" : "top-0"}`}
-              />
-              <span
-                className={`absolute left-0 top-1.5 h-0.5 w-5 rounded-full transition ${
-                  night ? "bg-paper" : "bg-ink"
-                } ${open ? "opacity-0" : "opacity-100"}`}
-              />
-              <span
-                className={`absolute left-0 h-0.5 w-5 rounded-full transition ${
-                  night ? "bg-paper" : "bg-ink"
-                } ${open ? "top-1.5 -rotate-45" : "top-3"}`}
-              />
-            </span>
-          </button>
-        </div>
-      </header>
-
-      {open ? (
-        <div
-          id="site-menu"
-          className={`chrome-mobile-panel fixed inset-x-0 bottom-0 top-[var(--header-h)] z-[70] overflow-y-auto lg:hidden ${
-            night ? "chrome-mobile-panel-night" : "chrome-mobile-panel-paper"
-          }`}
-        >
-          <div className="mx-auto flex max-w-lg flex-col gap-8 px-5 py-8">
-            <nav className="flex flex-col gap-1.5" aria-label="Móvil">
-              {links.map((link) => {
-                const active = isActive(pathname, link.href, links);
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={`chrome-mobile-link ${active ? "is-active" : ""}`}
-                    onClick={() => setOpen(false)}
-                  >
-                    <span>{link.label}</span>
-                    {active ? <span className="chrome-mobile-dot" aria-hidden /> : null}
-                  </Link>
-                );
-              })}
-            </nav>
-
-            <div className={`chrome-mobile-meta ${night ? "border-white/10" : "border-ink/10"}`}>
-              <a href={contacto.whatsappUrl} target="_blank" rel="noreferrer" className="chrome-mobile-meta-row" onClick={() => setOpen(false)}>
-                <span className="chrome-mobile-meta-label">WhatsApp</span>
-                <span>{contacto.telefono}</span>
-              </a>
-              <a href={contacto.telefonoAltUrl} className="chrome-mobile-meta-row" onClick={() => setOpen(false)}>
-                <span className="chrome-mobile-meta-label">Teléfono</span>
-                <span>{contacto.telefonoAlt}</span>
-              </a>
-              <a href={`mailto:${contacto.email}`} className="chrome-mobile-meta-row" onClick={() => setOpen(false)}>
-                <span className="chrome-mobile-meta-label">Correo</span>
-                <span className="truncate">{contacto.email}</span>
-              </a>
-            </div>
-
-            {showCv ? (
-              <div className="flex flex-col gap-3">
-                {placement === "fixed" ? (
-                  <PostulateCta
-                    href={cvHref!}
-                    label={cvLabel!}
-                    tone={tone}
-                    onNavigate={() => setOpen(false)}
-                  />
-                ) : (
-                  cvCta
-                )}
-              </div>
-            ) : null}
-          </div>
-        </div>
-      ) : null}
-    </>
-  );
-}
-
-function PhoneIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <path
-        d="M8.5 4.5h2.2l1.1 3.2-1.4 1.1a12.5 12.5 0 0 0 5.3 5.3l1.1-1.4 3.2 1.1v2.2a1.6 1.6 0 0 1-1.7 1.6A14.8 14.8 0 0 1 4.4 6.2 1.6 1.6 0 0 1 6 4.5Z"
-        stroke="currentColor"
-        strokeWidth="1.7"
-        strokeLinejoin="round"
-      />
-    </svg>
+    <SiteHeader
+      items={items}
+      nombre={name ?? sitio.nombre}
+      tone={tone}
+      placement={placement}
+      cta={cta}
+      audiencia="empresas"
+      // Las anclas no marcan activo: si no, todo el submenú de una página se encendería.
+      activo={(href) => !href.includes("#") && isActive(pathname, href, menu)}
+    />
   );
 }
 

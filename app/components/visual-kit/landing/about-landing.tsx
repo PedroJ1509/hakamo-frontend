@@ -58,7 +58,7 @@ export function AboutLanding({ contenido }: { contenido: ContenidoNosotros }) {
 
       <div id="contenido">
         {trayectoria.mostrar ? (
-          <SeccionBloque fondo={trayectoria.fondo} base="paper">
+          <SeccionBloque id="trayectoria" fondo={trayectoria.fondo} base="paper">
             {(p) => (
               <>
                 <Encabezado s={trayectoria} p={p} />
@@ -84,7 +84,7 @@ export function AboutLanding({ contenido }: { contenido: ContenidoNosotros }) {
         ) : null}
 
         {misionVision.mostrar ? (
-          <SeccionBloque fondo={misionVision.fondo} base="night">
+          <SeccionBloque id="mision-vision" fondo={misionVision.fondo} base="night">
             {(p) => (
               <>
                 <Encabezado s={misionVision} p={p} />
@@ -109,7 +109,7 @@ export function AboutLanding({ contenido }: { contenido: ContenidoNosotros }) {
         ) : null}
 
         {valores.mostrar ? (
-          <SeccionBloque fondo={valores.fondo} base="night" className={CONTINUA}>
+          <SeccionBloque id="valores" fondo={valores.fondo} base="night" className={CONTINUA}>
             {(p) => (
               <div className={`grid gap-10 border-t ${p.linea} pt-16 lg:grid-cols-[minmax(16rem,0.7fr)_minmax(0,1.3fr)] lg:gap-16`}>
                 <Reveal from="left">

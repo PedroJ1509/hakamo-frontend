@@ -2492,3 +2492,281 @@ body {
   }
 }
 
+
+/* ───────── Cabecera de dos pisos (site-header) ─────────
+ * Piso 1: contacto y audiencia, solo en escritorio. Piso 2: navegación a todo
+ * el ancho. --header-h suma los dos, así las anclas (scroll-mt) y el menú
+ * móvil se colocan solos.
+ */
+:root {
+  --topbar-h: 0px;
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --topbar-h: 2.25rem;
+    --header-h: calc(4.5rem + 2.25rem + env(safe-area-inset-top, 0px));
+  }
+}
+
+.site-header {
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  height: var(--header-h);
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.site-topbar {
+  display: none;
+  height: var(--topbar-h);
+  flex-shrink: 0;
+  background: #0b1f38;
+  color: rgb(255 255 255 / 0.72);
+  font-size: 12px;
+}
+
+@media (min-width: 1024px) {
+  .site-topbar {
+    display: block;
+  }
+}
+
+.site-topbar-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+.site-topbar-link:hover {
+  color: #fff;
+}
+
+.site-bar {
+  flex: 1;
+  min-height: 0;
+  border-bottom: 1px solid transparent;
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+}
+
+/* Sobre una portada oscura: un velo que asegura la lectura y se vuelve sólido al bajar. */
+.site-header-night .site-bar {
+  background: linear-gradient(180deg, rgb(14 39 68 / 0.6), rgb(14 39 68 / 0));
+}
+
+.site-header-night.is-solid .site-bar {
+  background: color-mix(in srgb, var(--night) 95%, transparent);
+  backdrop-filter: blur(14px);
+  border-bottom-color: rgb(255 255 255 / 0.08);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.25);
+}
+
+.site-header-paper .site-bar {
+  background: #fff;
+  border-bottom-color: color-mix(in srgb, var(--ink) 8%, transparent);
+}
+
+.site-header-paper.is-solid .site-bar {
+  box-shadow: 0 8px 28px rgb(10 35 66 / 0.08);
+}
+
+.site-nav-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  height: 2.5rem;
+  padding: 0 0.8rem;
+  border-radius: 0.6rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+/* Enlace + flecha: menos aire a la derecha, la flecha ya ocupa ese hueco. */
+.site-nav-link-desplegable {
+  gap: 0.125rem;
+  padding-right: 0.375rem;
+}
+
+.site-nav-link-night {
+  color: rgb(248 250 252 / 0.82);
+}
+
+.site-nav-link-night:hover,
+.site-nav-link-night.is-active {
+  color: #fff;
+  background: rgb(255 255 255 / 0.08);
+}
+
+.site-nav-link-paper {
+  color: color-mix(in srgb, var(--ink) 72%, transparent);
+}
+
+.site-nav-link-paper:hover,
+.site-nav-link-paper.is-active {
+  color: var(--accent);
+  background: rgb(37 99 235 / 0.06);
+}
+
+.site-nav-link.is-active::after {
+  content: "";
+  position: absolute;
+  left: 0.8rem;
+  right: 0.8rem;
+  bottom: 0.3rem;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+}
+
+.site-dropdown {
+  padding: 0.4rem;
+  border: 1px solid rgb(15 23 42 / 0.08);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 18px 48px -12px rgb(10 35 66 / 0.28);
+  animation: site-drop 0.18s ease-out;
+}
+
+@keyframes site-drop {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.site-dropdown-link {
+  display: block;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.55rem;
+  color: #0a2342;
+  font-size: 0.875rem;
+  line-height: 1.3;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.site-dropdown-link:hover,
+.site-dropdown-link:focus-visible {
+  background: #f1f5fb;
+  color: var(--accent);
+}
+
+.site-dropdown-link.is-active {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* Sin display aquí: lo deciden las utilidades (hidden lg:inline-flex). Una
+ * regla fuera de capa le ganaría a las de Tailwind v4 y el botón se colaría en móvil. */
+.site-cta {
+  align-items: center;
+  height: 2.6rem;
+  padding: 0 1.15rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  white-space: nowrap;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.site-cta:hover {
+  transform: translateY(-1px);
+}
+
+.site-cta-night {
+  background: var(--glow);
+  color: #0a2342;
+}
+
+.site-cta-night:hover {
+  background: #fff;
+}
+
+.site-cta-paper {
+  background: var(--accent);
+  color: #fff;
+}
+
+.site-cta-paper:hover {
+  background: #1d4ed8;
+}
+
+.site-switch {
+  display: inline-flex;
+  padding: 2px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.08);
+}
+
+.site-switch-opcion {
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  color: rgb(255 255 255 / 0.7);
+  font-size: 11px;
+  font-weight: 600;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.site-switch-opcion:hover {
+  color: #fff;
+}
+
+.site-switch-opcion.is-active {
+  background: #fff;
+  color: #0a2342;
+}
+
+.site-switch-movil {
+  display: flex;
+  width: 100%;
+  padding: 4px;
+}
+
+.site-switch-movil .site-switch-opcion {
+  flex: 1;
+  padding: 0.6rem;
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.site-switch-claro {
+  background: rgb(15 23 42 / 0.06);
+}
+
+.site-switch-claro .site-switch-opcion {
+  color: rgb(15 23 42 / 0.6);
+}
+
+.site-switch-claro .site-switch-opcion:hover {
+  color: var(--ink);
+}
+
+.site-switch-claro .site-switch-opcion.is-active {
+  background: var(--night);
+  color: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-dropdown {
+    animation: none;
+  }
+}

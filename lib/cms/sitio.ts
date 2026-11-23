@@ -27,6 +27,7 @@ interface SitioCms {
   botonCabeceraEmpresas: Boton | null
   menuEmpleos: Boton[]
   botonCabeceraEmpleos: Boton | null
+  submenus?: { padre: string; enlaces?: Boton[] | null }[] | null
   pie: {
     texto?: string | null
     botonEmpresas?: Boton | null
@@ -73,6 +74,8 @@ export interface Sitio {
   menuEmpresas: NavLink[]
   botonCabeceraEmpresas: Boton
   menuEmpleos: NavLink[]
+  /** Enlaces desplegables por dirección de la entrada del menú; `null` = usar los de código. */
+  submenus: Record<string, NavLink[]> | null
   botonCabeceraEmpleos: Boton
   pie: {
     texto: string
@@ -86,6 +89,19 @@ export interface Sitio {
 }
 
 const aNav = (b: Boton): NavLink => ({ href: b.url, label: b.texto })
+
+/**
+ * Submenús del CMS por dirección. Si el CMS no responde o no tiene ninguno,
+ * `null`: la cabecera usa entonces los de lib/visual-kit/submenus. Si tiene
+ * alguno, mandan solo los del CMS, así quitar uno en el panel lo quita del sitio.
+ */
+function resolverSubmenus(cms: SitioCms['submenus']): Record<string, NavLink[]> | null {
+  const grupos = (cms ?? []).filter((g) => g.padre?.trim())
+  if (grupos.length === 0) return null
+  return Object.fromEntries(
+    grupos.map((g) => [g.padre.trim(), (g.enlaces ?? []).filter((e) => e.texto && e.url).map(aNav)]),
+  )
+}
 
 function boton(cms: Boton | null | undefined, respaldo: Boton): Boton {
   return cms?.texto && cms.url ? cms : respaldo
@@ -130,6 +146,7 @@ const POPULATE = {
   botonCabeceraEmpresas: true,
   menuEmpleos: true,
   botonCabeceraEmpleos: true,
+  submenus: { populate: ['enlaces'] },
   pie: { populate: { botonEmpresas: true, botonEmpleos: true, fondo: FONDO, fondoEmpleos: FONDO } },
   seo: { populate: ['imagenCompartir'] },
 } as const
@@ -174,6 +191,7 @@ export function resolverSitio(cms: Partial<SitioCms> | null): Sitio {
     menuEmpresas: lista(cms?.menuEmpresas?.map(aNav), EMPRESAS_NAV),
     botonCabeceraEmpresas: boton(cms?.botonCabeceraEmpresas, { texto: 'Busco empleo', url: '/empleos' }),
     menuEmpleos: lista(cms?.menuEmpleos?.map(aNav), TALENTOS_NAV),
+    submenus: resolverSubmenus(cms?.submenus),
     botonCabeceraEmpleos: boton(cms?.botonCabeceraEmpleos, { texto: 'Empresas', url: '/empresas' }),
     pie: {
       texto: texto(cms?.pie?.texto, 'Personal, nómina y cumplimiento para obras y plantas.'),

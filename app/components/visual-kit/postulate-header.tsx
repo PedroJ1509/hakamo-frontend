@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSitio } from "@/app/components/sitio-context";
-import { Logo } from "./logo";
+import { conSubmenus } from "@/lib/visual-kit/submenus";
+import { SiteHeader } from "./site-header";
 
 const SECTIONS = ["categorias", "como", "tu-cv"];
 
@@ -27,30 +27,12 @@ function isActive(pathname: string, hash: string, href: string) {
 
 export function PostulateHeader() {
   const pathname = usePathname();
-  const [scrolled, setScrolled] = useState(false);
-  const [open, setOpen] = useState(false);
   const [activeHash, setActiveHash] = useState("");
   const sitio = useSitio();
-  const links = sitio.menuEmpleos;
-  const empresas = sitio.botonCabeceraEmpleos;
   const onLanding = pathname === "/empleos";
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 16);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
-
-  useEffect(() => {
-    if (!onLanding) {
-      setActiveHash("");
-      return;
-    }
+    if (!onLanding) return;
 
     const syncHash = () => setActiveHash(sectionFromHash());
     syncHash();
@@ -83,123 +65,18 @@ export function PostulateHeader() {
     };
   }, [onLanding]);
 
-  useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [open]);
-
-  useEffect(() => {
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
-
-  const barClass = [
-    "postulate-header chrome-header chrome-header-paper inset-x-0 top-0 sticky",
-    scrolled && !open ? "is-compact" : "",
-  ].join(" ");
-
   return (
-    <>
-      <header className={barClass}>
-        <div className="chrome-header-inner chrome-header-fit mx-auto flex items-center gap-3 px-3 sm:px-4">
-          <div className="flex shrink-0 items-center gap-2">
-            <Logo href="/empleos" inverted={false} className="text-ink" />
-            <span className="hidden text-[10px] font-semibold uppercase tracking-[0.18em] text-accent xl:inline">
-              Talentos
-            </span>
-          </div>
-
-          <nav className="chrome-nav-tray chrome-nav-tray-paper hidden min-w-0 flex-1 md:flex" aria-label="Portal de empleo">
-            {links.map((link) => {
-              const hash = link.href.split("#")[1];
-              const active = isActive(pathname, onLanding ? activeHash : "", link.href);
-              const href = hash && onLanding ? `#${hash}` : link.href;
-              return (
-                <a
-                  key={link.href}
-                  href={href}
-                  aria-current={active ? "page" : undefined}
-                  className={`chrome-nav-link chrome-nav-link-paper ${active ? "is-active" : ""}`}
-                  onClick={() => setOpen(false)}
-                >
-                  {link.label}
-                </a>
-              );
-            })}
-          </nav>
-
-          <div className="ml-auto flex shrink-0 items-center">
-            <Link
-              href={empresas.url}
-              className="hidden text-xs font-semibold uppercase tracking-[0.14em] text-muted transition hover:text-accent md:inline"
-            >
-              {empresas.texto}
-            </Link>
-            <button
-              type="button"
-              className="chrome-menu-btn shrink-0 text-ink md:hidden"
-              aria-expanded={open}
-              aria-controls="postulate-menu"
-              aria-label={open ? "Cerrar menú" : "Abrir menú"}
-              onClick={() => setOpen((value) => !value)}
-            >
-              <span className="relative block h-3.5 w-5" aria-hidden>
-                <span
-                  className={`absolute left-0 top-0 h-0.5 w-5 rounded-full bg-ink transition ${open ? "top-1.5 rotate-45" : ""}`}
-                />
-                <span
-                  className={`absolute left-0 top-1.5 h-0.5 w-5 rounded-full bg-ink transition ${open ? "opacity-0" : "opacity-100"}`}
-                />
-                <span
-                  className={`absolute left-0 top-3 h-0.5 w-5 rounded-full bg-ink transition ${open ? "top-1.5 -rotate-45" : ""}`}
-                />
-              </span>
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {open ? (
-        <div
-          id="postulate-menu"
-          className="chrome-mobile-panel chrome-mobile-panel-paper fixed inset-x-0 bottom-0 top-[var(--header-h)] z-[70] overflow-y-auto md:hidden"
-        >
-          <div className="mx-auto flex max-w-lg flex-col gap-8 px-5 py-8">
-            <nav className="flex flex-col gap-1.5" aria-label="Portal móvil">
-              {links.map((link) => {
-                const hash = link.href.split("#")[1];
-                const active = isActive(pathname, onLanding ? activeHash : "", link.href);
-                const href = hash && onLanding ? `#${hash}` : link.href;
-                return (
-                  <a
-                    key={link.href}
-                    href={href}
-                    aria-current={active ? "page" : undefined}
-                    className={`chrome-mobile-link ${active ? "is-active" : ""}`}
-                    onClick={() => setOpen(false)}
-                  >
-                    <span>{link.label}</span>
-                    {active ? <span className="chrome-mobile-dot" aria-hidden /> : null}
-                  </a>
-                );
-              })}
-            </nav>
-
-            <Link
-              href={empresas.url}
-              className="text-center text-sm font-semibold text-muted transition hover:text-accent"
-              onClick={() => setOpen(false)}
-            >
-              {empresas.texto}
-            </Link>
-          </div>
-        </div>
-      ) : null}
-    </>
+    <SiteHeader
+      items={conSubmenus(sitio.menuEmpleos, sitio.submenus)}
+      logoHref="/empleos"
+      etiqueta="Portal de empleo"
+      tone="paper"
+      placement="sticky"
+      // La acción que más importa a un candidato sin vacante a la vista.
+      cta={{ texto: "Deja tu CV", url: "/empleos#tu-cv" }}
+      audiencia="empleos"
+      // Fuera de /empleos no hay sección activa: se deriva en vez de guardarse.
+      activo={(href) => isActive(pathname, onLanding ? activeHash : "", href)}
+    />
   );
 }

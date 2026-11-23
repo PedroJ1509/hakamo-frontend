@@ -21,16 +21,22 @@ export function SeccionBloque({
   fondo,
   base,
   className = "px-4 py-20 sm:px-6 sm:py-28",
+  id,
   children,
 }: {
   fondo: Fondo;
   base: "paper" | "night";
   className?: string;
+  /** Ancla para enlazar la sección desde el menú. */
+  id?: string;
   children: (p: Paleta) => ReactNode;
 }) {
   const p = paleta(fondo.tono);
   return (
-    <section className={`relative isolate ${base === "night" ? "bg-night" : "bg-paper"} ${p.texto} ${className}`}>
+    <section
+      id={id}
+      className={`relative isolate scroll-mt-[var(--header-h)] ${base === "night" ? "bg-night" : "bg-paper"} ${p.texto} ${className}`}
+    >
       <FondoSeccion fondo={fondo} />
       <div className="relative mx-auto max-w-6xl">{children(p)}</div>
     </section>
