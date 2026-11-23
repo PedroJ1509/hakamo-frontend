@@ -89,6 +89,13 @@ export async function getVacante(slug: string) {
   return data.data[0]
 }
 
+/** Una vacante por su documentId: es lo que lleva la direccion de la ficha. */
+export async function getVacantePorId(documentId: string) {
+  const res = await fetch(`${STRAPI_URL}/api/vacantes/${documentId}?populate=*`, LEER)
+  if (!res.ok) throw new Error('Error al obtener vacante')
+  return res.json()
+}
+
 export async function getVacantesPorDivision(slug: string) {
   const res = await fetch(`${STRAPI_URL}/api/vacantes?filters[division][slug][$eq]=${slug}&filters[estado][$eq]=activa&populate=*&sort=fechaPublicacion:desc`, LEER)
   if (!res.ok) throw new Error('Error al obtener vacantes por división')
