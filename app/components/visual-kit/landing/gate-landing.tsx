@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { ContenidoPuerta, OpcionPuerta } from "@/lib/cms/puerta";
+import type { ClientePuerta, ContenidoPuerta, OpcionPuerta } from "@/lib/cms/puerta";
 import { FondoSeccion } from "../fondo-seccion";
 import { Logo } from "../logo";
 
@@ -59,10 +59,10 @@ export function GateLanding({ contenido }: { contenido: ContenidoPuerta }) {
           <p className="gate-in text-balance text-[10px] font-medium uppercase tracking-[0.16em] text-white/55 sm:text-[11px] sm:tracking-[0.28em]" style={{ animationDelay: "900ms" }}>
             {contenido.tituloClientes}
           </p>
-          <ul className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-[13px] font-semibold text-white/90 sm:gap-x-7 sm:text-base">
+          <ul className="mt-3 flex flex-wrap items-center justify-center gap-2 sm:gap-3.5">
             {contenido.clientes.map((cliente, index) => (
-              <li key={cliente + index} className="gate-in" style={{ animationDelay: `${980 + index * 70}ms` }}>
-                {cliente}
+              <li key={cliente.nombre + index} className="gate-in" style={{ animationDelay: `${980 + index * 70}ms` }}>
+                <LogoCliente cliente={cliente} />
               </li>
             ))}
           </ul>
@@ -70,6 +70,43 @@ export function GateLanding({ contenido }: { contenido: ContenidoPuerta }) {
       ) : null}
     </div>
   );
+}
+
+/**
+ * Logo sobre pastilla blanca: los archivos son png, jpg y svg mezclados, así
+ * que los jpg opacos no se pueden recortar ni invertir sobre el fondo marino.
+ * Sin logo, queda el nombre, para no esconder al cliente.
+ */
+function LogoCliente({ cliente }: { cliente: ClientePuerta }) {
+  if (!cliente.logo) {
+    return (
+      <span className="flex h-8 w-[4.75rem] items-center justify-center text-center text-[11px] leading-tight font-semibold text-white/70 sm:h-11 sm:w-[7.5rem] sm:text-sm">
+        {cliente.nombre}
+      </span>
+    )
+  }
+
+  // El optimizador rechaza svg sin dangerouslyAllowSVG, y no sirve dominios
+  // remotos fuera de remotePatterns: en ambos casos se entrega tal cual.
+  const sinOptimizar = !cliente.logo.startsWith('/') || cliente.logo.endsWith('.svg')
+
+  return (
+    // Caja de tamaño fijo: sin ella, un logo cuadrado queda a la altura de la
+    // fila mientras los apaisados ocupan el triple de ancho.
+    <span className="flex h-8 w-[4.75rem] items-center justify-center sm:h-11 sm:w-[7.5rem]" title={cliente.nombre}>
+      <Image
+        src={cliente.logo}
+        alt={cliente.nombre}
+        width={200}
+        height={80}
+        sizes="200px"
+        unoptimized={sinOptimizar}
+        // brightness-0 + invert deja cualquier logo en blanco puro
+        // respetando su transparencia: unifica png, jpg y svg sin recuadros.
+        className="h-full w-full object-contain opacity-70 brightness-0 invert transition duration-300 hover:opacity-100"
+      />
+    </span>
+  )
 }
 
 function OpcionCard({ opcion, delay }: { opcion: OpcionPuerta; delay: number }) {

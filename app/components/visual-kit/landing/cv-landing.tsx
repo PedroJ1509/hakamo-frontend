@@ -1,5 +1,7 @@
 "use client";
 
+import { ObrasStrip } from "../obras-strip";
+import type { Obra } from "@/lib/cms/proyectos";
 import { useSitio } from "@/app/components/sitio-context";
 import { useMemo, useState } from "react";
 import Link from "next/link";
@@ -68,10 +70,13 @@ export function CvLanding({
   vacantes = [],
   divisiones = [],
   contenido,
+  obras = [],
 }: {
   vacantes?: VacanteCard[];
   divisiones?: Division[];
   contenido: ContenidoEmpleos;
+  /** Responde a "¿dónde voy a trabajar?" antes de pedir que se postule. */
+  obras?: Obra[];
 }) {
   const router = useRouter();
   const { contacto } = useSitio();
@@ -252,6 +257,16 @@ export function CvLanding({
           </div>
         </Bloque>
       ) : null}
+
+      {/* Obras reales antes de explicar cómo postularse: dan confianza en el empleador. */}
+      <ObrasStrip
+        id="obras"
+        obras={obras}
+        antetitulo="Dónde trabajarías"
+        titulo="Proyectos donde colocamos talento"
+        texto="Construcción, energía, industria y comercio. Así se ve el trabajo en campo con Hakamo."
+        enlace={{ texto: "Ver el historial de obras", url: "/proyectos/historial" }}
+      />
 
       {como.mostrar ? (
       <Bloque seccion={como} id="como" className={`scroll-mt-[var(--header-h)] ${wide} py-12`}>

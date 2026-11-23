@@ -52,7 +52,6 @@ export const HISTORIA = [
 ]
 
 export const CLIENTES = [
-  { nombre: 'Grupo Cafra', sector: 'Construcción e infraestructura · RD', icono: '🏗️' },
   { nombre: 'Energía 2000', sector: 'Generación Eléctrica · RD', icono: '⚡' },
   { nombre: 'Lindsayca Group', sector: 'Energía & Infraestructura', icono: '🏗️' },
   { nombre: 'TSK Dominicana', sector: 'Ingeniería & Construcción', icono: '🔧' },

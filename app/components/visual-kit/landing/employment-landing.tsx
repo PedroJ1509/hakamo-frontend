@@ -1,5 +1,7 @@
 "use client";
 
+import { ObrasStrip } from "../obras-strip";
+import type { Obra } from "@/lib/cms/proyectos";
 import Image from "next/image";
 import Link from "next/link";
 import type { Seccion } from "@/lib/cms/comun";
@@ -25,7 +27,7 @@ function Bloque({ seccion, id, className, children }: { seccion: Seccion; id?: s
   );
 }
 
-export function EmploymentLanding({ contenido }: { contenido: ContenidoCultura }) {
+export function EmploymentLanding({ contenido, obras = [] }: { contenido: ContenidoCultura; obras?: Obra[] }) {
   const { portada, proceso, areas, formacion, actividades, siguiente, diferenciales } = contenido;
 
   return (
@@ -115,6 +117,16 @@ export function EmploymentLanding({ contenido }: { contenido: ContenidoCultura }
           </div>
         </Bloque>
       ) : null}
+
+      {/* El proceso termina en "Ingresas al proyecto": aquí se ve cuáles. */}
+      <ObrasStrip
+        id="obras"
+        obras={obras}
+        antetitulo="Dónde trabajarías"
+        titulo="Obras donde Hakamo coloca talento"
+        texto="El último paso del proceso es entrar a un proyecto. Estos son algunos de los que hemos sostenido en campo."
+        enlace={{ texto: "Ver todas las obras", url: "/proyectos/historial" }}
+      />
 
       {areas.mostrar ? (
         <Bloque seccion={areas} className={`${wide} py-8`}>

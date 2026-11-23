@@ -1,6 +1,7 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
+import { anclaServicio } from "@/lib/sectores";
 import type { Seccion } from "@/lib/cms/comun";
 import type { ServicioCatalogo } from "@/lib/cms/servicios";
 import { FondoSeccion } from "./fondo-seccion";
@@ -10,6 +11,25 @@ import { Reveal } from "./reveal";
 /** Catálogo de servicios con detalle desplegable. Textos y fondo: sección «catálogo» del CMS. */
 export function ServiceTimeline({ items, seccion }: { items: ServicioCatalogo[]; seccion: Seccion }) {
   const [openSlug, setOpenSlug] = useState<string | null>(null);
+
+  // Llegar con /servicios#servicio-x (desde una obra) abre ese servicio.
+  useEffect(() => {
+    const abrirDesdeAncla = () => {
+      const ancla = decodeURIComponent(window.location.hash.slice(1));
+      if (!ancla.startsWith("servicio-")) return;
+      const item = items.find((i) => anclaServicio(i.slug) === ancla);
+      if (!item) {
+        // El CMS pudo renombrar el servicio: al menos se llega al catálogo.
+        document.getElementById("catalogo")?.scrollIntoView({ block: "start" });
+        return;
+      }
+      if (item.detalle || item.imagen) setOpenSlug(item.slug);
+      document.getElementById(ancla)?.scrollIntoView({ block: "start" });
+    };
+    abrirDesdeAncla();
+    window.addEventListener("hashchange", abrirDesdeAncla);
+    return () => window.removeEventListener("hashchange", abrirDesdeAncla);
+  }, [items]);
 
   return (
     <section className="service-timeline relative isolate" id="catalogo">
@@ -66,7 +86,10 @@ function ServiceRow({
 
   return (
     <Reveal from="up" delay={index * 30}>
-      <article className="grid gap-4 py-8 sm:grid-cols-[4.5rem_1fr_auto] sm:items-start sm:gap-8">
+      <article
+        id={anclaServicio(item.slug)}
+        className="grid scroll-mt-[var(--header-h)] gap-4 py-8 sm:grid-cols-[4.5rem_1fr_auto] sm:items-start sm:gap-8"
+      >
         <p className="font-display text-3xl leading-none text-glow">{n}</p>
         <div>
           <h3 className="font-display text-2xl leading-snug text-paper sm:text-[1.7rem]">{item.titulo}</h3>

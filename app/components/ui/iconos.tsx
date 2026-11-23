@@ -203,7 +203,6 @@ export const IconTienda = (p: Props) => (
 
 /** Íconos por sector de cliente, según su nombre. */
 export const ICONOS_CLIENTE: Record<string, (p: Props) => React.ReactElement> = {
-  'Grupo Cafra': IconGrua,
   'Energía 2000': IconRayo,
   'Lindsayca Group': IconGrua,
   'TSK Dominicana': IconLlave,

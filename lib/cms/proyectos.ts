@@ -1,5 +1,7 @@
 import { cache } from 'react'
 import { PROJECT_FEATURES, PROJECT_FIELD_GALLERY } from '@/lib/demo-proyectos'
+import { USAR_DEMO } from '@/lib/demo-vacantes'
+import { SECTORES_OBRA, sectoresDeObra } from '@/lib/sectores'
 import { LANDING_HERO_BACKGROUNDS } from '@/lib/visual-kit/hakamo'
 import type { StrapiMedia } from '@/types'
 import {
@@ -73,14 +75,18 @@ export interface Obra {
   texto: string
   imagen: string
   estado: Estado | null
+  /** Mes y año ya escritos ("abril de 2026"); vacío si la obra no tiene fecha. */
+  fecha: string
+  /** Año suelto, para ordenar y agrupar el historial. */
+  anio: number | null
+  /** Slugs de lib/sectores: enlazan /servicios con el historial filtrado. */
+  sectores?: string[]
 }
 
 /** Todo lo que muestra la página de un proyecto. */
 export interface DetalleObra extends Obra {
   cliente: string
   ubicacion: string
-  /** Mes y año, ya escritos ("abril de 2026"). */
-  fecha: string
   contenido: string
   datos: { valor: string; etiqueta: string }[]
   alcance: string[]
@@ -171,13 +177,17 @@ const RESPALDO_OBRAS: DetalleObra[] = PROJECT_FEATURES.map((p) => ({
   texto: p.texto,
   imagen: p.imagen,
   estado: p.estado,
-  cliente: '',
-  ubicacion: '',
-  fecha: '',
-  contenido: '',
-  datos: [],
-  alcance: [],
-  imagenes: [p.imagen, ...FOTOS.map((f) => f.src).filter((src) => src !== p.imagen)],
+  fecha: mesYAnio(p.fecha),
+  anio: anioDe(p.fecha),
+  cliente: p.cliente,
+  ubicacion: p.ubicacion,
+  contenido: p.contenido,
+  datos: p.datos,
+  alcance: p.alcance,
+  imagenes:
+    p.imagenes && p.imagenes.length > 0
+      ? p.imagenes
+      : [p.imagen, ...FOTOS.map((f) => f.src).filter((src) => src !== p.imagen)],
 }))
 
 const POPULATE = {
@@ -197,6 +207,13 @@ function mesYAnio(fecha?: string | null): string {
   if (!fecha) return ''
   const d = new Date(`${fecha}T12:00:00`)
   return Number.isNaN(d.getTime()) ? '' : d.toLocaleDateString('es-DO', { month: 'long', year: 'numeric' })
+}
+
+/** Año de una fecha ISO; `null` si no hay fecha o no es válida. */
+function anioDe(fecha?: string | null): number | null {
+  if (!fecha) return null
+  const anio = Number(fecha.slice(0, 4))
+  return Number.isFinite(anio) && anio > 1900 ? anio : null
 }
 
 function resolverFicha(cms?: FichaCms | null): FichaTextos {
@@ -222,9 +239,10 @@ function resolverObra(o: ProyectoCms): DetalleObra {
     texto: o.descripcion ?? '',
     imagen,
     estado: o.estado ?? null,
+    fecha: mesYAnio(o.fecha),
+    anio: anioDe(o.fecha),
     cliente: o.cliente ?? '',
     ubicacion: o.ubicacion ?? '',
-    fecha: mesYAnio(o.fecha),
     contenido: o.contenido ?? '',
     datos: (o.datos ?? []).filter((d) => d.valor && d.etiqueta),
     alcance: (o.alcance ?? []).map((a) => a.texto).filter(Boolean),
@@ -236,16 +254,51 @@ function resolverObra(o: ProyectoCms): DetalleObra {
  * Obras activas del CMS, por orden. Si el CMS no tiene ninguna (o no responde),
  * las de demostración, para que la página nunca quede vacía.
  */
+/**
+ * Completa una obra del CMS con la de ejemplo del mismo id: el CMS manda,
+ * y lo de ejemplo solo entra donde el campo está vacío.
+ */
+function completar(obra: DetalleObra, demo: DetalleObra): DetalleObra {
+  return {
+    ...obra,
+    sector: obra.sector || demo.sector,
+    rol: obra.rol || demo.rol,
+    texto: obra.texto || demo.texto,
+    estado: obra.estado ?? demo.estado,
+    fecha: obra.fecha || demo.fecha,
+    anio: obra.anio ?? demo.anio,
+    cliente: obra.cliente || demo.cliente,
+    ubicacion: obra.ubicacion || demo.ubicacion,
+    contenido: obra.contenido || demo.contenido,
+    datos: obra.datos.length > 0 ? obra.datos : demo.datos,
+    alcance: obra.alcance.length > 0 ? obra.alcance : demo.alcance,
+    imagenes: obra.imagenes.length > 1 ? obra.imagenes : demo.imagenes,
+  }
+}
+
 const leerObras = cache(async (): Promise<DetalleObra[]> => {
   const obrasCms = await getColeccion<ProyectoCms>(
     'proyectos',
     'filters[activo][$eq]=true&sort=orden:asc&populate[imagenes]=true&populate[datos]=true&populate[alcance]=true&pagination[pageSize]=100',
   )
-  return obrasCms && obrasCms.length > 0 ? obrasCms.map(resolverObra) : RESPALDO_OBRAS
+  if (!obrasCms || obrasCms.length === 0) return RESPALDO_OBRAS
+
+  const delCms = obrasCms.map(resolverObra)
+  // En producción solo se publica lo que esté cargado en el CMS: el contenido
+  // de ejemplo nunca debe pasar por real en el sitio público.
+  if (!USAR_DEMO) return delCms
+
+  const porId = new Map(RESPALDO_OBRAS.map((o) => [o.id, o]))
+  const completadas = delCms.map((o) => {
+    const demo = porId.get(o.id)
+    return demo ? completar(o, demo) : o
+  })
+  const yaEstan = new Set(delCms.map((o) => o.id))
+  return [...completadas, ...RESPALDO_OBRAS.filter((o) => !yaEstan.has(o.id))]
 })
 
 /** Lo que muestra el listado de cada obra. */
-const resumen = ({ id, titulo, sector, rol, texto, imagen, estado }: DetalleObra): Obra => ({
+const resumen = ({ id, titulo, sector, rol, texto, imagen, estado, fecha, anio }: DetalleObra): Obra => ({
   id,
   titulo,
   sector,
@@ -253,7 +306,36 @@ const resumen = ({ id, titulo, sector, rol, texto, imagen, estado }: DetalleObra
   texto,
   imagen,
   estado,
+  fecha,
+  anio,
+  sectores: sectoresDeObra({ sector, titulo, rol }),
 })
+
+/** Prioridad al mostrar pocas obras: lo destacado, luego lo vivo, luego lo cerrado. */
+const PESO_ESTADO: Record<string, number> = { destacado: 0, en_proceso: 1, completado: 2 }
+
+/**
+ * Las obras que conviene enseñar fuera de /proyectos: destacadas primero y,
+ * a igualdad, las más recientes.
+ */
+export async function obrasSeleccionadas(cuantas = 3): Promise<Obra[]> {
+  const obras = (await leerObras()).map(resumen)
+  return obras
+    .slice()
+    .sort((a, b) => {
+      const peso = (PESO_ESTADO[a.estado ?? ''] ?? 3) - (PESO_ESTADO[b.estado ?? ''] ?? 3)
+      return peso !== 0 ? peso : (b.anio ?? 0) - (a.anio ?? 0)
+    })
+    .slice(0, cuantas)
+}
+
+/** Cuántas obras hay en cada sector; un sector sin obras no debe enlazar a nada. */
+export async function obrasPorSector(): Promise<Record<string, number>> {
+  const obras = (await leerObras()).map(resumen)
+  return Object.fromEntries(
+    SECTORES_OBRA.map((sector) => [sector.slug, obras.filter((o) => o.sectores?.includes(sector.slug)).length]),
+  )
+}
 
 export async function metadataProyectos() {
   const cms = await leerProyectos()
@@ -319,4 +401,71 @@ export async function metadataProyecto(id: string) {
 /** Direcciones de todas las obras, para el sitemap. */
 export async function idsObras(): Promise<string[]> {
   return (await leerObras()).map((o) => o.id)
+}
+
+/* ───────── Historial: todas las obras por año ───────── */
+
+export interface GrupoHistorial {
+  /** `null` agrupa las obras que todavía no tienen fecha. */
+  anio: number | null
+  obras: Obra[]
+}
+
+export interface ContenidoHistorial {
+  antetitulo: string
+  titulo: string
+  texto: string
+  grupos: GrupoHistorial[]
+  total: number
+  /** Cuántas hay de cada estado, para el resumen de arriba. */
+  conteo: { enProceso: number; completados: number; destacados: number }
+  ficha: FichaTextos
+}
+
+const RESPALDO_HISTORIAL = {
+  title: 'Historial de proyectos — Hakamo',
+  description:
+    'Todas las obras de Hakamo por año: energía, construcción, industria y retail en República Dominicana.',
+}
+
+export async function metadataHistorial() {
+  return {
+    title: RESPALDO_HISTORIAL.title,
+    description: RESPALDO_HISTORIAL.description,
+    openGraph: { title: RESPALDO_HISTORIAL.title, description: RESPALDO_HISTORIAL.description },
+  }
+}
+
+export async function contenidoHistorial(): Promise<ContenidoHistorial> {
+  const [obras, cms] = await Promise.all([leerObras(), leerProyectos()])
+
+  // Más recientes primero; las que no tienen fecha quedan al final.
+  const porGrupo = new Map<number | null, Obra[]>()
+  for (const obra of obras) {
+    const lista = porGrupo.get(obra.anio) ?? []
+    lista.push(resumen(obra))
+    porGrupo.set(obra.anio, lista)
+  }
+
+  const grupos = [...porGrupo.entries()]
+    .map(([anio, obrasDelAnio]) => ({ anio, obras: obrasDelAnio }))
+    .sort((a, b) => {
+      if (a.anio === null) return 1
+      if (b.anio === null) return -1
+      return b.anio - a.anio
+    })
+
+  return {
+    antetitulo: 'Historial',
+    titulo: 'Cada obra, en orden',
+    texto: 'El recorrido completo de Hakamo en campo, de la más reciente a la primera.',
+    grupos,
+    total: obras.length,
+    conteo: {
+      enProceso: obras.filter((o) => o.estado === 'en_proceso').length,
+      completados: obras.filter((o) => o.estado === 'completado').length,
+      destacados: obras.filter((o) => o.estado === 'destacado').length,
+    },
+    ficha: resolverFicha(cms?.ficha),
+  }
 }

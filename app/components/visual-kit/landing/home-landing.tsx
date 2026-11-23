@@ -12,6 +12,11 @@ import { LandingHeroSection } from "../landing-hero-section";
 import { LandingScrollExpand } from "../landing-scroll-expand";
 import { PublicFooter } from "../public-footer";
 import { StatsCounter } from "../stats-counter";
+import { LogosClientes } from "../logos-clientes";
+import { ObrasStrip } from "../obras-strip";
+import type { ClienteLogo, Testimonio } from "@/lib/cms/clientes";
+import { Testimonios } from "../testimonios";
+import type { Obra } from "@/lib/cms/proyectos";
 import { lineasTitulo } from "@/lib/cms/comun";
 import type { ContenidoEmpresas } from "@/lib/cms/empresas";
 import type { LandingCopy } from "@/lib/visual-kit/types";
@@ -20,9 +25,16 @@ import { LANDING_HERO_BACKGROUNDS } from "@/lib/visual-kit/hakamo";
 export function HomeLanding({
   copy,
   contenido,
+  obras = [],
+  clientes = [],
+  testimonios = [],
 }: {
   copy: LandingCopy;
   contenido: ContenidoEmpresas;
+  /** Prueba de experiencia: antes, /empresas solo enlazaba a /proyectos. */
+  obras?: Obra[];
+  clientes?: ClienteLogo[];
+  testimonios?: Testimonio[];
 }) {
   const { portada, imagenExpandible, fondoDatos, fondoCinta, fondoAccesos } = contenido;
   const lines = lineasTitulo(portada.titulo);
@@ -90,6 +102,23 @@ export function HomeLanding({
           <Marquee items={contenido.cinta} />
         </div>
       </div>
+
+      {/* Prueba antes del menú: quien llega aquí ve obras y clientes sin salir de la página. */}
+      {obras.length > 0 || clientes.length > 0 || testimonios.length > 0 ? (
+        <div className="bg-paper">
+          <ObrasStrip
+            obras={obras}
+            antetitulo="Obras en campo"
+            titulo="Así se ve el trabajo de Hakamo"
+            texto="Equipos completos, nómina al día y cumplimiento en regla, en obras de energía, construcción e industria."
+            enlace={{ texto: "Ver todas las obras", url: "/proyectos" }}
+            className="pb-6 sm:pb-8"
+          />
+          <LogosClientes clientes={clientes} titulo="Empresas que confían en Hakamo" />
+          {/* Tras los logos: primero quiénes son, luego qué dicen. */}
+          <Testimonios testimonios={testimonios} className="pt-10 sm:pt-12" />
+        </div>
+      ) : null}
 
       <section className="relative isolate bg-paper px-4 py-20 sm:px-6 sm:py-24">
         <FondoSeccion fondo={fondoAccesos} />

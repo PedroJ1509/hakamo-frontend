@@ -1,6 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useSitio } from "@/app/components/sitio-context";
+import { sectorDeTitulo } from "@/lib/sectores";
+import type { Testimonio } from "@/lib/cms/clientes";
+import { Testimonios } from "../testimonios";
 import { lineasTitulo } from "@/lib/cms/comun";
 import type { ContenidoServicios } from "@/lib/cms/servicios";
 import { LANDING_HERO_BACKGROUNDS } from "@/lib/visual-kit/hakamo";
@@ -15,7 +19,16 @@ import { ScrollProgress } from "../scroll-progress";
 import { BotonSeccion, CONTINUA, Encabezado, ItemImagen, numero, SeccionBloque } from "../seccion";
 import { ServiceTimeline } from "../service-timeline";
 
-export function ServicesLanding({ contenido }: { contenido: ContenidoServicios }) {
+export function ServicesLanding({
+  contenido,
+  obrasPorSector = {},
+  testimonios = [],
+}: {
+  contenido: ContenidoServicios;
+  /** Obras por slug de sector: un sector sin obras no enlaza a nada. */
+  obrasPorSector?: Record<string, number>;
+  testimonios?: Testimonio[];
+}) {
   const { contacto } = useSitio();
   const { portada, catalogo, seguridad, valor, proceso, sectores, marcoLegal, cierre } = contenido;
 
@@ -146,6 +159,7 @@ export function ServicesLanding({ contenido }: { contenido: ContenidoServicios }
                       <p className={`text-xs tracking-[0.2em] ${p.acento}`}>{sector.etiqueta || numero(index)}</p>
                       <p className="font-display mt-3 text-2xl leading-snug">{sector.titulo}</p>
                       {sector.texto ? <p className={`mt-2 text-sm leading-6 ${p.suave}`}>{sector.texto}</p> : null}
+                      <EnlaceSector titulo={sector.titulo} conteo={obrasPorSector} clase={p.acento} />
                     </Reveal>
                   </li>
                 ))}
@@ -190,6 +204,13 @@ export function ServicesLanding({ contenido }: { contenido: ContenidoServicios }
         </SeccionBloque>
       ) : null}
 
+      {/* La prueba social justo antes de pedir el contacto. */}
+      {testimonios.length > 0 ? (
+        <div className="bg-[#F5F7FB]">
+          <Testimonios testimonios={testimonios} />
+        </div>
+      ) : null}
+
       {cierre.mostrar ? (
         <SeccionBloque fondo={cierre.fondo} base="night" className="border-t border-white/10 px-4 py-16 sm:px-6 sm:py-20">
           {(p) => (
@@ -215,5 +236,27 @@ export function ServicesLanding({ contenido }: { contenido: ContenidoServicios }
 
       <PublicFooter />
     </div>
+  );
+}
+
+/**
+ * La experiencia que afirma cada sector, con sus obras como prueba. Si el
+ * sector todavía no tiene obras publicadas, no se promete un enlace vacío.
+ */
+function EnlaceSector({ titulo, conteo, clase }: { titulo: string; conteo: Record<string, number>; clase: string }) {
+  const sector = sectorDeTitulo(titulo);
+  const cuantas = sector ? (conteo[sector.slug] ?? 0) : 0;
+  if (!sector || cuantas === 0) return null;
+
+  return (
+    <Link
+      href={`/proyectos/historial?sector=${sector.slug}`}
+      className={`group mt-4 inline-flex items-center gap-1.5 text-sm font-semibold underline-offset-4 hover:underline ${clase}`}
+    >
+      Ver {cuantas} {cuantas === 1 ? "obra" : "obras"}
+      <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">
+        &rarr;
+      </span>
+    </Link>
   );
 }

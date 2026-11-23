@@ -161,7 +161,7 @@ export const LANDING_STORY: StoryCard[] = [
     kicker: 'Confianza',
     caption: CLIENTES.map((c) => c.nombre).join(' · '),
     title: 'Aliadas',
-    text: 'Grupo Cafra y operaciones de energía, construcción e ingeniería nos confían la gestión de su personal.',
+    text: 'Operaciones de energía, construcción, ingeniería y retail nos confían la gestión de su personal.',
     span: [0.74, 0.84, 0.96, 1],
   },
 ]

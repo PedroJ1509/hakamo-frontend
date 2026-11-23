@@ -35,6 +35,12 @@ export interface OpcionPuerta {
   imagenFondo: string | null
 }
 
+export interface ClientePuerta {
+  nombre: string
+  /** Logo del CMS; si no hay, el archivo local, y si tampoco, `null`. */
+  logo: string | null
+}
+
 export interface ContenidoPuerta {
   fondo: Fondo
   menu: Boton[]
@@ -45,7 +51,20 @@ export interface ContenidoPuerta {
   opcionEmpleo: OpcionPuerta
   datos: Dato[]
   tituloClientes: string
-  clientes: string[]
+  clientes: ClientePuerta[]
+}
+
+/**
+ * Logos en /public/clientes, por si el cliente aún no tiene imagen en Strapi.
+ * La portada va sobre azul marino, así que usa las siluetas blancas de
+ * /blanco: los originales son jpg de fondo blanco opaco y se verían como
+ * recuadros. Las versiones a color siguen ahí para los fondos claros.
+ */
+const LOGOS_LOCALES: Record<string, string> = {
+  'Energía 2000': '/clientes/blanco/energia-2000.png',
+  'Lindsayca Group': '/clientes/blanco/lindsayca.png',
+  'TSK Dominicana': '/clientes/blanco/tsk.png',
+  'Grupo Ramos': '/clientes/grupo-ramos.svg',
 }
 
 const RESPALDO = {
@@ -92,7 +111,10 @@ const RESPALDO = {
     { valor: '100%', etiqueta: 'cumplimiento normativo' },
   ],
   tituloClientes: 'Empresas que confían en Hakamo',
-  clientes: CLIENTES.map((c) => c.nombre),
+  clientes: CLIENTES.map((c) => ({
+    nombre: c.nombre,
+    logo: LOGOS_LOCALES[c.nombre] ?? null,
+  })),
 }
 
 const POPULATE = {
@@ -128,7 +150,7 @@ export async function metadataPuerta() {
 export async function contenidoPuerta(): Promise<ContenidoPuerta> {
   const [cms, clientesCms] = await Promise.all([
     leerPuerta(),
-    getColeccion<Cliente>('clientes', 'sort=orden:asc&fields[0]=nombre'),
+    getColeccion<Cliente>('clientes', 'sort=orden:asc&fields[0]=nombre&populate[logo]=true'),
   ])
 
   const mostrarClientes = cms?.mostrarClientes ?? true
@@ -142,6 +164,14 @@ export async function contenidoPuerta(): Promise<ContenidoPuerta> {
     opcionEmpleo: opcion(cms?.opcionEmpleo, RESPALDO.opcionEmpleo),
     datos: lista(cms?.datos, RESPALDO.datos),
     tituloClientes: texto(cms?.tituloClientes, RESPALDO.tituloClientes),
-    clientes: mostrarClientes ? lista(clientesCms?.map((c) => c.nombre), RESPALDO.clientes) : [],
+    clientes: mostrarClientes
+      ? lista(
+          clientesCms?.map((c) => ({
+            nombre: c.nombre,
+            logo: mediaUrl(c.logo) ?? LOGOS_LOCALES[c.nombre] ?? null,
+          })),
+          RESPALDO.clientes
+        )
+      : [],
   }
 }

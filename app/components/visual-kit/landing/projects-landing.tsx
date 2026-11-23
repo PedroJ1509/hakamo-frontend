@@ -128,6 +128,17 @@ export function ProjectsLanding({ contenido }: { contenido: ContenidoProyectos }
               ) : null}
             </div>
           ) : null}
+
+          {/* Sin esta puerta no habria forma de llegar al historial. */}
+          <p className="visit-rise mt-6" style={{ animationDelay: "360ms" }}>
+            <Link
+              href="/proyectos/historial"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-paper/70 underline-offset-4 transition hover:text-paper hover:underline"
+            >
+              Ver historial completo
+              <span aria-hidden>&rarr;</span>
+            </Link>
+          </p>
         </div>
       </LandingHeroSection>
 

@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import type { ContenidoProyecto, Obra } from "@/lib/cms/proyectos";
+import { anclaServicio, servicioDeRol } from "@/lib/sectores";
 import { Grain } from "../grain";
 import { LandingHeader } from "../chrome-header";
 import { MagneticButton } from "../magnetic-button";
@@ -126,11 +127,17 @@ export function ProjectDetail({ contenido }: { contenido: ContenidoProyecto }) {
   const [visor, setVisor] = useState<number | null>(null);
   const cerrar = useCallback(() => setVisor(null), []);
 
-  const datosFicha = [
+  // El rol enlaza al servicio que lo describe: la obra prueba el servicio.
+  const servicioRol = servicioDeRol(obra.rol);
+  const datosFicha: { etiqueta: string; valor: string; url?: string }[] = [
     { etiqueta: "Cliente", valor: obra.cliente },
     { etiqueta: "Ubicación", valor: obra.ubicacion },
     { etiqueta: "Sector", valor: obra.sector },
-    { etiqueta: "Rol de Hakamo", valor: obra.rol },
+    {
+      etiqueta: "Rol de Hakamo",
+      valor: obra.rol,
+      url: servicioRol ? `/servicios#${anclaServicio(servicioRol)}` : undefined,
+    },
     { etiqueta: "Estado", valor: obra.estado ? ESTADO_LABEL[obra.estado] : "" },
     { etiqueta: "Fecha", valor: obra.fecha },
   ].filter((d) => d.valor);
@@ -238,7 +245,21 @@ export function ProjectDetail({ contenido }: { contenido: ContenidoProyecto }) {
                     {datosFicha.map((d) => (
                       <div key={d.etiqueta} className="border-t border-white/10 pt-4 first:border-0 first:pt-0">
                         <dt className="text-[11px] uppercase tracking-[0.2em] text-paper/50">{d.etiqueta}</dt>
-                        <dd className="mt-1 text-sm leading-6 text-paper first-letter:uppercase">{d.valor}</dd>
+                        <dd className="mt-1 text-sm leading-6 text-paper first-letter:uppercase">
+                          {d.url ? (
+                            <Link
+                              href={d.url}
+                              className="group underline decoration-paper/30 underline-offset-4 transition hover:text-glow hover:decoration-glow"
+                            >
+                              {d.valor}
+                              <span aria-hidden className="ml-1 inline-block transition-transform group-hover:translate-x-0.5">
+                                &rarr;
+                              </span>
+                            </Link>
+                          ) : (
+                            d.valor
+                          )}
+                        </dd>
                       </div>
                     ))}
                   </dl>

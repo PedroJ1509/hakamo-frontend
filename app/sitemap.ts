@@ -11,6 +11,7 @@ const PAGINAS: { ruta: string; cambia: 'daily' | 'weekly' | 'monthly' | 'yearly'
   { ruta: '/empresas/solicitar', cambia: 'yearly', prioridad: 0.8 },
   { ruta: '/nosotros', cambia: 'monthly', prioridad: 0.7 },
   { ruta: '/proyectos', cambia: 'monthly', prioridad: 0.7 },
+  { ruta: '/proyectos/historial', cambia: 'monthly', prioridad: 0.5 },
   { ruta: '/equipo', cambia: 'monthly', prioridad: 0.5 },
   { ruta: '/contacto', cambia: 'yearly', prioridad: 0.6 },
   { ruta: '/agendar-visita', cambia: 'yearly', prioridad: 0.5 },
