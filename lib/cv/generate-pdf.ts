@@ -133,8 +133,12 @@ export function downloadBlob(blob: Blob, filename: string) {
   const a = document.createElement("a");
   a.href = url;
   a.download = filename;
+  // Firefox exige que el enlace esté en el documento para respetar `download`,
+  // y revocar la URL en el mismo instante puede cancelar la descarga en Safari.
+  document.body.appendChild(a);
   a.click();
-  URL.revokeObjectURL(url);
+  a.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 10_000);
 }
 
 export function cvFilename(data: CvData) {

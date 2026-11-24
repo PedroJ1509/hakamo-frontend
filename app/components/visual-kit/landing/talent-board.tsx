@@ -122,6 +122,15 @@ export function TalentBoard({
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState<number | null>(10);
   const listRef = useRef<HTMLUListElement>(null);
+  // Al cambiar cualquier filtro se vuelve a la primera página. Se ajusta durante el
+  // render (patrón recomendado por React) y no en un efecto: así no hay un render
+  // intermedio con una página que ya no existe.
+  const claveFiltros = [query, localizacion, tipo, modalidad, disponibilidad, activeSlug, items.length].join("|");
+  const [claveFiltrosPrevia, setClaveFiltrosPrevia] = useState(claveFiltros);
+  if (claveFiltrosPrevia !== claveFiltros) {
+    setClaveFiltrosPrevia(claveFiltros);
+    setPage(1);
+  }
   const hasFilters = Boolean(query || detailActive || activeSlug || showingClosed);
   const size = pageSize ?? Math.max(items.length, 1);
   const pageCount = Math.max(1, Math.ceil(items.length / size));
@@ -129,9 +138,6 @@ export function TalentBoard({
   const start = (current - 1) * size;
   const visible = items.slice(start, start + size);
 
-  useEffect(() => {
-    setPage(1);
-  }, [query, localizacion, tipo, modalidad, disponibilidad, activeSlug, items.length]);
 
   useEffect(() => {
     if (!areasOpen) return;

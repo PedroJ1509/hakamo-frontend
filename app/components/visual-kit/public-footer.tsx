@@ -6,6 +6,7 @@ import type { Boton } from "@/lib/cms/comun";
 import type { Sitio } from "@/lib/cms/sitio";
 import { FondoSeccion } from "./fondo-seccion";
 import { Logo } from "./logo";
+import { Enlace } from "./enlace";
 import type { NavLink } from "@/lib/visual-kit/types";
 import { btnPrimary } from "@/lib/visual-kit/styles";
 
@@ -27,6 +28,9 @@ export function PublicFooter({
   const links = empleos ? sitio.menuEmpleos : sitio.menuEmpresas;
   const staff = empleos ? sitio.botonCabeceraEmpleos : sitio.botonCabeceraEmpresas;
   const accion = empleos ? sitio.pie.botonEmpleos : sitio.pie.botonEmpresas;
+  // El logo vuelve al inicio de ESTE lado del sitio: apuntar a "/" mandaba a quien
+  // navegaba a la pantalla de elección, perdiendo el contexto.
+  const inicio = empleos ? "/empleos" : "/empresas";
 
   if (paper) {
     const fondo = sitio.pie.fondoEmpleos;
@@ -44,10 +48,10 @@ export function PublicFooter({
         <FondoSeccion fondo={fondo} />
         <div className="chrome-frame relative py-16 sm:py-20">
           <div className="flex flex-wrap items-end justify-between gap-6">
-            <Logo inverted={claro} className={claro ? "text-paper" : "text-ink"} />
-            <a href={accion.url} className={`${btnPrimary} w-full sm:w-auto`}>
+            <Logo href={inicio} inverted={claro} className={claro ? "text-paper" : "text-ink"} />
+            <Enlace href={accion.url} className={`${btnPrimary} w-full sm:w-auto`}>
               {accion.texto}
-            </a>
+            </Enlace>
           </div>
           <FooterFacts sitio={sitio} claro={claro} reclutamiento />
 
@@ -68,7 +72,7 @@ export function PublicFooter({
       <FondoSeccion fondo={fondo} />
       <div className="chrome-frame relative py-16 sm:py-24">
         <div>
-          <Logo inverted={claro} className={claro ? "text-paper" : "text-ink"} />
+          <Logo href={inicio} inverted={claro} className={claro ? "text-paper" : "text-ink"} />
           <p className={`mt-6 max-w-sm text-sm leading-6 ${claro ? "text-paper/60" : "text-muted"}`}>{sitio.pie.texto}</p>
         </div>
         <FooterFacts sitio={sitio} claro={claro} />
@@ -144,9 +148,9 @@ function FooterBar({ links, sitio, staff, claro }: { links: NavLink[]; sitio: Si
     <div className={`mt-12 flex flex-col gap-4 border-t pt-6 text-sm sm:flex-row sm:items-center sm:justify-between ${line}`}>
       <nav className="flex flex-wrap gap-x-6 gap-y-2">
         {links.map((link) => (
-          <a key={link.href} href={link.href} className={hover}>
+          <Enlace key={link.href} href={link.href} className={hover}>
             {link.label}
-          </a>
+          </Enlace>
         ))}
       </nav>
       <div className="flex flex-wrap items-center gap-x-5 gap-y-2">

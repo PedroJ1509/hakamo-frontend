@@ -61,6 +61,7 @@ export function ChromeHeader({
     <SiteHeader
       items={items}
       nombre={name ?? sitio.nombre}
+      logoHref="/empresas"
       tone={tone}
       placement={placement}
       cta={cta}

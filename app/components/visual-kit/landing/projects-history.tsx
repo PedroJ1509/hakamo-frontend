@@ -44,7 +44,8 @@ function Insignia({ estado }: { estado: string | null }) {
   );
 }
 
-function FilaObra({ obra, indice }: { obra: Obra; indice: number }) {
+/** `prioritaria`: miniaturas visibles sin hacer scroll, que Next debe cargar ya (evita el aviso de LCP). */
+function FilaObra({ obra, indice, prioritaria = false }: { obra: Obra; indice: number; prioritaria?: boolean }) {
   const tono = obra.estado ? (ESTADO_TONO[obra.estado] ?? TONO_NEUTRO) : TONO_NEUTRO;
 
   return (
@@ -66,6 +67,7 @@ function FilaObra({ obra, indice }: { obra: Obra; indice: number }) {
             alt=""
             fill
             sizes="112px"
+            priority={prioritaria}
             unoptimized={externa(obra.imagen)}
             className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
@@ -258,7 +260,7 @@ export function ProjectsHistory({
                 <div className="relative pb-10 sm:border-l sm:border-ink/12 sm:pb-14 sm:pl-6">
                   <div className="flex flex-col gap-2">
                     {grupo.obras.map((obra, i) => (
-                      <FilaObra key={obra.id} obra={obra} indice={i} />
+                      <FilaObra key={obra.id} obra={obra} indice={i} prioritaria={grupo === grupos[0] && i < 2} />
                     ))}
                   </div>
                 </div>

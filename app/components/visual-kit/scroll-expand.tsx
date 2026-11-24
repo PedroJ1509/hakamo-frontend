@@ -83,19 +83,23 @@ export default function ScrollExpand({
   const propsRef = useRef<Required<Pick<ScrollExpandProps, ConfigKey>>>(
     {} as Required<Pick<ScrollExpandProps, ConfigKey>>,
   );
-  propsRef.current = {
-    startWidth,
-    startHeight,
-    startRadius,
-    endRadius,
-    mediaZoom,
-    scrollDistance,
-    holdDistance,
-    smoothing,
-    overlayScrim,
-    useWindowScroll,
-    enabled,
-  };
+  // La ref se actualiza en un efecto de layout (no durante el render): corre en cada
+  // render y antes que los demás efectos de este componente, que son los que la leen.
+  useLayoutEffect(() => {
+    propsRef.current = {
+      startWidth,
+      startHeight,
+      startRadius,
+      endRadius,
+      mediaZoom,
+      scrollDistance,
+      holdDistance,
+      smoothing,
+      overlayScrim,
+      useWindowScroll,
+      enabled,
+    };
+  });
 
   const applyProgress = useCallback((p: number) => {
     const frame = frameRef.current;
@@ -265,6 +269,7 @@ export default function ScrollExpand({
         playsInline
       />
     ) : (
+      // eslint-disable-next-line @next/next/no-img-element -- imagen del CMS de tamaño libre; el efecto anima el elemento directamente
       <img ref={mediaRef as RefObject<HTMLImageElement>} className="scroll-expand__media" src={src} alt={alt} draggable={false} />
     );
 

@@ -91,13 +91,29 @@ export function SiteHeader({
   }, []);
 
   // Un pequeño margen al salir con el ratón, para poder cruzar hasta el panel.
+  // Un desplegable puede abrirse por "hover" (se cierra al salir el ratón) o por
+  // clic/teclado (queda fijado hasta otro clic, Escape o pulsar fuera). Sin esta
+  // distinción, pasar el ratón lo abría y el clic en la flecha lo CERRABA, y en
+  // pantallas táctiles el toque (hover + clic) lo abría y cerraba al instante.
+  const modo = useRef<"hover" | "fijo">("hover");
   const abrir = (href: string) => {
     if (cierre.current) window.clearTimeout(cierre.current);
+    if (desplegado !== href) modo.current = "hover";
     setDesplegado(href);
   };
   const cerrarLuego = () => {
     if (cierre.current) window.clearTimeout(cierre.current);
-    cierre.current = window.setTimeout(() => setDesplegado(null), 140);
+    cierre.current = window.setTimeout(() => {
+      if (modo.current === "hover") setDesplegado(null);
+    }, 140);
+  };
+  const alternar = (href: string) => {
+    if (desplegado === href && modo.current === "fijo") {
+      setDesplegado(null);
+      return;
+    }
+    modo.current = "fijo";
+    setDesplegado(href);
   };
 
   const estaActivo = (item: NavItem) => activo(item.href) || Boolean(item.children?.some((c) => activo(c.href)));
@@ -176,7 +192,8 @@ export function SiteHeader({
                     abierto={desplegado === item.href}
                     onAbrir={() => abrir(item.href)}
                     onCerrarLuego={cerrarLuego}
-                    onAlternar={() => setDesplegado(desplegado === item.href ? null : item.href)}
+                    onAlternar={() => alternar(item.href)}
+                    onElegir={() => setDesplegado(null)}
                   />
                 ) : (
                   <Link
@@ -301,6 +318,7 @@ function MenuDesplegable({
   onAbrir,
   onCerrarLuego,
   onAlternar,
+  onElegir,
 }: {
   item: NavItem;
   night: boolean;
@@ -310,6 +328,8 @@ function MenuDesplegable({
   onAbrir: () => void;
   onCerrarLuego: () => void;
   onAlternar: () => void;
+  /** Se eligió un enlace del desplegable: cierra aunque estuviera fijado. */
+  onElegir: () => void;
 }) {
   const panelId = useId();
   const hijos = item.children ?? [];
@@ -340,7 +360,7 @@ function MenuDesplegable({
               <Link
                 href={hijo.href}
                 className={`site-dropdown-link ${esActivo(hijo.href) ? "is-active" : ""}`}
-                onClick={onCerrarLuego}
+                onClick={onElegir}
               >
                 {hijo.label}
               </Link>

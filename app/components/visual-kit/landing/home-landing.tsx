@@ -6,6 +6,7 @@ import { Grain } from "../grain";
 import { MagneticButton } from "../magnetic-button";
 import { Marquee } from "../marquee";
 import { Reveal } from "../reveal";
+import { Enlace } from "../enlace";
 import { ScrollProgress } from "../scroll-progress";
 import { LandingHeader } from "../chrome-header";
 import { LandingHeroSection } from "../landing-hero-section";
@@ -125,7 +126,7 @@ export function HomeLanding({
         <div className="relative mx-auto grid max-w-6xl gap-10 sm:grid-cols-2 lg:grid-cols-5">
           {contenido.accesos.map((acceso, index) => (
             <Reveal key={acceso.url + index} delay={index * 60} from="up">
-              <a href={acceso.url} className="group block">
+              <Enlace href={acceso.url} className="group block">
                 {acceso.imagen ? (
                   // eslint-disable-next-line @next/next/no-img-element -- imagen del CMS de tamaño libre
                   <img src={acceso.imagen} alt="" className="mb-4 aspect-[4/3] w-full rounded-2xl object-cover" loading="lazy" />
@@ -135,7 +136,7 @@ export function HomeLanding({
                 <p className={`mt-4 text-sm transition ${accesosClaro ? "text-paper/70 group-hover:text-glow" : "text-muted group-hover:text-accent"}`}>
                   {acceso.textoEnlace}
                 </p>
-              </a>
+              </Enlace>
             </Reveal>
           ))}
         </div>

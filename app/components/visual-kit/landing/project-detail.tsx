@@ -11,6 +11,7 @@ import { LandingHeader } from "../chrome-header";
 import { MagneticButton } from "../magnetic-button";
 import { PublicFooter } from "../public-footer";
 import { Reveal } from "../reveal";
+import { Enlace } from "../enlace";
 import { ScrollProgress } from "../scroll-progress";
 import { SeccionBloque } from "../seccion";
 
@@ -340,14 +341,14 @@ export function ProjectDetail({ contenido }: { contenido: ContenidoProyecto }) {
                   </MagneticButton>
                 ) : null}
                 {cierre.botonSecundario ? (
-                  <a
+                  <Enlace
                     href={cierre.botonSecundario.url}
                     className={`inline-flex items-center justify-center rounded-full border px-5 py-3 text-sm font-semibold transition ${
                       cierre.fondo.tono === "claro" ? "border-white/25 text-paper hover:border-glow hover:text-glow" : "border-ink/15 text-ink hover:border-accent hover:text-accent"
                     }`}
                   >
                     {cierre.botonSecundario.texto}
-                  </a>
+                  </Enlace>
                 ) : null}
               </div>
             </Reveal>
