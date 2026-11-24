@@ -40,7 +40,9 @@ export function LandingHeroSection({
             src={src}
             alt=""
             fill
-            priority={background.priority}
+            // El hero ocupa la pantalla entera: es la imagen que mide el LCP, así que precarga
+            // salvo que se desactive a propósito con `priority: false`.
+            priority={background.priority ?? true}
             unoptimized={externa}
             className="hero-photo"
             style={{ objectPosition: posicion }}
