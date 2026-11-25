@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useId, useMemo, useRef, type CSSProperties } from 'react'
+import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, type CSSProperties } from 'react'
 import { gsap } from 'gsap'
 
 const clamp = (v: number, a: number, b: number) => (v < a ? a : v > b ? b : v)
@@ -72,7 +72,10 @@ export default function MaskedHeading({
   const words = useMemo(() => String(text).split(/\s+/).filter(Boolean), [text])
 
   const settingsRef = useRef({ fillScale, parallax, drift, brightness, saturation, grayscale, textScale })
-  settingsRef.current = { fillScale, parallax, drift, brightness, saturation, grayscale, textScale }
+  // La ref se actualiza en un efecto de layout (antes que los demás efectos), no durante el render.
+  useLayoutEffect(() => {
+    settingsRef.current = { fillScale, parallax, drift, brightness, saturation, grayscale, textScale }
+  })
 
   const place = useCallback(() => {
     const root = rootRef.current

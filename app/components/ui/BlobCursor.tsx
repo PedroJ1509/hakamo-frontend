@@ -92,7 +92,7 @@ export default function BlobCursor({
 
     const onMove = (e: Event) => handleMove(e as MouseEvent | TouchEvent)
 
-    parent.style.cursor = 'none'
+    parent.style.setProperty('cursor', 'none')
     parent.addEventListener('mousemove', onMove)
     parent.addEventListener('mouseenter', onMove)
     parent.addEventListener('touchmove', onMove, { passive: true })
@@ -101,7 +101,7 @@ export default function BlobCursor({
     window.addEventListener('resize', onResize)
 
     return () => {
-      parent.style.cursor = ''
+      parent.style.removeProperty('cursor')
       parent.removeEventListener('mousemove', onMove)
       parent.removeEventListener('mouseenter', onMove)
       parent.removeEventListener('touchmove', onMove)

@@ -65,7 +65,7 @@ export default function LineSidebar({
   activeRef.current = activeIndex
   smoothingRef.current = smoothing
 
-  const runFrame = useCallback((now: number) => {
+  const runFrame = useCallback(function ciclo(now: number) {
     const dt = Math.min((now - lastRef.current) / 1000, 0.05)
     lastRef.current = now
     const tau = Math.max(smoothingRef.current, 1) / 1000
@@ -86,7 +86,7 @@ export default function LineSidebar({
       if (!settled) moving = true
     }
 
-    rafRef.current = moving ? requestAnimationFrame(runFrame) : null
+    rafRef.current = moving ? requestAnimationFrame(ciclo) : null
   }, [])
 
   const startLoop = useCallback(() => {

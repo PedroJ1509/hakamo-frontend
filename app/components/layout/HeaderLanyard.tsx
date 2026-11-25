@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEsCliente } from '@/lib/hooks-navegador'
 import { createPortal } from 'react-dom'
 import dynamic from 'next/dynamic'
 
@@ -54,13 +55,12 @@ function overlapsFrontUI(rect: CardScreen) {
 
 /** Credencial 3D solo en /empleo — se monta tras el primer paint para no bloquear la carga. */
 export default function HeaderLanyard() {
-  const [mounted, setMounted] = useState(false)
+  const mounted = useEsCliente()
   const [ready, setReady] = useState(false)
   const [overFront, setOverFront] = useState(false)
   const overRef = useRef(false)
 
   useEffect(() => {
-    setMounted(true)
     document.documentElement.classList.add('lanyard-active')
 
     let idleId: number | undefined

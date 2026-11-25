@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { usePrefiereMenosMovimiento } from '@/lib/hooks-navegador'
 
 const WORD = 'HAKAMO'
 const TYPE_MS = 110
@@ -12,15 +13,7 @@ export default function FooterWordmark() {
   const ref = useRef<HTMLSpanElement>(null)
   const [text, setText] = useState('')
   const [inView, setInView] = useState(false)
-  const [reducedMotion, setReducedMotion] = useState(false)
-
-  useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
-    setReducedMotion(mq.matches)
-    const onChange = () => setReducedMotion(mq.matches)
-    mq.addEventListener('change', onChange)
-    return () => mq.removeEventListener('change', onChange)
-  }, [])
+  const reducedMotion = usePrefiereMenosMovimiento()
 
   useEffect(() => {
     const el = ref.current
@@ -34,17 +27,13 @@ export default function FooterWordmark() {
   }, [])
 
   useEffect(() => {
-    if (reducedMotion) {
-      setText(WORD)
-      return
-    }
-    if (!inView) return
+    // Con movimiento reducido no hay animación: la palabra se muestra completa (ver `visible`).
+    if (reducedMotion || !inView) return
 
     let i = 0
     let deleting = false
     let cancelled = false
     let timer: ReturnType<typeof setTimeout>
-    setText('')
 
     const schedule = (fn: () => void, ms: number) => {
       timer = setTimeout(() => {
@@ -77,12 +66,16 @@ export default function FooterWordmark() {
       schedule(tick, DELETE_MS)
     }
 
+    // Cada vez que entra en pantalla, la animación arranca desde vacío.
+    schedule(() => setText(''), 0)
     schedule(tick, TYPE_MS)
     return () => {
       cancelled = true
       clearTimeout(timer)
     }
   }, [inView, reducedMotion])
+
+  const visible = reducedMotion ? WORD : text
 
   return (
     <span
@@ -95,7 +88,7 @@ export default function FooterWordmark() {
         letterSpacing: '-0.04em',
       }}
     >
-      {text}
+      {visible}
       {!reducedMotion && (
         <span
           className={`footer-wordmark-caret inline-block align-baseline${inView ? ' is-on' : ''}`}

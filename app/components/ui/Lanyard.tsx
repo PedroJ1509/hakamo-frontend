@@ -1,16 +1,17 @@
 'use client'
 
-/* eslint-disable react/no-unknown-property */
 import {
   Suspense,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
+  useSyncExternalStore,
   useState,
   type MutableRefObject,
   type RefObject,
 } from 'react'
-import { Canvas, extend, useFrame } from '@react-three/fiber'
+import { Canvas, extend, useFrame, type ThreeEvent } from '@react-three/fiber'
 import { useGLTF, useTexture, Environment, Lightformer } from '@react-three/drei'
 import {
   BallCollider,
@@ -21,11 +22,21 @@ import {
   useSphericalJoint,
   type RapierRigidBody,
 } from '@react-three/rapier'
+import { useEsCliente } from '@/lib/hooks-navegador'
 import { MeshLineGeometry, MeshLineMaterial } from 'meshline'
 import * as THREE from 'three'
 import styles from './Lanyard.module.css'
 
 extend({ MeshLineGeometry, MeshLineMaterial })
+
+/** Cuerpo de Rapier al que se le añade `lerped`: la posición suavizada que sigue la cuerda. */
+type CuerpoSuavizado = RapierRigidBody & { lerped?: THREE.Vector3 }
+
+/** Lo que contiene el GLB de la tarjeta (solo lo que este componente usa). */
+type ModeloTarjeta = {
+  nodes: { card: THREE.Mesh; clip: THREE.Mesh; clamp: THREE.Mesh }
+  materials: { base: THREE.MeshStandardMaterial; metal: THREE.MeshStandardMaterial }
+}
 
 const CARD_GLB = '/lanyard/card.glb'
 const LANYARD_PNG = '/lanyard/lanyard.png'
@@ -77,19 +88,21 @@ export default function Lanyard({
   anchor = [0, 4.1, 0],
   onCardScreenPos,
 }: LanyardProps) {
-  const [isMobile, setIsMobile] = useState(
-    () => typeof window !== 'undefined' && window.innerWidth < 768,
+  const isMobile = useSyncExternalStore(
+    (avisar) => {
+      window.addEventListener('resize', avisar)
+      return () => window.removeEventListener('resize', avisar)
+    },
+    () => window.innerWidth < 768,
+    () => false,
   )
-  const [eventSource, setEventSource] = useState<HTMLElement | undefined>()
+  const eventSource = useEsCliente() ? document.documentElement : undefined
   const onCardScreenPosRef = useRef(onCardScreenPos)
-  onCardScreenPosRef.current = onCardScreenPos
+  // La ref se actualiza en un efecto de layout, no durante el render.
+  useLayoutEffect(() => {
+    onCardScreenPosRef.current = onCardScreenPos
+  })
 
-  useEffect(() => {
-    setEventSource(document.documentElement)
-    const handleResize = () => setIsMobile(window.innerWidth < 768)
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
 
   if (!eventSource) {
     return <div className={styles.lanyardWrapper} />
@@ -184,7 +197,7 @@ function Band({
     ((rect: { x: number; y: number; w: number; h: number }) => void) | undefined
   >
 }) {
-  const band = useRef<any>(null)
+  const band = useRef<THREE.Mesh<MeshLineGeometry>>(null)
   const fixed = useRef<RapierRigidBody>(null)
   const j1 = useRef<RapierRigidBody>(null)
   const j2 = useRef<RapierRigidBody>(null)
@@ -204,16 +217,16 @@ function Band({
     linearDamping: 4,
   }
 
-  const { nodes, materials } = useGLTF(CARD_GLB) as any
+  const { nodes, materials } = useGLTF(CARD_GLB) as unknown as ModeloTarjeta
   const texture = useTexture(lanyardImage || LANYARD_PNG)
   const frontTex = useTexture(frontImage || BLANK_PIXEL)
   const backTex = useTexture(backImage || BLANK_PIXEL)
 
   const cardMap = useMemo(() => {
-    const baseMap = materials.base.map
+    const baseMap = materials.base.map!
     if (!frontImage && !backImage) return baseMap
 
-    const baseImg = baseMap.image
+    const baseImg = baseMap.image as HTMLImageElement | undefined
     if (!baseImg?.width) return baseMap
 
     const W = baseImg.width
@@ -281,15 +294,16 @@ function Band({
     return composite
   }, [frontImage, backImage, imageFit, frontTex, backTex, materials.base.map])
 
-  const [curve] = useState(
-    () =>
-      new THREE.CatmullRomCurve3([
-        new THREE.Vector3(),
-        new THREE.Vector3(),
-        new THREE.Vector3(),
-        new THREE.Vector3(),
-      ]),
-  )
+  const [curve] = useState(() => {
+    const curva = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(),
+      new THREE.Vector3(),
+      new THREE.Vector3(),
+      new THREE.Vector3(),
+    ])
+    curva.curveType = 'chordal'
+    return curva
+  })
   const [dragged, drag] = useState<false | THREE.Vector3>(false)
   const [hovered, hover] = useState(false)
 
@@ -339,15 +353,15 @@ function Band({
     }
     if (fixed.current) {
       ;[j1, j2].forEach((ref) => {
-        const body = ref.current as any
+        const body = ref.current as CuerpoSuavizado | null
         if (!body) return
         if (!body.lerped) body.lerped = new THREE.Vector3().copy(body.translation())
         const clampedDistance = Math.max(0.1, Math.min(1, body.lerped.distanceTo(body.translation())))
         body.lerped.lerp(body.translation(), delta * (minSpeed + clampedDistance * (maxSpeed - minSpeed)))
       })
       curve.points[0].copy(j3.current!.translation())
-      curve.points[1].copy((j2.current as any).lerped)
-      curve.points[2].copy((j1.current as any).lerped)
+      curve.points[1].copy((j2.current as CuerpoSuavizado).lerped!)
+      curve.points[2].copy((j1.current as CuerpoSuavizado).lerped!)
       curve.points[3].copy(fixed.current.translation())
       if (band.current?.geometry) {
         band.current.geometry.setPoints(curve.getPoints(isMobile ? 16 : 32))
@@ -379,8 +393,10 @@ function Band({
     }
   })
 
-  curve.curveType = 'chordal'
-  texture.wrapS = texture.wrapT = THREE.RepeatWrapping
+  // `texture` viene de un hook: se configura en un efecto, no se muta durante el render.
+  useLayoutEffect(() => {
+    Object.assign(texture, { wrapS: THREE.RepeatWrapping, wrapT: THREE.RepeatWrapping })
+  }, [texture])
 
   return (
     <>
@@ -407,12 +423,12 @@ function Band({
             position={[0, -1.2, -0.05]}
             onPointerOver={() => hover(true)}
             onPointerOut={() => hover(false)}
-            onPointerUp={(e: any) => {
-              e.target.releasePointerCapture(e.pointerId)
+            onPointerUp={(e: ThreeEvent<PointerEvent>) => {
+              ;(e.target as Element).releasePointerCapture(e.pointerId)
               drag(false)
             }}
-            onPointerDown={(e: any) => {
-              e.target.setPointerCapture(e.pointerId)
+            onPointerDown={(e: ThreeEvent<PointerEvent>) => {
+              ;(e.target as Element).setPointerCapture(e.pointerId)
               drag(new THREE.Vector3().copy(e.point).sub(vec.copy(card.current!.translation())))
             }}
           >
@@ -434,10 +450,11 @@ function Band({
       <mesh ref={band}>
         <meshLineGeometry />
         <meshLineMaterial
+          args={[{ resolution: new THREE.Vector2(1000, 1000) }]}
           color="white"
           depthTest={false}
           resolution={isMobile ? [1000, 2000] : [1000, 1000]}
-          useMap
+          useMap={1}
           map={texture}
           repeat={[-4, 1]}
           lineWidth={lanyardWidth}

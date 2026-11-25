@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEsCliente, useTemaOscuro } from '@/lib/hooks-navegador'
 
 function IconSun() {
   return (
@@ -20,17 +20,12 @@ function IconMoon() {
 }
 
 export default function ThemeToggle() {
-  const [dark, setDark] = useState(false)
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-    setDark(document.documentElement.classList.contains('dark'))
-  }, [])
+  const dark = useTemaOscuro()
+  const mounted = useEsCliente()
 
   const toggle = () => {
     const next = !dark
-    setDark(next)
+    // `useTemaOscuro` observa la clase de <html>, así que la interfaz se actualiza sola.
     document.documentElement.classList.toggle('dark', next)
     localStorage.setItem('theme', next ? 'dark' : 'light')
   }

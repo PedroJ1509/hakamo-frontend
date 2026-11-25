@@ -31,10 +31,8 @@ export default function Preloader({
   const prefersReducedMotion = useReducedMotion()
 
   useEffect(() => {
-    if (prefersReducedMotion) {
-      setActivo(false)
-      return
-    }
+    // Con movimiento reducido no se pinta nada (se devuelve null más abajo): no hay telón que retirar.
+    if (prefersReducedMotion) return
     const id = setTimeout(() => setActivo(false), espera)
     return () => clearTimeout(id)
   }, [espera, prefersReducedMotion])

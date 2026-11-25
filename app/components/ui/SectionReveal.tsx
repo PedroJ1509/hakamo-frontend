@@ -1,7 +1,8 @@
 'use client'
 
 import { motion, useInView, useMotionValueEvent, useScroll } from 'framer-motion'
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useRef, useState, type ReactNode } from 'react'
+import { usePrefiereMenosMovimiento } from '@/lib/hooks-navegador'
 
 type ScrollDirection = 'up' | 'down'
 export type RevealFrom = 'left' | 'right' | 'bottom' | 'top' | 'center'
@@ -50,15 +51,7 @@ export default function SectionReveal({
   const isInView = useInView(ref, { amount, margin: '-6% 0px -6% 0px' })
   const { scrollY } = useScroll()
   const [scrollDirection, setScrollDirection] = useState<ScrollDirection>('down')
-  const [reducedMotion, setReducedMotion] = useState(false)
-
-  useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
-    setReducedMotion(mq.matches)
-    const onChange = () => setReducedMotion(mq.matches)
-    mq.addEventListener('change', onChange)
-    return () => mq.removeEventListener('change', onChange)
-  }, [])
+  const reducedMotion = usePrefiereMenosMovimiento()
 
   useMotionValueEvent(scrollY, 'change', (current) => {
     const previous = scrollY.getPrevious() ?? 0

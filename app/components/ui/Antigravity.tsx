@@ -22,6 +22,49 @@ interface AntigravityProps {
   fieldStrength?: number;
 }
 
+/**
+ * Genera las partículas con posiciones aleatorias. Es aleatorio a propósito (decoración).
+ * Vive fuera del componente porque, al renderizar, el componente solo debe llamar a funciones puras.
+ */
+function crearParticulas(count: number, width: number, height: number) {
+  const temp = [];
+
+  for (let i = 0; i < count; i++) {
+    const t = Math.random() * 100;
+    const factor = 20 + Math.random() * 100;
+    const speed = 0.01 + Math.random() / 200;
+    const xFactor = -50 + Math.random() * 100;
+    const yFactor = -50 + Math.random() * 100;
+    const zFactor = -50 + Math.random() * 100;
+
+    const x = (Math.random() - 0.5) * width;
+    const y = (Math.random() - 0.5) * height;
+    const z = (Math.random() - 0.5) * 20;
+
+    const randomRadiusOffset = (Math.random() - 0.5) * 2;
+
+    temp.push({
+      t,
+      factor,
+      speed,
+      xFactor,
+      yFactor,
+      zFactor,
+      mx: x,
+      my: y,
+      mz: z,
+      cx: x,
+      cy: y,
+      cz: z,
+      vx: 0,
+      vy: 0,
+      vz: 0,
+      randomRadiusOffset
+    });
+  }
+  return temp;
+}
+
 const AntigravityInner: React.FC<AntigravityProps> = ({
   count = 300,
   magnetRadius = 10,
@@ -47,46 +90,10 @@ const AntigravityInner: React.FC<AntigravityProps> = ({
   const lastMouseMoveTime = useRef(0);
   const virtualMouse = useRef({ x: 0, y: 0 });
 
-  const particles = useMemo(() => {
-    const temp = [];
-    const width = viewport.width || 100;
-    const height = viewport.height || 100;
-
-    for (let i = 0; i < count; i++) {
-      const t = Math.random() * 100;
-      const factor = 20 + Math.random() * 100;
-      const speed = 0.01 + Math.random() / 200;
-      const xFactor = -50 + Math.random() * 100;
-      const yFactor = -50 + Math.random() * 100;
-      const zFactor = -50 + Math.random() * 100;
-
-      const x = (Math.random() - 0.5) * width;
-      const y = (Math.random() - 0.5) * height;
-      const z = (Math.random() - 0.5) * 20;
-
-      const randomRadiusOffset = (Math.random() - 0.5) * 2;
-
-      temp.push({
-        t,
-        factor,
-        speed,
-        xFactor,
-        yFactor,
-        zFactor,
-        mx: x,
-        my: y,
-        mz: z,
-        cx: x,
-        cy: y,
-        cz: z,
-        vx: 0,
-        vy: 0,
-        vz: 0,
-        randomRadiusOffset
-      });
-    }
-    return temp;
-  }, [count, viewport.width, viewport.height]);
+  const particles = useMemo(
+    () => crearParticulas(count, viewport.width || 100, viewport.height || 100),
+    [count, viewport.width, viewport.height]
+  );
 
   useFrame(state => {
     const mesh = meshRef.current;
@@ -120,9 +127,9 @@ const AntigravityInner: React.FC<AntigravityProps> = ({
     const globalRotation = state.clock.getElapsedTime() * rotationSpeed;
 
     particles.forEach((particle, i) => {
-      let { t, speed, mx, my, mz, cz, randomRadiusOffset } = particle;
+      const { speed, mx, my, mz, cz, randomRadiusOffset } = particle;
 
-      t = particle.t += speed / 2;
+      const t = (particle.t += speed / 2);
 
       const projectionFactor = 1 - cz / 50;
       const projectedTargetX = targetX * projectionFactor;
