@@ -29,6 +29,9 @@ import styles from './Lanyard.module.css'
 
 extend({ MeshLineGeometry, MeshLineMaterial })
 
+/** Argumentos fijos del material de la cinta: si el array cambiara en cada render, R3F lo recrearía. */
+const ARGS_CINTA: [{ resolution: THREE.Vector2 }] = [{ resolution: new THREE.Vector2(1000, 1000) }]
+
 /** Cuerpo de Rapier al que se le añade `lerped`: la posición suavizada que sigue la cuerda. */
 type CuerpoSuavizado = RapierRigidBody & { lerped?: THREE.Vector3 }
 
@@ -450,7 +453,7 @@ function Band({
       <mesh ref={band}>
         <meshLineGeometry />
         <meshLineMaterial
-          args={[{ resolution: new THREE.Vector2(1000, 1000) }]}
+          args={ARGS_CINTA}
           color="white"
           depthTest={false}
           resolution={isMobile ? [1000, 2000] : [1000, 1000]}
