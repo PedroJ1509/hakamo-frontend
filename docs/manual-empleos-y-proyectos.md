@@ -12,9 +12,9 @@ Esta guía explica, paso a paso y sin términos técnicos, cómo funcionan las s
 ## Empleos: buscar trabajo
 
 ### ¿Cómo veo las vacantes?
-1. Entra a la página y pulsa **Empleos** en el menú.
-2. Pulsa **Ver vacantes**.
-3. Verás una lista de tarjetas. Pulsa la que te interese para ver todos los detalles: qué hay que hacer, qué se necesita, dónde es y cuánto pagan (cuando se indica).
+1. Arriba, en el selector de la barra oscura, elige **Busco empleo**.
+2. En el menú pulsa **Vacantes**.
+3. Verás una lista de tarjetas. Pulsa **Ver puesto** en la que te interese para ver todos los detalles: qué hay que hacer, qué se necesita, dónde es y cuánto pagan (cuando se indica).
 
 ### ¿Cómo encuentro una vacante en particular?
 - **Buscar:** escribe una palabra en el cuadro de búsqueda, por ejemplo "ingeniero". Si no hay resultados, verás un aviso; borra lo escrito para ver todas otra vez.
@@ -25,12 +25,13 @@ Esta guía explica, paso a paso y sin términos técnicos, cómo funcionan las s
 Es una vacante que ya no recibe candidatos. Se sigue viendo, pero apagada y al final de la lista.
 
 ### ¿Cómo me postulo a una vacante?
-1. Abre la vacante.
-2. Pulsa **Postularme**.
-3. Llena tus datos y envía.
+1. Abre la vacante con **Ver puesto**.
+2. Pulsa **Postularme**: la página baja al formulario.
+3. Llena **Nombre completo**, **Correo** y **Teléfono**, adjunta tu **CV** (PDF o Word) y, si quieres, escribe una **Carta de presentación**.
+4. Envía el formulario.
 
 ### ¿Y si no hay una vacante para mí?
-Puedes dejar tu hoja de vida igual. Hay dos formas, en **Empleos → Tu CV**:
+Puedes dejar tu hoja de vida igual. Pulsa **Deja tu CV** y baja hasta **Deja tu perfil**. Hay dos formas: **Crear mi CV** o **Subir archivo**.
 
 **Opción 1: crear tu hoja de vida aquí mismo.** Te guía en 5 pasos, y puedes volver atrás sin perder lo escrito:
 1. Tus datos.
@@ -60,12 +61,12 @@ Si envías muchas postulaciones seguidas (más de 10 en 10 minutos), la página 
 ## Proyectos: ver nuestro trabajo
 
 ### ¿Cómo veo los proyectos?
-1. Pulsa **Proyectos** en el menú.
+1. Arriba, en el selector, elige **Soy empresa** y pulsa **Proyectos** en el menú.
 2. Verás una selección de obras: primero las destacadas, luego las que están en marcha y después las terminadas.
 3. Pulsa cualquier obra para ver su historia, sus datos, lo que se hizo y sus fotos.
 
 ### ¿Cómo veo todos los proyectos juntos?
-Entra a **Historial**. Ahí puedes filtrar por:
+Pulsa **Ver historial completo**. Ahí puedes filtrar por:
 - **Estado:** Todos, En proceso, Completados o Destacados. Cada uno muestra cuántos hay.
 - **Sector:** Construcción, Plantas industriales, Infraestructura, Energía y proyectos técnicos, Empresas comerciales, Mantenimiento y HSE.
 
@@ -159,3 +160,6 @@ En unos instantes después de publicar. Si no ves el cambio, recarga la página 
 | Alguien no pudo subir su hoja de vida | El archivo pesa más de 5 MB o no es PDF ni Word | Dile que lo guarde como PDF o que lo comprima. |
 | No veo las postulaciones | Las buscas entre las publicadas | Mira en **Postulación**, incluidas las que dicen "Draft". |
 | El panel no abre | El servidor no responde | Avisa a quien administra el servidor. |
+
+
+> Esta guía también está en PDF con capturas de pantalla: `manual-empleos-y-proyectos.pdf`.
