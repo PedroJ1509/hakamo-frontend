@@ -1,121 +1,161 @@
-# Manual de uso — Empleos y Proyectos
+# Guía fácil: Empleos y Proyectos
 
-Este manual explica las dos secciones de la página de Hakamo: **Empleos** (para quien busca trabajo) y **Proyectos** (para las empresas que quieren ver el trabajo realizado). Cada una tiene dos partes: lo que hace el **visitante** y lo que hace **el equipo de Hakamo** desde el panel de administración (Strapi).
+Esta guía explica, paso a paso y sin términos técnicos, cómo funcionan las secciones **Empleos** y **Proyectos** de la página de Hakamo.
+
+- La **parte A** es para quien visita la página.
+- La **parte B** es para el equipo de Hakamo, que administra el contenido desde el panel.
 
 ---
 
-## 1. Empleos
+# PARTE A — Para quien visita la página
 
-### 1.1 Para el visitante
+## Empleos: buscar trabajo
 
-**Dónde está:** menú *Empleos* (`/empleos`). Desde ahí se llega a todo lo demás.
+### ¿Cómo veo las vacantes?
+1. Entra a la página y pulsa **Empleos** en el menú.
+2. Pulsa **Ver vacantes**.
+3. Verás una lista de tarjetas. Pulsa la que te interese para ver todos los detalles: qué hay que hacer, qué se necesita, dónde es y cuánto pagan (cuando se indica).
 
-| Quiero… | Qué hago |
+### ¿Cómo encuentro una vacante en particular?
+- **Buscar:** escribe una palabra en el cuadro de búsqueda, por ejemplo "ingeniero". Si no hay resultados, verás un aviso; borra lo escrito para ver todas otra vez.
+- **Filtrar:** usa los filtros de la lista para ver solo lo que te sirve (por ejemplo, tiempo completo o presencial). Puedes usar la búsqueda y los filtros a la vez.
+- **Ver más vacantes:** la lista muestra 10 por página. Abajo puedes pasar a la siguiente página o elegir ver 20 o 30 a la vez.
+
+### ¿Qué significa "Cerrada"?
+Es una vacante que ya no recibe candidatos. Se sigue viendo, pero apagada y al final de la lista.
+
+### ¿Cómo me postulo a una vacante?
+1. Abre la vacante.
+2. Pulsa **Postularme**.
+3. Llena tus datos y envía.
+
+### ¿Y si no hay una vacante para mí?
+Puedes dejar tu hoja de vida igual. Hay dos formas, en **Empleos → Tu CV**:
+
+**Opción 1: crear tu hoja de vida aquí mismo.** Te guía en 5 pasos, y puedes volver atrás sin perder lo escrito:
+1. Tus datos.
+2. Experiencia.
+3. Estudios.
+4. Habilidades.
+5. Enviar.
+
+Al final, tu hoja de vida llega a Hakamo y puedes pulsar **Descargar PDF** para quedarte con una copia.
+
+**Opción 2: subir la que ya tienes.** Te pedimos nombre, apellido, teléfono, correo, área de interés y el archivo.
+- El archivo debe ser **PDF o Word**.
+- No puede pesar más de **5 MB**.
+
+### Si algo sale mal
+| Lo que ves | Qué hacer |
 |---|---|
-| Ver las vacantes | `Empleos` → **Ver vacantes**, o entrar directo a `/empleos/vacantes`. |
-| Buscar una vacante | Escribir en el buscador de la parte superior. Si no hay coincidencias, la página lo indica y se puede limpiar la búsqueda para volver al listado. |
-| Filtrar | Usar los filtros del listado (categoría, tipo, modalidad, disponibilidad). Se pueden combinar con la búsqueda. |
-| Cambiar de página | El listado muestra 10 vacantes por página; abajo se puede elegir 10, 20 o 30. Al cambiar un filtro o buscar, vuelve a la página 1. |
-| Ver el detalle de una vacante | Pulsar la tarjeta. La ficha muestra descripción, requisitos, ubicación, modalidad, tipo y salario (si se cargó). |
-| Postularme a una vacante | En la ficha, pulsar **Postularme** (baja al formulario) y completar los datos. |
-| No hay una vacante para mí | Enviar el CV igualmente (ver 1.2). |
+| "Completa tus datos para continuar." | Falta llenar algún campo. |
+| "Revisa el correo electrónico." | El correo está mal escrito. |
+| "Adjunta tu CV." | Falta elegir el archivo. |
+| "Solo PDF o Word." | Guarda tu hoja de vida como PDF o Word. |
+| "El archivo no puede superar 5 MB." | El archivo pesa mucho; comprímelo o guárdalo de nuevo como PDF. |
+| "No se pudo enviar…" | Intenta otra vez en unos minutos, o escríbenos por WhatsApp. |
 
-**Las vacantes cerradas** siguen visibles, pero con la marca *Cerrada*, más atenuadas y al final del listado. Se pueden ocultar con el filtro de disponibilidad.
+Si envías muchas postulaciones seguidas (más de 10 en 10 minutos), la página te pide esperar un poco.
 
-### 1.2 Enviar mi CV sin vacante concreta
+## Proyectos: ver nuestro trabajo
 
-En `/empleos`, sección **Tu CV**, hay dos caminos:
+### ¿Cómo veo los proyectos?
+1. Pulsa **Proyectos** en el menú.
+2. Verás una selección de obras: primero las destacadas, luego las que están en marcha y después las terminadas.
+3. Pulsa cualquier obra para ver su historia, sus datos, lo que se hizo y sus fotos.
 
-**A) Crear mi CV en la página** (asistente de 5 pasos, con barra de avance):
-1. *Tus datos* — quién eres.
-2. *Experiencia* — dónde has trabajado.
-3. *Estudios* — tu formación.
-4. *Habilidades* — qué sabes hacer.
-5. *Enviar* — revisar y mandar a Hakamo.
+### ¿Cómo veo todos los proyectos juntos?
+Entra a **Historial**. Ahí puedes filtrar por:
+- **Estado:** Todos, En proceso, Completados o Destacados. Cada uno muestra cuántos hay.
+- **Sector:** Construcción, Plantas industriales, Infraestructura, Energía y proyectos técnicos, Empresas comerciales, Mantenimiento y HSE.
 
-Se puede volver atrás sin perder lo escrito. Al enviar, el CV llega a Hakamo y aparece el botón **Descargar PDF** para guardar una copia.
-
-**B) Subir un CV que ya tengo.** Se piden: nombre, apellido, teléfono, correo, área de interés y el archivo.
-- Formatos: **PDF o Word** (`.pdf`, `.doc`, `.docx`).
-- Tamaño máximo: **5 MB**.
-- Si falta algún dato, el formulario no envía y lo avisa. El correo se valida.
-
-### 1.3 Mensajes que verá el visitante
-
-| Mensaje | Qué significa |
-|---|---|
-| "Completa tus datos para continuar." | Falta algún campo obligatorio. |
-| "Revisa el correo electrónico." | El correo no tiene formato válido. |
-| "Adjunta tu CV." | No se eligió archivo. |
-| "Solo PDF o Word (.pdf, .doc, .docx)." | El archivo no es de un formato aceptado. |
-| "El archivo no puede superar 5 MB." | El archivo es muy pesado. |
-| "No se pudo enviar. Intenta de nuevo o escríbenos por WhatsApp." | Fallo temporal; reintentar o usar WhatsApp. |
-
-El servidor también revisa el **contenido real** del archivo: un archivo renombrado a `.pdf` que no es un PDF se rechaza. Además hay un límite de envíos por persona (10 postulaciones cada 10 minutos); si alguien lo supera, debe esperar unos minutos.
-
-### 1.4 Para el equipo de Hakamo (panel Strapi)
-
-**Publicar una vacante**
-1. En Strapi: *Content Manager* → **Vacante** → *Create new entry*.
-2. Completar: **Título** (obligatorio), descripción, requisitos, ubicación, modalidad (`presencial` / `remoto` / `híbrido`), tipo (`tiempo completo` / `medio tiempo` / `contrato`), salario, **estado** (`activa` / `cerrada`), fecha de publicación, fecha de cierre, imagen y **división**.
-3. El *slug* se genera solo a partir del título.
-4. Pulsar **Publish**. Mientras esté en borrador (*Draft*) **no se ve en el sitio**.
-
-**Cerrar una vacante:** abrirla, cambiar **estado** a `cerrada` y publicar de nuevo. Sigue visible, marcada como cerrada, pero ya no se indexa en buscadores. Para quitarla por completo, usar *Unpublish*.
-
-**Editar los textos de la sección:** *Content Manager* → **Página · Vacantes** (títulos, textos del buscador, fondo) y **Página · Empleos** / **Cultura** (portal de empleo). Se guardan con *Publish*.
-
-**Revisar las postulaciones**
-1. *Content Manager* → **Postulación**. Cada envío (de una vacante, CV creado o CV subido) aparece aquí **en borrador (Draft)**; no hace falta publicarlo.
-2. Datos que verás: nombre, apellido, correo, teléfono, área de interés, carta, **origen** (`vacante` / `cv_creado` / `cv_subido`), la vacante (si aplica) y el **CV** adjunto.
-3. Para llevar el seguimiento, cambiar el **estado**: `recibida` → `en revisión` → `aceptada` / `rechazada`.
-
-> Las postulaciones contienen datos personales. No compartas el acceso al panel y descarga los CV solo desde ahí.
+Puedes combinar los dos filtros. Si quieres compartir lo que estás viendo, copia la dirección de la página: al abrirla, la otra persona verá los mismos filtros.
 
 ---
 
-## 2. Proyectos
+# PARTE B — Para el equipo de Hakamo (el panel de administración)
 
-### 2.1 Para el visitante
+Todo esto se hace desde el panel, en la sección **Content Manager** (el menú de la izquierda).
 
-**Dónde está:** menú *Proyectos* (`/proyectos`).
+> **Importante:** lo que guardas **no se ve en la página hasta que pulsas "Publish" (Publicar)**. Mientras diga "Draft" (borrador), solo lo ves tú en el panel.
 
-- **Página de Proyectos:** portada, galería y las obras seleccionadas (primero las **destacadas**, luego las **en proceso** y al final las **completadas**).
-- **Historial** (`/proyectos/historial`): todas las obras en orden.
-  - Filtrar por **estado**: Todos · En proceso · Completados · Destacados (cada uno con su contador).
-  - Filtrar por **sector**: Construcción · Plantas industriales · Infraestructura · Energía y proyectos técnicos · Empresas comerciales · Mantenimiento y HSE. Solo aparecen los sectores que tienen obras.
-  - Estado y sector se combinan, y el filtro queda en la dirección de la página, de modo que se puede **copiar el enlace** ya filtrado. Quitar el sector limpia la dirección.
-  - Desde *Servicios*, el enlace de cada sector abre el historial ya filtrado.
-- **Ficha de una obra:** pulsar cualquier obra para ver su descripción, datos, alcance e imágenes.
+## Empleos: publicar y administrar vacantes
 
-### 2.2 Para el equipo de Hakamo (panel Strapi)
+### Publicar una vacante nueva
+1. En el menú de la izquierda, pulsa **Vacante**.
+2. Pulsa **Create new entry** (crear nueva).
+3. Llena los datos:
+   - **Título** (obligatorio).
+   - Descripción y requisitos.
+   - Ubicación, modalidad (presencial, remoto o híbrido) y tipo (tiempo completo, medio tiempo o contrato).
+   - Salario, si quieres mostrarlo.
+   - **Estado:** "activa" si recibe candidatos.
+   - Fecha de publicación, fecha de cierre e imagen.
+   - División a la que pertenece.
+4. Pulsa **Save** (guardar) y luego **Publish** (publicar).
 
-**Agregar una obra**
-1. *Content Manager* → **Proyecto** → *Create new entry*.
-2. Completar: **Título** (obligatorio), sector, rol de Hakamo, cliente, ubicación, descripción corta, contenido (texto con formato), **datos** (pares etiqueta/valor), **alcance** (lista de elementos), **imágenes**, **estado** (`en proceso` / `completado` / `destacado`), fecha, **orden** y **división**.
-3. Dejar **activo** en `true`.
-4. Pulsar **Publish**.
+### Cerrar una vacante
+1. Ábrela.
+2. Cambia **Estado** a "cerrada".
+3. Pulsa **Publish** otra vez.
 
-**Reglas que conviene recordar**
-- Una obra solo se ve si está **publicada** y con **activo = true**. Para ocultarla sin borrarla, poner `activo` en `false` o hacer *Unpublish*.
-- El campo **orden** (número menor = primero) define el orden en las listas.
-- El **estado** decide el color de la etiqueta y la prioridad en la portada (destacado → en proceso → completado).
-- El filtro por **sector** se calcula a partir del texto del campo *sector*; usa nombres parecidos a los de la lista (por ejemplo "Construcción", "Energía", "Mantenimiento y HSE") para que la obra aparezca bajo el filtro correcto.
+La vacante sigue visible en la página, marcada como "Cerrada".
 
-**Editar los textos de la sección:** *Content Manager* → **Página · Proyectos** (portada, galería, obras, clip, cierre y ficha). Se guarda con *Publish*.
+### Quitar una vacante de la página
+Ábrela y pulsa **Unpublish** (despublicar). Deja de verse, pero no se borra: puedes volver a publicarla cuando quieras.
 
-### 2.3 Cuándo se ven los cambios
+### Ver quién se postuló
+1. En el menú, pulsa **Postulación**.
+2. Cada persona que se postuló aparece como una fila. Al abrirla ves su nombre, correo, teléfono, área de interés y su hoja de vida.
+3. En **Origen** ves de dónde vino: de una vacante, de una hoja de vida creada en la página o de una subida por la persona.
+4. Para llevar el control, cambia el **Estado**: recibida → en revisión → aceptada o rechazada.
 
-Después de publicar en Strapi, el sitio se actualiza solo en unos instantes. Si no cambia, recarga con `Ctrl + F5`; si sigue igual tras unos minutos, avisa a quien administra el servidor.
+> No hace falta "publicar" las postulaciones. Aparecen solas, y pueden figurar como "Draft"; es normal.
+>
+> Son datos personales: no compartas tu usuario y contraseña del panel.
+
+### Cambiar los textos de las páginas de empleo
+Pulsa **Página · Vacantes**, **Página · Empleos** o **Cultura**, cambia lo que necesites y pulsa **Publish**.
+
+## Proyectos: agregar y administrar obras
+
+### Agregar una obra nueva
+1. En el menú, pulsa **Proyecto**.
+2. Pulsa **Create new entry**.
+3. Llena los datos:
+   - **Título** (obligatorio).
+   - Sector, tu rol en la obra, cliente y ubicación.
+   - Una descripción corta y el texto completo.
+   - **Datos** (por ejemplo, "Área: 500 m²") y **alcance** (lo que se hizo, punto por punto).
+   - Fotos.
+   - **Estado:** en proceso, completado o destacado.
+   - Fecha y **orden** (el número menor sale primero).
+   - División.
+4. Revisa que **Activo** esté marcado como "true" (sí).
+5. Pulsa **Save** y luego **Publish**.
+
+### Esconder una obra sin borrarla
+Cambia **Activo** a "false" (no), o pulsa **Unpublish**. La obra deja de verse, pero no se pierde.
+
+### Tres cosas que conviene saber
+- **El estado** cambia el color de la etiqueta de la obra y su prioridad: las destacadas salen primero, luego las en proceso y al final las completadas.
+- **El sector** se detecta por lo que escribas en ese campo. Usa nombres parecidos a los de la lista (por ejemplo, "Construcción", "Energía", "Mantenimiento y HSE") para que la obra aparezca en el filtro correcto.
+- **El orden** decide qué obra va antes que otra dentro del mismo grupo.
+
+### Cambiar los textos de la página de Proyectos
+Pulsa **Página · Proyectos**, cambia lo que necesites y pulsa **Publish**.
+
+## ¿Cuándo se ven mis cambios en la página?
+En unos instantes después de publicar. Si no ves el cambio, recarga la página con **Ctrl + F5**. Si pasan unos minutos y sigue igual, avisa a quien se encarga del servidor.
 
 ---
 
-## 3. Problemas frecuentes
+# Si algo no funciona
 
-| Problema | Causa probable | Qué hacer |
+| Qué pasa | Lo más probable | Qué hacer |
 |---|---|---|
-| Publiqué una vacante u obra y no aparece | Quedó en borrador, o la obra tiene `activo = false` | Revisar que diga *Published* y que `activo` esté en `true`. |
-| La obra no sale en el filtro de un sector | El campo *sector* no coincide con ninguno de los sectores | Ajustar el texto del sector. |
-| Un visitante dice que no puede subir su CV | Archivo mayor de 5 MB o formato distinto de PDF/Word | Pedirle que lo reduzca o lo exporte a PDF. |
-| No llegan postulaciones | Se buscan entre las publicadas | Revisar en **Postulación** la vista *Draft*. |
-| El panel no abre | Servidor caído o sin conexión | Avisar a quien administra el servidor. |
+| Publiqué algo y no aparece en la página | Quedó en "Draft", o la obra tiene Activo en "false" | Revisa que diga "Published" y que Activo esté en "true". |
+| Mi obra no sale al filtrar por sector | El sector está escrito distinto | Escríbelo parecido a la lista de sectores. |
+| Alguien no pudo subir su hoja de vida | El archivo pesa más de 5 MB o no es PDF ni Word | Dile que lo guarde como PDF o que lo comprima. |
+| No veo las postulaciones | Las buscas entre las publicadas | Mira en **Postulación**, incluidas las que dicen "Draft". |
+| El panel no abre | El servidor no responde | Avisa a quien administra el servidor. |
